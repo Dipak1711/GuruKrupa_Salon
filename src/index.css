@@ -455,6 +455,48 @@ h1, h2, h3, .font-serif {
   }
 }
 
+/* Hide Scrollbar for horizontal mobile chips */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Mobile Safe Area & Layout Utilities */
+.mobile-safe-bottom {
+  padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 767px) {
+  .desktop-only-header {
+    display: none !important;
+  }
+  .mobile-only-header {
+    display: flex !important;
+  }
+  .mobile-bottom-nav-container {
+    display: flex !important;
+  }
+  main {
+    padding: 16px 16px calc(90px + env(safe-area-inset-bottom, 0px)) 16px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .desktop-only-header {
+    display: flex !important;
+  }
+  .mobile-only-header {
+    display: none !important;
+  }
+  .mobile-bottom-nav-container {
+    display: none !important;
+  }
+}
+
 /* Tablet (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
   main {

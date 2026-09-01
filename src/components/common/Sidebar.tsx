@@ -78,19 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             onClick={() => handleNavClick('offers')}
             badge="New"
           />
-          <NavItem
-            icon={<Home size={18} />}
-            label="Home"
-            active={activeView === 'home'}
-            onClick={() => handleNavClick('home')}
-          />
-          <NavItem
-            icon={<Tag size={18} />}
-            label="Offers"
-            active={activeView === 'offers'}
-            onClick={() => handleNavClick('offers')}
-            badge="New"
-          />
+
           <NavItem
             icon={<Image size={18} />}
             label="Gallery & Styles"
@@ -277,9 +265,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       <aside
-        className={`desktop-sidebar ${
-          isOpenMobile ? 'desktop-sidebar-open' : 'desktop-sidebar-closed'
-        }`}
+        className={`desktop-sidebar ${isOpenMobile ? 'desktop-sidebar-open' : 'desktop-sidebar-closed'
+          }`}
         style={{
           width: '260px',
           backgroundColor: '#0c0e14',
@@ -409,13 +396,13 @@ const NavItem: React.FC<NavItemProps> = ({
         backgroundColor: active
           ? 'rgba(212, 175, 55, 0.16)'
           : highlight
-          ? 'rgba(212, 175, 55, 0.08)'
-          : 'transparent',
+            ? 'rgba(212, 175, 55, 0.08)'
+            : 'transparent',
         color: active
           ? '#F3E5AB'
           : highlight
-          ? '#F6E29F'
-          : '#CBD5E1',
+            ? '#F6E29F'
+            : '#CBD5E1',
         borderLeft: active ? '3px solid #D4AF37' : '3px solid transparent',
       }}
       onMouseEnter={(e) => {

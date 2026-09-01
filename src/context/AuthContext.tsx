@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return 'customer';
   });
 
-  const [activeEmployeeId, setActiveEmployeeId] = useState<string>('');
+  const [activeEmployeeId, setActiveEmployeeId] = useState<string>('20000000-0000-0000-0000-000000000001');
 
   const [users, setUsers] = useState<UserProfile[]>(DEFAULT_USERS);
 

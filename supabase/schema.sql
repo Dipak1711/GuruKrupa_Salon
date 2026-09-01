@@ -165,6 +165,8 @@ CREATE TABLE IF NOT EXISTS service_records (
     branch_id UUID REFERENCES branches(id) ON DELETE RESTRICT,
     appointment_id UUID REFERENCES appointments(id) ON DELETE SET NULL,
     customer_id UUID REFERENCES customers(id) ON DELETE SET NULL,
+    customer_name TEXT,
+    customer_phone TEXT,
     employee_id UUID REFERENCES employees(id) ON DELETE RESTRICT,
     subtotal NUMERIC(10, 2) NOT NULL CHECK (subtotal >= 0),
     discount NUMERIC(10, 2) NOT NULL DEFAULT 0 CHECK (discount >= 0),
@@ -175,6 +177,9 @@ CREATE TABLE IF NOT EXISTS service_records (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     CONSTRAINT check_discount_subtotal CHECK (discount <= subtotal)
 );
+
+ALTER TABLE service_records ADD COLUMN IF NOT EXISTS customer_name TEXT;
+ALTER TABLE service_records ADD COLUMN IF NOT EXISTS customer_phone TEXT;
 
 -- ==============================================================================
 -- 12. SERVICE RECORD ITEMS (HISTORICAL PRICE SNAPSHOTS)
@@ -301,57 +306,93 @@ ALTER TABLE gallery ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 
 -- Non-recursive clean policies for all salon entities
+DROP POLICY IF EXISTS "Allow read branches" ON branches;
+DROP POLICY IF EXISTS "Allow write branches" ON branches;
 CREATE POLICY "Allow read branches" ON branches FOR SELECT USING (true);
 CREATE POLICY "Allow write branches" ON branches FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read profiles" ON profiles;
+DROP POLICY IF EXISTS "Allow write profiles" ON profiles;
 CREATE POLICY "Allow read profiles" ON profiles FOR SELECT USING (true);
 CREATE POLICY "Allow write profiles" ON profiles FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read customers" ON customers;
+DROP POLICY IF EXISTS "Allow write customers" ON customers;
 CREATE POLICY "Allow read customers" ON customers FOR SELECT USING (true);
 CREATE POLICY "Allow write customers" ON customers FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read employees" ON employees;
+DROP POLICY IF EXISTS "Allow write employees" ON employees;
 CREATE POLICY "Allow read employees" ON employees FOR SELECT USING (true);
 CREATE POLICY "Allow write employees" ON employees FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read service categories" ON service_categories;
+DROP POLICY IF EXISTS "Allow write service categories" ON service_categories;
 CREATE POLICY "Allow read service categories" ON service_categories FOR SELECT USING (true);
 CREATE POLICY "Allow write service categories" ON service_categories FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read services" ON services;
+DROP POLICY IF EXISTS "Allow write services" ON services;
 CREATE POLICY "Allow read services" ON services FOR SELECT USING (true);
 CREATE POLICY "Allow write services" ON services FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read service images" ON service_images;
+DROP POLICY IF EXISTS "Allow write service images" ON service_images;
 CREATE POLICY "Allow read service images" ON service_images FOR SELECT USING (true);
 CREATE POLICY "Allow write service images" ON service_images FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read employee services" ON employee_services;
+DROP POLICY IF EXISTS "Allow write employee services" ON employee_services;
 CREATE POLICY "Allow read employee services" ON employee_services FOR SELECT USING (true);
 CREATE POLICY "Allow write employee services" ON employee_services FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read employee leaves" ON employee_leaves;
+DROP POLICY IF EXISTS "Allow write employee leaves" ON employee_leaves;
 CREATE POLICY "Allow read employee leaves" ON employee_leaves FOR SELECT USING (true);
 CREATE POLICY "Allow write employee leaves" ON employee_leaves FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read appointments" ON appointments;
+DROP POLICY IF EXISTS "Allow write appointments" ON appointments;
 CREATE POLICY "Allow read appointments" ON appointments FOR SELECT USING (true);
 CREATE POLICY "Allow write appointments" ON appointments FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read appointment services" ON appointment_services;
+DROP POLICY IF EXISTS "Allow write appointment services" ON appointment_services;
 CREATE POLICY "Allow read appointment services" ON appointment_services FOR SELECT USING (true);
 CREATE POLICY "Allow write appointment services" ON appointment_services FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read service records" ON service_records;
+DROP POLICY IF EXISTS "Allow write service records" ON service_records;
 CREATE POLICY "Allow read service records" ON service_records FOR SELECT USING (true);
 CREATE POLICY "Allow write service records" ON service_records FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read service record items" ON service_record_items;
+DROP POLICY IF EXISTS "Allow write service record items" ON service_record_items;
 CREATE POLICY "Allow read service record items" ON service_record_items FOR SELECT USING (true);
 CREATE POLICY "Allow write service record items" ON service_record_items FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read payments" ON payments;
+DROP POLICY IF EXISTS "Allow write payments" ON payments;
 CREATE POLICY "Allow read payments" ON payments FOR SELECT USING (true);
 CREATE POLICY "Allow write payments" ON payments FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read offers" ON offers;
+DROP POLICY IF EXISTS "Allow write offers" ON offers;
 CREATE POLICY "Allow read offers" ON offers FOR SELECT USING (true);
 CREATE POLICY "Allow write offers" ON offers FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read offer services" ON offer_services;
+DROP POLICY IF EXISTS "Allow write offer services" ON offer_services;
 CREATE POLICY "Allow read offer services" ON offer_services FOR SELECT USING (true);
 CREATE POLICY "Allow write offer services" ON offer_services FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read gallery" ON gallery;
+DROP POLICY IF EXISTS "Allow write gallery" ON gallery;
 CREATE POLICY "Allow read gallery" ON gallery FOR SELECT USING (true);
 CREATE POLICY "Allow write gallery" ON gallery FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Allow read reviews" ON reviews;
+DROP POLICY IF EXISTS "Allow write reviews" ON reviews;
 CREATE POLICY "Allow read reviews" ON reviews FOR SELECT USING (true);
 CREATE POLICY "Allow write reviews" ON reviews FOR ALL USING (true);
 
@@ -365,6 +406,17 @@ VALUES
     ('gallery-images', 'gallery-images', true),
     ('profile-images', 'profile-images', true)
 ON CONFLICT (id) DO NOTHING;
+
+-- Drop storage policies if existing before creating
+DROP POLICY IF EXISTS "Public Read Access service-images" ON storage.objects;
+DROP POLICY IF EXISTS "Public Read Access employee-images" ON storage.objects;
+DROP POLICY IF EXISTS "Public Read Access gallery-images" ON storage.objects;
+DROP POLICY IF EXISTS "Public Read Access profile-images" ON storage.objects;
+
+DROP POLICY IF EXISTS "Admin Upload service-images" ON storage.objects;
+DROP POLICY IF EXISTS "Admin Upload employee-images" ON storage.objects;
+DROP POLICY IF EXISTS "Admin Upload gallery-images" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated Upload profile-images" ON storage.objects;
 
 -- Public Storage Access Policies
 CREATE POLICY "Public Read Access service-images" ON storage.objects FOR SELECT USING (bucket_id = 'service-images');

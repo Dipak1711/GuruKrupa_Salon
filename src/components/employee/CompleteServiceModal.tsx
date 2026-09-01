@@ -103,17 +103,18 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
     setSelectedServiceIds((prev) => prev.filter((_, idx) => idx !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedServiceIds.length === 0) {
       alert('Please select at least one service performed.');
       return;
     }
 
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      completeService({
+    try {
+      const res = await completeService({
         appointmentId: appointment?.id || null,
         customerId: appointment?.customer_id || null,
         customerName: customerName || 'Walk-in Guest',
@@ -134,12 +135,15 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
         `Recorded ${formatPrice(finalTotal)} via ${paymentMethod}. Salon, employee earnings, and customer history updated.`
       );
 
-      setIsSubmitting(false);
       onClose();
       if (onCompleted) {
         onCompleted();
       }
-    }, 400);
+    } catch (err) {
+      console.error('Error completing walk-in service:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

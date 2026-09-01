@@ -34,15 +34,19 @@ import { ReviewManager } from './components/admin/ReviewManager';
 import { CategoryManager } from './components/admin/CategoryManager';
 import { SettingsView } from './components/admin/SettingsView';
 
+import { MobileBottomNav } from './components/common/MobileBottomNav';
+import { BranchBottomSheet } from './components/common/BranchBottomSheet';
+
 import { Scissors, Phone, MapPin, Clock, ShieldCheck, Heart } from 'lucide-react';
 
 const SalonApp: React.FC = () => {
   const { currentRole, activeEmployeeId } = useAuth();
 
-  // Navigation State
+  // Navigation & Drawer State
   const [activeView, setActiveView] = useState<string>('home');
   const [isWalkInModalOpen, setIsWalkInModalOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isBranchSheetOpen, setIsBranchSheetOpen] = useState(false);
 
   // Sync default view whenever role changes
   useEffect(() => {
@@ -152,6 +156,7 @@ const SalonApp: React.FC = () => {
         activeView={activeView}
         setActiveView={setActiveView}
         onToggleSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+        onOpenBranchSheet={() => setIsBranchSheetOpen(true)}
       />
 
       {/* Main Layout Container */}
@@ -178,6 +183,19 @@ const SalonApp: React.FC = () => {
           {renderActiveContent()}
         </main>
       </div>
+
+      {/* Mobile Fixed Bottom Navigation Bar (< 768px) */}
+      <MobileBottomNav
+        activeView={activeView}
+        setActiveView={handleViewChange}
+        onOpenMobileDrawer={() => setIsMobileSidebarOpen(true)}
+      />
+
+      {/* Mobile Native Branch Selection Bottom Sheet */}
+      <BranchBottomSheet
+        isOpen={isBranchSheetOpen}
+        onClose={() => setIsBranchSheetOpen(false)}
+      />
 
       {/* Walk-in Service Fulfillment Modal for Stylists */}
       <CompleteServiceModal

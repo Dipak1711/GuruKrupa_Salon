@@ -31,7 +31,22 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onNavigate
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [activeAppointmentForCompletion, setActiveAppointmentForCompletion] = useState<any>(null);
 
-  const currentEmployee = employees.find((e) => e.id === activeEmployeeId) || employees[0];
+  const currentEmployee = employees.find((e) => e.id === activeEmployeeId) || employees[0] || {
+    id: activeEmployeeId || 'emp-fallback',
+    name: 'Master Stylist',
+    role_title: 'Master Stylist',
+    specialization: 'Hair & Beard Specialist',
+    phone: '+91 98230 12345',
+    email: 'stylist@gurukrupasalon.com',
+    avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+    rating: 4.9,
+    reviews_count: 120,
+    bio: 'Master stylist specializing in bespoke grooming & modern scissor craft.',
+    is_active: true,
+    experience_years: 5,
+    assigned_service_ids: [],
+    created_at: new Date().toISOString(),
+  };
   const stats = getEmployeeStats(activeEmployeeId);
 
   // Stylist's appointments

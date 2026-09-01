@@ -100,7 +100,7 @@ export const RevenueReports: React.FC = () => {
             style={{ padding: '8px 14px', width: 'auto' }}
           >
             <option value="all">All Stylists & Karigars</option>
-            {employees.map((emp) => (
+            {branchEmployees.map((emp) => (
               <option key={emp.id} value={emp.id}>
                 {emp.name}
               </option>
@@ -208,7 +208,7 @@ export const RevenueReports: React.FC = () => {
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
-          {employees
+          {branchEmployees
             .filter((e) => selectedEmpFilter === 'all' || e.id === selectedEmpFilter)
             .map((emp) => {
               const empStats = getEmployeeStats(emp.id);

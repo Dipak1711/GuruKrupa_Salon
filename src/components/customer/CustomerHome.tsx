@@ -296,21 +296,22 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
           </div>
         </div>
 
-        {/* Filter Pills */}
-        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '6px' }}>
+        {/* Filter Pills (Smooth Mobile Horizontal Scroll) */}
+        <div className="hide-scrollbar" style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '6px', WebkitOverflowScrolling: 'touch' }}>
           <button
             onClick={() => setSelectedCategory('all')}
             style={{
-              padding: '8px 18px',
+              padding: '10px 20px',
               borderRadius: '9999px',
               border: selectedCategory === 'all' ? '1px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
               backgroundColor: selectedCategory === 'all' ? 'rgba(212, 175, 55, 0.18)' : 'rgba(255, 255, 255, 0.03)',
               color: selectedCategory === 'all' ? '#F3E5AB' : '#94A3B8',
-              fontSize: '0.84rem',
+              fontSize: '0.86rem',
               fontWeight: 600,
               cursor: 'pointer',
               whiteSpace: 'nowrap',
-              minHeight: '40px',
+              flexShrink: 0,
+              minHeight: '44px',
             }}
           >
             All Services ({activeServices.length})
@@ -321,16 +322,17 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
               style={{
-                padding: '8px 18px',
+                padding: '10px 20px',
                 borderRadius: '9999px',
                 border: selectedCategory === cat.id ? '1px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
                 backgroundColor: selectedCategory === cat.id ? 'rgba(212, 175, 55, 0.18)' : 'rgba(255, 255, 255, 0.03)',
                 color: selectedCategory === cat.id ? '#F3E5AB' : '#94A3B8',
-                fontSize: '0.84rem',
+                fontSize: '0.86rem',
                 fontWeight: 600,
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                minHeight: '40px',
+                flexShrink: 0,
+                minHeight: '44px',
               }}
             >
               {cat.name}

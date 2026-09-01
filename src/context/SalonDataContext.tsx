@@ -62,13 +62,13 @@ interface SalonDataContextType {
     pendingCount: number;
     clientsCount: number;
   };
-  getServiceStats: () => {
+  getServiceStats: (branchId?: string) => {
     serviceId: string;
     serviceName: string;
     revenue: number;
     count: number;
   }[];
-  getPaymentStats: () => {
+  getPaymentStats: (branchId?: string) => {
     method: PaymentMethod;
     amount: number;
     percentage: number;
@@ -137,7 +137,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   // Multi-Branch Architecture State
   const [branches, setBranches] = useState<Branch[]>([]);
-  const [activeBranchId, setActiveBranchId] = useState<string>('b1111111-1111-1111-1111-111111111111');
+  const [activeBranchId, setActiveBranchId] = useState<string>('11111111-1111-1111-1111-111111111111');
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [services, setServices] = useState<Service[]>([]);
@@ -180,7 +180,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       if (formattedBranches.length === 0) {
         formattedBranches = [
           {
-            id: 'b1111111-1111-1111-1111-111111111111',
+            id: '11111111-1111-1111-1111-111111111111',
             name: 'GuruKrupa Salon - Bandra Main Branch',
             code: 'BRANCH_1',
             address: 'Shop 4-5, Royal Grandeur Avenue, Linking Road, Bandra West, Mumbai, Maharashtra 400050',
@@ -191,7 +191,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
             status: 'active',
           },
           {
-            id: 'b2222222-2222-2222-2222-222222222222',
+            id: '22222222-2222-2222-2222-222222222222',
             name: 'GuruKrupa Salon - Juhu Residency Branch',
             code: 'BRANCH_2',
             address: 'Suite 12, Horizon Sea Face Towers, Juhu Tara Road, Mumbai, Maharashtra 400049',
@@ -258,7 +258,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
 
       const formattedEmployees: Employee[] = (empData || []).map((e: any, idx: number) => ({
         id: e.id,
-        branch_id: e.branch_id || (idx % 2 === 0 ? 'b1111111-1111-1111-1111-111111111111' : 'b2222222-2222-2222-2222-222222222222'),
+        branch_id: e.branch_id || (idx % 2 === 0 ? '11111111-1111-1111-1111-111111111111' : '22222222-2222-2222-2222-222222222222'),
         name: e.profiles?.full_name || 'Stylist',
         role_title: 'Master Stylist',
         specialization: e.specialization || 'Hair & Beard Specialist',
@@ -354,7 +354,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
 
       const formattedAppointments: Appointment[] = (aptData || []).map((a: any) => ({
         id: a.id,
-        branch_id: a.branch_id || 'b1111111-1111-1111-1111-111111111111',
+        branch_id: a.branch_id || '11111111-1111-1111-1111-111111111111',
         customer_id: a.customer_id || '',
         customer_name: a.customers?.profiles?.full_name || 'Walk-in Client',
         customer_phone: a.customers?.profiles?.phone || '',
@@ -375,19 +375,21 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       // 9. Fetch Service Records & Payments
       const { data: recData, error: recError } = await supabase
         .from('service_records')
-        .select('*, service_record_items(*), payments(*)');
+        .select('*, customers(profile_id, profiles(full_name, phone)), service_record_items(*), payments(*)');
       if (recError) throw recError;
 
       const formattedRecords: ServiceRecord[] = (recData || []).map((r: any) => {
         const emp = formattedEmployees.find((e) => e.id === r.employee_id);
         const paymentObj = (r.payments || [])[0];
+        const joinedCustName = r.customers?.profiles?.full_name;
+        const joinedCustPhone = r.customers?.profiles?.phone;
         return {
           id: r.id,
-          branch_id: r.branch_id || emp?.branch_id || 'b1111111-1111-1111-1111-111111111111',
+          branch_id: r.branch_id || emp?.branch_id || '11111111-1111-1111-1111-111111111111',
           appointment_id: r.appointment_id,
           customer_id: r.customer_id,
-          customer_name: 'Salon Client',
-          customer_phone: '+91 98765 00000',
+          customer_name: r.customer_name || joinedCustName || 'Walk-in Client',
+          customer_phone: r.customer_phone || joinedCustPhone || 'N/A',
           employee_id: r.employee_id,
           employee_name: emp?.name || 'Stylist',
           is_walkin: !r.appointment_id,
@@ -514,8 +516,93 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const completeService = async (payload: CompleteServicePayload): Promise<ServiceRecord | null> => {
     try {
-      const emp = employees.find((e) => e.id === payload.employeeId);
-      const targetBranchId = emp?.branch_id || activeBranchId;
+      // Sanitize Employee UUID
+      let targetEmpId = payload.employeeId && payload.employeeId.trim() !== '' ? payload.employeeId : '';
+      if (!targetEmpId || targetEmpId.trim() === '') {
+        const defaultEmp = employees.find((e) => e.branch_id === activeBranchId && e.is_active) || employees[0];
+        targetEmpId = defaultEmp ? defaultEmp.id : '20000000-0000-0000-0000-000000000001';
+      }
+
+      const emp = employees.find((e) => e.id === targetEmpId);
+
+      // Sanitize Branch UUID
+      let targetBranchId = emp?.branch_id || activeBranchId;
+      if (!targetBranchId || targetBranchId.trim() === '') {
+        targetBranchId = '11111111-1111-1111-1111-111111111111';
+      }
+
+      // 1. Resolve Customer ID (Look up or Create Customer in Supabase)
+      let finalCustomerId = payload.customerId && payload.customerId.trim() !== '' ? payload.customerId : null;
+
+      if (!finalCustomerId && (payload.customerName || payload.customerPhone)) {
+        try {
+          const cleanPhone = (payload.customerPhone || '').trim();
+          const cleanName = (payload.customerName || 'Walk-in Client').trim();
+          let profileId: string | null = null;
+
+          if (cleanPhone) {
+            const { data: existingProf } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('phone', cleanPhone)
+              .maybeSingle();
+
+            if (existingProf) {
+              profileId = existingProf.id;
+            }
+          }
+
+          if (!profileId) {
+            const cleanDigits = cleanPhone.replace(/[^0-9]/g, '');
+            const cleanEmail = cleanDigits
+              ? `client.${cleanDigits}@gurukrupasalon.com`
+              : `walkin.${Date.now()}@gurukrupasalon.com`;
+
+            const { data: newProf, error: profErr } = await supabase
+              .from('profiles')
+              .insert({
+                full_name: cleanName,
+                phone: cleanPhone || null,
+                email: cleanEmail,
+                role: 'customer',
+              })
+              .select('id')
+              .single();
+
+            if (profErr) {
+              console.error('Error inserting walk-in customer profile:', profErr);
+            } else if (newProf) {
+              profileId = newProf.id;
+            }
+          }
+
+          if (profileId) {
+            const { data: existingCust } = await supabase
+              .from('customers')
+              .select('id')
+              .eq('profile_id', profileId)
+              .maybeSingle();
+
+            if (existingCust) {
+              finalCustomerId = existingCust.id;
+            } else {
+              const { data: newCust, error: custErr } = await supabase
+                .from('customers')
+                .insert({ profile_id: profileId })
+                .select('id')
+                .single();
+
+              if (custErr) {
+                console.error('Error inserting customer record:', custErr);
+              } else if (newCust) {
+                finalCustomerId = newCust.id;
+              }
+            }
+          }
+        } catch (cErr) {
+          console.error('Error resolving customer for walk-in:', cErr);
+        }
+      }
 
       const subtotal = payload.selectedServiceIds.reduce((sum, srvId) => {
         const srv = services.find((s) => s.id === srvId);
@@ -525,13 +612,29 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       const discount = Math.max(0, Math.min(subtotal, payload.discount || 0));
       const totalAmount = Math.max(0, subtotal - discount);
 
-      // Insert service record header with branch_id
+      const cleanAptId = payload.appointmentId && payload.appointmentId.trim() !== '' ? payload.appointmentId : null;
+      const cleanCustId = finalCustomerId && finalCustomerId.trim() !== '' ? finalCustomerId : null;
+
+      console.log('Completing Walk-in Service Payload:', {
+        branchId: targetBranchId,
+        employeeId: targetEmpId,
+        customerId: cleanCustId,
+        appointmentId: cleanAptId,
+        selectedServiceIds: payload.selectedServiceIds,
+        subtotal,
+        discount,
+        totalAmount,
+        paymentMethod: payload.paymentMethod,
+      });
+
+      // 2. Insert service record header with sanitized branch_id, employee_id, customer_id
       const { data: recData, error: recError } = await supabase
         .from('service_records')
         .insert({
           branch_id: targetBranchId,
-          appointment_id: payload.appointmentId || null,
-          employee_id: payload.employeeId,
+          appointment_id: cleanAptId,
+          customer_id: cleanCustId,
+          employee_id: targetEmpId,
           subtotal,
           discount,
           total_amount: totalAmount,
@@ -541,9 +644,12 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         .select()
         .single();
 
-      if (recError) throw recError;
+      if (recError) {
+        console.error('Error inserting service_record header:', recError);
+        throw recError;
+      }
 
-      // Insert service record items
+      // 3. Insert service record items with historical prices
       const itemRows = payload.selectedServiceIds.map((srvId) => {
         const srv = services.find((s) => s.id === srvId);
         return {
@@ -560,7 +666,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         await supabase.from('service_record_items').insert(itemRows);
       }
 
-      // Insert Payment
+      // 4. Insert Payment record
       await supabase.from('payments').insert({
         service_record_id: recData.id,
         amount: totalAmount,
@@ -863,8 +969,21 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
   // ----------------------------------------------------
   // COMPUTED METRICS
   // ----------------------------------------------------
+  // ----------------------------------------------------
+  // COMPUTED METRICS (STRICT MULTI-BRANCH ISOLATION)
+  // ----------------------------------------------------
   const salonStats: SalonStats = useMemo(() => {
-    const validPayments = serviceRecords.filter(
+    const branchRecords = serviceRecords.filter(
+      (r) => !r.branch_id || r.branch_id === activeBranchId
+    );
+    const branchAppointments = appointments.filter(
+      (a) => !a.branch_id || a.branch_id === activeBranchId
+    );
+    const branchEmployees = employees.filter(
+      (e) => e.branch_id === activeBranchId && e.is_active
+    );
+
+    const validPayments = branchRecords.filter(
       (r) => r.payment && r.payment.payment_status === 'completed'
     );
 
@@ -873,16 +992,16 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       .filter((r) => isToday(r.completed_at))
       .reduce((sum, r) => sum + r.total_amount, 0);
 
-    const todayAppointmentsCount = appointments.filter((a) => isToday(a.created_at)).length;
-    const completedAppointmentsCount = appointments.filter((a) => a.status === 'completed').length;
-    const pendingAppointmentsCount = appointments.filter((a) => a.status === 'pending').length;
-    const cancelledAppointmentsCount = appointments.filter(
+    const todayAppointmentsCount = branchAppointments.filter((a) => isToday(a.created_at)).length;
+    const completedAppointmentsCount = branchAppointments.filter((a) => a.status === 'completed').length;
+    const pendingAppointmentsCount = branchAppointments.filter((a) => a.status === 'pending').length;
+    const cancelledAppointmentsCount = branchAppointments.filter(
       (a) => a.status === 'cancelled' || a.status === 'rejected'
     ).length;
 
     const uniqueCustomers = new Set([
-      ...appointments.map((a) => a.customer_phone),
-      ...serviceRecords.map((r) => r.customer_phone),
+      ...branchAppointments.map((a) => a.customer_phone),
+      ...branchRecords.map((r) => r.customer_phone),
     ]);
 
     return {
@@ -893,9 +1012,9 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       pendingAppointmentsCount,
       cancelledAppointmentsCount,
       totalCustomers: Math.max(uniqueCustomers.size, 0),
-      totalEmployees: employees.filter((e) => e.is_active).length,
+      totalEmployees: branchEmployees.length,
     };
-  }, [serviceRecords, appointments, employees]);
+  }, [serviceRecords, appointments, employees, activeBranchId]);
 
   const getEmployeeStats = (employeeId: string) => {
     const empRecords = serviceRecords.filter((r) => r.employee_id === employeeId);
@@ -930,14 +1049,19 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     };
   };
 
-  const getServiceStats = () => {
+  const getServiceStats = (targetBranchId?: string) => {
+    const branchIdToUse = targetBranchId || activeBranchId;
+    const branchRecords = serviceRecords.filter(
+      (r) => !r.branch_id || r.branch_id === branchIdToUse
+    );
+
     const statsMap: Record<string, { serviceName: string; revenue: number; count: number }> = {};
 
     services.forEach((s) => {
       statsMap[s.id] = { serviceName: s.name, revenue: 0, count: 0 };
     });
 
-    serviceRecords.forEach((record) => {
+    branchRecords.forEach((record) => {
       record.items.forEach((item) => {
         if (!statsMap[item.service_id]) {
           statsMap[item.service_id] = {
@@ -959,7 +1083,12 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     })).sort((a, b) => b.revenue - a.revenue);
   };
 
-  const getPaymentStats = () => {
+  const getPaymentStats = (targetBranchId?: string) => {
+    const branchIdToUse = targetBranchId || activeBranchId;
+    const branchRecords = serviceRecords.filter(
+      (r) => !r.branch_id || r.branch_id === branchIdToUse
+    );
+
     const methodMap: Record<PaymentMethod, { amount: number; count: number }> = {
       Cash: { amount: 0, count: 0 },
       UPI: { amount: 0, count: 0 },
@@ -968,7 +1097,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     };
 
     let total = 0;
-    serviceRecords.forEach((rec) => {
+    branchRecords.forEach((rec) => {
       if (rec.payment && rec.payment.payment_status === 'completed') {
         const m = rec.payment.payment_method;
         if (methodMap[m]) {
