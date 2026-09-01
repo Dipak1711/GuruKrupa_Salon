@@ -52,7 +52,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return 'customer';
   });
 
-  const [activeEmployeeId, setActiveEmployeeId] = useState<string>('20000000-0000-0000-0000-000000000001');
+  const [activeEmployeeId, setActiveEmployeeIdState] = useState<string>(() => {
+    const saved = localStorage.getItem('guru_active_employee_id');
+    return saved || '20000000-0000-0000-0000-000000000001';
+  });
+
+  const setActiveEmployeeId = (id: string) => {
+    setActiveEmployeeIdState(id);
+    localStorage.setItem('guru_active_employee_id', id);
+  };
 
   const [users, setUsers] = useState<UserProfile[]>(DEFAULT_USERS);
 

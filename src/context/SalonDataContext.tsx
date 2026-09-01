@@ -521,20 +521,19 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const completeService = async (payload: CompleteServicePayload): Promise<ServiceRecord | null> => {
     try {
-      // Sanitize Employee UUID
-      let targetEmpId = payload.employeeId && payload.employeeId.trim() !== '' ? payload.employeeId : '';
-      if (!targetEmpId || targetEmpId.trim() === '') {
-        const defaultEmp = employees.find((e) => e.branch_id === activeBranchId && e.is_active) || employees[0];
-        targetEmpId = defaultEmp ? defaultEmp.id : '20000000-0000-0000-0000-000000000001';
+      // 1. Resolve Employee UUID explicitly (Zero fallback to default employees)
+      const validEmpId = sanitizeUUID(payload.employeeId);
+      if (!validEmpId) {
+        throw new Error('Stylist is required to complete a walk-in service.');
       }
 
-      const emp = employees.find((e) => e.id === targetEmpId);
-
-      // Sanitize Branch UUID
-      let targetBranchId = emp?.branch_id || activeBranchId;
-      if (!targetBranchId || targetBranchId.trim() === '') {
-        targetBranchId = '11111111-1111-1111-1111-111111111111';
+      const selectedEmployee = employees.find((e) => e.id === validEmpId);
+      if (!selectedEmployee) {
+        throw new Error(`Selected stylist record (ID: ${validEmpId}) was not found in active employee roster.`);
       }
+
+      // Branch ID is strictly derived from the selected employee's branch assignment
+      const validBranchId = sanitizeUUID(selectedEmployee.branch_id) || sanitizeUUID(activeBranchId) || '11111111-1111-1111-1111-111111111111';
 
       // 1. Resolve Customer ID (Look up or Create Customer in Supabase)
       let finalCustomerId = payload.customerId && payload.customerId.trim() !== '' ? payload.customerId : null;
@@ -620,9 +619,12 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       const cleanAptId = payload.appointmentId && payload.appointmentId.trim() !== '' ? payload.appointmentId : null;
       const cleanCustId = finalCustomerId && finalCustomerId.trim() !== '' ? finalCustomerId : null;
 
+      console.log("SERVICE RECORD EMPLOYEE ID:", validEmpId);
+      console.log("SERVICE RECORD BRANCH ID:", validBranchId);
+
       console.log('Completing Walk-in Service Payload:', {
-        branchId: targetBranchId,
-        employeeId: targetEmpId,
+        branchId: validBranchId,
+        employeeId: validEmpId,
         customerId: cleanCustId,
         appointmentId: cleanAptId,
         selectedServiceIds: payload.selectedServiceIds,
@@ -636,10 +638,12 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       const { data: recData, error: recError } = await supabase
         .from('service_records')
         .insert({
-          branch_id: targetBranchId,
+          branch_id: validBranchId,
           appointment_id: cleanAptId,
           customer_id: cleanCustId,
-          employee_id: targetEmpId,
+          customer_name: (payload.customerName || 'Walk-in Client').trim(),
+          customer_phone: (payload.customerPhone || 'N/A').trim(),
+          employee_id: validEmpId,
           subtotal,
           discount,
           total_amount: totalAmount,
@@ -653,6 +657,8 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         console.error('Error inserting service_record header:', recError);
         throw recError;
       }
+
+      console.log("CREATED SERVICE RECORD:", recData);
 
       // 3. Insert service record items with historical prices
       const itemRows = payload.selectedServiceIds.map((srvId) => {
