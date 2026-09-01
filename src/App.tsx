@@ -1,0 +1,310 @@
+import React, { useState, useEffect } from 'react';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { SalonDataProvider, useSalonData } from './context/SalonDataContext';
+import { ToastProvider } from './context/ToastContext';
+import { Header } from './components/common/Header';
+import { Sidebar } from './components/common/Sidebar';
+
+// Customer Components
+import { CustomerHome } from './components/customer/CustomerHome';
+import { CustomerAppointments } from './components/customer/CustomerAppointments';
+import { OffersView } from './components/customer/OffersView';
+import { GalleryView } from './components/customer/GalleryView';
+import { CustomerProfile } from './components/customer/CustomerProfile';
+
+// Employee Components
+import { EmployeeDashboard } from './components/employee/EmployeeDashboard';
+import { EmployeeAppointments } from './components/employee/EmployeeAppointments';
+import { CompleteServiceModal } from './components/employee/CompleteServiceModal';
+import { EmployeeEarnings } from './components/employee/EmployeeEarnings';
+import { EmployeeClients } from './components/employee/EmployeeClients';
+import { EmployeeProfile } from './components/employee/EmployeeProfile';
+
+// Admin Components
+import { AdminDashboard } from './components/admin/AdminDashboard';
+import { ServiceManager } from './components/admin/ServiceManager';
+import { EmployeeManager } from './components/admin/EmployeeManager';
+import { LeaveManager } from './components/admin/LeaveManager';
+import { AppointmentManager } from './components/admin/AppointmentManager';
+import { RevenueReports } from './components/admin/RevenueReports';
+import { CustomerManager } from './components/admin/CustomerManager';
+import { OfferManager } from './components/admin/OfferManager';
+import { GalleryManager } from './components/admin/GalleryManager';
+import { ReviewManager } from './components/admin/ReviewManager';
+import { CategoryManager } from './components/admin/CategoryManager';
+import { SettingsView } from './components/admin/SettingsView';
+
+import { Scissors, Phone, MapPin, Clock, ShieldCheck, Heart } from 'lucide-react';
+
+const SalonApp: React.FC = () => {
+  const { currentRole, activeEmployeeId } = useAuth();
+
+  // Navigation State
+  const [activeView, setActiveView] = useState<string>('home');
+  const [isWalkInModalOpen, setIsWalkInModalOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  // Sync default view whenever role changes
+  useEffect(() => {
+    if (currentRole === 'customer') {
+      setActiveView('home');
+    } else if (currentRole === 'employee') {
+      setActiveView('dashboard');
+    } else if (currentRole === 'admin') {
+      setActiveView('dashboard');
+    }
+  }, [currentRole]);
+
+  // Handle employee "Add Service" sidebar click
+  const handleViewChange = (view: string) => {
+    if (view === 'add-service') {
+      setIsWalkInModalOpen(true);
+      return;
+    }
+    setActiveView(view);
+  };
+
+  const renderActiveContent = () => {
+    // ----------------------------------------------------
+    // CUSTOMER VIEWS
+    // ----------------------------------------------------
+    if (currentRole === 'customer') {
+      switch (activeView) {
+        case 'home':
+        case 'book':
+          return <CustomerHome onNavigateToView={setActiveView} />;
+        case 'offers':
+          return <OffersView onNavigateToBooking={() => setActiveView('home')} />;
+        case 'my-appointments':
+          return <CustomerAppointments onNavigateToBooking={() => setActiveView('home')} />;
+        case 'gallery':
+          return <GalleryView />;
+        case 'profile':
+          return <CustomerProfile />;
+        default:
+          return <CustomerHome onNavigateToView={setActiveView} />;
+      }
+    }
+
+    // ----------------------------------------------------
+    // EMPLOYEE / STYLIST VIEWS
+    // ----------------------------------------------------
+    if (currentRole === 'employee') {
+      switch (activeView) {
+        case 'dashboard':
+          return <EmployeeDashboard onNavigateToView={setActiveView} />;
+        case 'my-appointments':
+          return <EmployeeAppointments />;
+        case 'my-clients':
+          return <EmployeeClients />;
+        case 'my-earnings':
+        case 'service-history':
+          return <EmployeeEarnings />;
+        case 'profile':
+          return <EmployeeProfile />;
+        default:
+          return <EmployeeDashboard onNavigateToView={setActiveView} />;
+      }
+    }
+
+    // ----------------------------------------------------
+    // ADMIN VIEWS
+    // ----------------------------------------------------
+    if (currentRole === 'admin') {
+      switch (activeView) {
+        case 'dashboard':
+          return <AdminDashboard onNavigateToView={setActiveView} />;
+        case 'appointments':
+          return <AppointmentManager />;
+        case 'customers':
+          return <CustomerManager />;
+        case 'employees':
+          return <EmployeeManager onOpenLeaveManager={() => setActiveView('leave-manager')} />;
+        case 'leave-manager':
+          return <LeaveManager />;
+        case 'services':
+          return <ServiceManager />;
+        case 'categories':
+          return <CategoryManager />;
+        case 'revenue':
+        case 'reports':
+          return <RevenueReports />;
+        case 'offers':
+          return <OfferManager />;
+        case 'gallery':
+          return <GalleryManager />;
+        case 'reviews':
+          return <ReviewManager />;
+        case 'settings':
+          return <SettingsView />;
+        default:
+          return <AdminDashboard onNavigateToView={setActiveView} />;
+      }
+    }
+
+    return null;
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#08090C' }}>
+      {/* Sticky Luxury Header */}
+      <Header
+        activeView={activeView}
+        setActiveView={setActiveView}
+        onToggleSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+      />
+
+      {/* Main Layout Container */}
+      <div style={{ display: 'flex', flex: 1, position: 'relative' }}>
+        {/* Role-Specific Sidebar */}
+        <Sidebar
+          activeView={activeView}
+          setActiveView={handleViewChange}
+          isOpenMobile={isMobileSidebarOpen}
+          onCloseMobile={() => setIsMobileSidebarOpen(false)}
+        />
+
+        {/* Dynamic Content Viewport */}
+        <main
+          style={{
+            flex: 1,
+            padding: '32px 32px 64px 32px',
+            maxWidth: '1360px',
+            margin: '0 auto',
+            width: '100%',
+            overflowX: 'hidden',
+          }}
+        >
+          {renderActiveContent()}
+        </main>
+      </div>
+
+      {/* Walk-in Service Fulfillment Modal for Stylists */}
+      <CompleteServiceModal
+        isOpen={isWalkInModalOpen}
+        onClose={() => setIsWalkInModalOpen(false)}
+        appointment={null}
+        employeeId={activeEmployeeId}
+        onCompleted={() => {
+          setIsWalkInModalOpen(false);
+          setActiveView('dashboard');
+        }}
+      />
+
+      {/* Luxury Salon Footer */}
+      <footer
+        style={{
+          borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+          backgroundColor: '#07080b',
+          padding: '40px 32px 24px 32px',
+          color: '#94A3B8',
+          fontSize: '0.86rem',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '1360px',
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: '32px',
+            marginBottom: '32px',
+          }}
+        >
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '8px',
+                  backgroundColor: '#D4AF37',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Scissors size={16} color="#0D0F14" />
+              </div>
+              <span className="font-serif" style={{ fontSize: '1.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+                GuruKrupa SALON
+              </span>
+            </div>
+            <p style={{ lineHeight: 1.5, color: '#94A3B8', fontSize: '0.82rem' }}>
+              Premier luxury grooming, precision scissor craft, signature beard architecture, and restorative skin rejuvenation.
+            </p>
+          </div>
+
+          <div>
+            <h4 style={{ color: '#F8FAFC', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>VIP Hotline</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <a
+                href="tel:+919823012345"
+                style={{ color: '#F3E5AB', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Phone size={14} color="#D4AF37" />
+                <span>+91 98230 12345 (Direct Call)</span>
+              </a>
+              <span style={{ fontSize: '0.8rem', color: '#64748B' }}>
+                Instant phone consultation available with master stylists
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <h4 style={{ color: '#F8FAFC', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>Operating Hours</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.82rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#CBD5E1' }}>
+                <Clock size={14} color="#D4AF37" />
+                <span>Mon – Sun: 09:00 AM – 09:30 PM</span>
+              </div>
+              <span style={{ color: '#10B981', fontSize: '0.78rem' }}>Open 7 Days • Valet Parking Available</span>
+            </div>
+          </div>
+
+          <div>
+            <h4 style={{ color: '#F8FAFC', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>Studio Location</h4>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '0.82rem', color: '#CBD5E1' }}>
+              <MapPin size={15} color="#D4AF37" style={{ marginTop: '2px', flexShrink: 0 }} />
+              <span>Linking Road, Bandra West, Mumbai, Maharashtra 400050</span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            maxWidth: '1360px',
+            margin: '0 auto',
+            borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+            paddingTop: '20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '12px',
+            fontSize: '0.78rem',
+            color: '#64748B',
+          }}
+        >
+          <span>© {new Date().getFullYear()} GuruKrupa SALON. All rights reserved.</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span>Crafted for luxury salon operations</span>
+            <ShieldCheck size={14} color="#D4AF37" />
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default function App() {
+  return (
+    <ToastProvider>
+      <AuthProvider>
+        <SalonDataProvider>
+          <SalonApp />
+        </SalonDataProvider>
+      </AuthProvider>
+    </ToastProvider>
+  );
+}
