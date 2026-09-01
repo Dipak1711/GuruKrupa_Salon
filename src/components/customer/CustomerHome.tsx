@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useSalonData } from '../../context/SalonDataContext';
-import { Service, Employee } from '../../types';
+import { Service, Employee, Branch } from '../../types';
 import { ServiceCard } from './ServiceCard';
 import { ServiceDetailModal } from './ServiceDetailModal';
+import { BranchSelectModal } from './BranchSelectModal';
 import { StylistSelectModal } from './StylistSelectModal';
 import { BookingSummaryModal } from './BookingSummaryModal';
 import { formatPrice } from '../../utils/currency';
@@ -41,12 +42,14 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-  // Booking Flow Modals State
+  // Booking Flow Modals State (NEW Multi-Branch Flow: Service -> Branch -> Stylist -> Summary)
   const [detailService, setDetailService] = useState<Service | null>(null);
   const [selectedServiceForBooking, setSelectedServiceForBooking] = useState<Service | null>(null);
+  const [selectedBranchForBooking, setSelectedBranchForBooking] = useState<Branch | null>(null);
   const [selectedStylistForBooking, setSelectedStylistForBooking] = useState<Employee | null>(null);
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isBranchSelectOpen, setIsBranchSelectOpen] = useState(false);
   const [isStylistSelectOpen, setIsStylistSelectOpen] = useState(false);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
 
@@ -68,7 +71,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
     setTimeout(() => setCopiedCode(null), 2500);
   };
 
-  // Flow handlers
+  // Flow handlers (NEW Multi-Branch Flow: Service -> Branch -> Stylist -> Summary)
   const handleViewDetails = (service: Service) => {
     setDetailService(service);
     setIsDetailOpen(true);
@@ -76,6 +79,13 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
 
   const handleStartBooking = (service: Service) => {
     setSelectedServiceForBooking(service);
+    setSelectedBranchForBooking(null);
+    setIsBranchSelectOpen(true);
+  };
+
+  const handleSelectBranch = (branch: Branch) => {
+    setSelectedBranchForBooking(branch);
+    setIsBranchSelectOpen(false);
     setIsStylistSelectOpen(true);
   };
 
@@ -88,6 +98,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
   const handleBookingSuccess = () => {
     setIsSummaryOpen(false);
     setSelectedServiceForBooking(null);
+    setSelectedBranchForBooking(null);
     setSelectedStylistForBooking(null);
     onNavigateToView('my-appointments');
   };
@@ -640,18 +651,29 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
         }}
       />
 
-      {/* STEP 2: Choose Stylist Modal (with leave check and tel link) */}
+      {/* STEP 2: Choose Branch Modal (NEW Multi-Branch Step) */}
+      <BranchSelectModal
+        service={selectedServiceForBooking}
+        isOpen={isBranchSelectOpen}
+        onClose={() => setIsBranchSelectOpen(false)}
+        onSelectBranch={handleSelectBranch}
+      />
+
+      {/* STEP 3: Choose Stylist Modal (Filtered by selected branch & service) */}
       <StylistSelectModal
         service={selectedServiceForBooking}
+        selectedBranchId={selectedBranchForBooking?.id}
+        selectedBranchName={selectedBranchForBooking?.name}
         isOpen={isStylistSelectOpen}
         onClose={() => setIsStylistSelectOpen(false)}
         onSelectStylist={handleSelectStylist}
       />
 
-      {/* STEP 3: Booking Summary Modal (direct booking confirmation - no slots) */}
+      {/* STEP 4: Booking Summary Modal (direct booking confirmation - no slots) */}
       <BookingSummaryModal
         service={selectedServiceForBooking}
         stylist={selectedStylistForBooking}
+        branch={selectedBranchForBooking}
         isOpen={isSummaryOpen}
         onClose={() => setIsSummaryOpen(false)}
         onBookingSuccess={handleBookingSuccess}

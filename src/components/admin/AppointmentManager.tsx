@@ -16,13 +16,16 @@ import {
 } from 'lucide-react';
 
 export const AppointmentManager: React.FC = () => {
-  const { appointments, updateAppointmentStatus, employees } = useSalonData();
+  const { appointments, updateAppointmentStatus, employees, activeBranchId } = useSalonData();
   const { success, info } = useToast();
 
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [empFilter, setEmpFilter] = useState<string>('all');
 
-  const filtered = appointments.filter((apt) => {
+  const branchAppointments = appointments.filter((apt) => !apt.branch_id || apt.branch_id === activeBranchId);
+  const branchEmployees = employees.filter((emp) => emp.branch_id === activeBranchId);
+
+  const filtered = branchAppointments.filter((apt) => {
     const matchesStatus = statusFilter === 'all' || apt.status === statusFilter;
     const matchesEmp = empFilter === 'all' || apt.employee_id === empFilter;
     return matchesStatus && matchesEmp;

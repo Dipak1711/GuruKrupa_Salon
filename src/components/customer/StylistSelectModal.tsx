@@ -8,6 +8,8 @@ import { motion } from 'framer-motion';
 
 interface StylistSelectModalProps {
   service: Service | null;
+  selectedBranchId?: string;
+  selectedBranchName?: string;
   isOpen: boolean;
   onClose: () => void;
   onSelectStylist: (employee: Employee) => void;
@@ -15,6 +17,8 @@ interface StylistSelectModalProps {
 
 export const StylistSelectModal: React.FC<StylistSelectModalProps> = ({
   service,
+  selectedBranchId,
+  selectedBranchName,
   isOpen,
   onClose,
   onSelectStylist,
@@ -23,13 +27,18 @@ export const StylistSelectModal: React.FC<StylistSelectModalProps> = ({
 
   if (!service) return null;
 
-  // Filter stylists assigned to this service
+  // Filter stylists assigned to this branch and this service
   const capableStylists = employees.filter((emp) =>
-    emp.assigned_service_ids.includes(service.id) && emp.is_active
+    (!selectedBranchId || emp.branch_id === selectedBranchId) &&
+    emp.assigned_service_ids.includes(service.id) &&
+    emp.is_active
   );
 
-  // If no specific assigned stylists, fallback to all active stylists
-  const availableStylists = capableStylists.length > 0 ? capableStylists : employees.filter((e) => e.is_active);
+  // Fallback to branch active stylists if no specific assigned stylists
+  const availableStylists =
+    capableStylists.length > 0
+      ? capableStylists
+      : employees.filter((e) => e.is_active && (!selectedBranchId || e.branch_id === selectedBranchId));
 
   return (
     <Modal

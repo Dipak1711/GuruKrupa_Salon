@@ -28,16 +28,20 @@ export const RevenueReports: React.FC = () => {
     getEmployeeStats,
     getServiceStats,
     getPaymentStats,
+    activeBranchId,
   } = useSalonData();
 
   const [selectedEmpFilter, setSelectedEmpFilter] = useState<string>('all');
   const serviceStats = getServiceStats();
   const paymentStats = getPaymentStats();
 
+  const branchRecords = serviceRecords.filter((r) => !r.branch_id || r.branch_id === activeBranchId);
+  const branchEmployees = employees.filter((e) => e.branch_id === activeBranchId);
+
   const filteredRecords =
     selectedEmpFilter === 'all'
-      ? serviceRecords
-      : serviceRecords.filter((r) => r.employee_id === selectedEmpFilter);
+      ? branchRecords
+      : branchRecords.filter((r) => r.employee_id === selectedEmpFilter);
 
   const handleExportCSV = () => {
     const headers = ['Record ID', 'Completed At', 'Stylist', 'Client Name', 'Client Phone', 'Items Performed', 'Payment Method', 'Discount (INR)', 'Total Revenue (INR)'];

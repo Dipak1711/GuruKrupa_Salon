@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
-import { Service, Employee } from '../../types';
+import { Service, Employee, Branch } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { useSalonData } from '../../context/SalonDataContext';
 import { useToast } from '../../context/ToastContext';
 import { formatPrice } from '../../utils/currency';
 import { triggerBookingConfetti } from '../../utils/confetti';
-import { Sparkles, Scissors, User, Phone, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Sparkles, Scissors, User, Phone, CheckCircle2, ShieldCheck, ArrowRight, Building2 } from 'lucide-react';
 
 interface BookingSummaryModalProps {
   service: Service | null;
   stylist: Employee | null;
+  branch?: Branch | null;
   isOpen: boolean;
   onClose: () => void;
   onBookingSuccess: () => void;
@@ -19,6 +20,7 @@ interface BookingSummaryModalProps {
 export const BookingSummaryModal: React.FC<BookingSummaryModalProps> = ({
   service,
   stylist,
+  branch,
   isOpen,
   onClose,
   onBookingSuccess,
@@ -39,6 +41,7 @@ export const BookingSummaryModal: React.FC<BookingSummaryModalProps> = ({
 
     setTimeout(() => {
       createAppointment({
+        branchId: branch?.id || stylist.branch_id,
         customerId: currentUser.id,
         customerName,
         customerPhone,

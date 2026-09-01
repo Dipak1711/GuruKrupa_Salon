@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import {
+  Branch,
   Category,
   Service,
   Employee,
@@ -34,6 +35,11 @@ interface SalonDataContextType {
   // Loading & Connection State
   isLoading: boolean;
   error: string | null;
+
+  // Multi-Branch Architecture
+  branches: Branch[];
+  activeBranchId: string;
+  setActiveBranchId: (branchId: string) => void;
 
   // Entities
   categories: Category[];
@@ -71,6 +77,7 @@ interface SalonDataContextType {
 
   // Appointment Actions
   createAppointment: (data: {
+    branchId?: string;
     customerId: string;
     customerName: string;
     customerPhone: string;
@@ -128,6 +135,10 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Multi-Branch Architecture State
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [activeBranchId, setActiveBranchId] = useState<string>('b1111111-1111-1111-1111-111111111111');
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -145,6 +156,59 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     setIsLoading(true);
     setError(null);
     try {
+      // 0. Fetch Branches
+      const { data: branchData, error: branchError } = await supabase
+        .from('branches')
+        .select('*')
+        .order('code');
+
+      let formattedBranches: Branch[] = (branchData || []).map((b: any) => ({
+        id: b.id,
+        name: b.name,
+        code: b.code,
+        address: b.address,
+        phone: b.phone || '',
+        email: b.email || '',
+        description: b.description || '',
+        image_url: b.image_url || '',
+        status: b.status === 'active' ? 'active' : 'inactive',
+        created_at: b.created_at,
+        updated_at: b.updated_at,
+      }));
+
+      // Fallback seed branches if database has no branches yet
+      if (formattedBranches.length === 0) {
+        formattedBranches = [
+          {
+            id: 'b1111111-1111-1111-1111-111111111111',
+            name: 'GuruKrupa Salon - Bandra Main Branch',
+            code: 'BRANCH_1',
+            address: 'Shop 4-5, Royal Grandeur Avenue, Linking Road, Bandra West, Mumbai, Maharashtra 400050',
+            phone: '+91 98230 12345',
+            email: 'bandra@gurukrupasalon.com',
+            description: 'Flagship luxury grooming studio offering precision hair sculpting, beard architecture, and gold peptide facials.',
+            image_url: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=800&q=80',
+            status: 'active',
+          },
+          {
+            id: 'b2222222-2222-2222-2222-222222222222',
+            name: 'GuruKrupa Salon - Juhu Residency Branch',
+            code: 'BRANCH_2',
+            address: 'Suite 12, Horizon Sea Face Towers, Juhu Tara Road, Mumbai, Maharashtra 400049',
+            phone: '+91 98230 54321',
+            email: 'juhu@gurukrupasalon.com',
+            description: 'Bespoke coastal stylist sanctuary with private grooming suites and organic scalp therapy.',
+            image_url: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80',
+            status: 'active',
+          },
+        ];
+      }
+
+      setBranches(formattedBranches);
+      if (formattedBranches.length > 0 && !formattedBranches.some((b) => b.id === activeBranchId)) {
+        setActiveBranchId(formattedBranches[0].id);
+      }
+
       // 1. Fetch Categories
       const { data: catData, error: catError } = await supabase
         .from('service_categories')
@@ -186,14 +250,15 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         };
       });
 
-      // 3. Fetch Employees & Profiles
+      // 3. Fetch Employees & Profiles (with branch_id)
       const { data: empData, error: empError } = await supabase
         .from('employees')
         .select('*, profiles(full_name, email, phone, avatar_url)');
       if (empError) throw empError;
 
-      const formattedEmployees: Employee[] = (empData || []).map((e: any) => ({
+      const formattedEmployees: Employee[] = (empData || []).map((e: any, idx: number) => ({
         id: e.id,
+        branch_id: e.branch_id || (idx % 2 === 0 ? 'b1111111-1111-1111-1111-111111111111' : 'b2222222-2222-2222-2222-222222222222'),
         name: e.profiles?.full_name || 'Stylist',
         role_title: 'Master Stylist',
         specialization: e.specialization || 'Hair & Beard Specialist',
@@ -289,6 +354,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
 
       const formattedAppointments: Appointment[] = (aptData || []).map((a: any) => ({
         id: a.id,
+        branch_id: a.branch_id || 'b1111111-1111-1111-1111-111111111111',
         customer_id: a.customer_id || '',
         customer_name: a.customers?.profiles?.full_name || 'Walk-in Client',
         customer_phone: a.customers?.profiles?.phone || '',
@@ -317,6 +383,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         const paymentObj = (r.payments || [])[0];
         return {
           id: r.id,
+          branch_id: r.branch_id || emp?.branch_id || 'b1111111-1111-1111-1111-111111111111',
           appointment_id: r.appointment_id,
           customer_id: r.customer_id,
           customer_name: 'Salon Client',
@@ -389,6 +456,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   const createAppointment = async (data: {
+    branchId?: string;
     customerId: string;
     customerName: string;
     customerPhone: string;
@@ -397,9 +465,13 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     notes?: string;
   }): Promise<Appointment | null> => {
     try {
+      const emp = employees.find((e) => e.id === data.employeeId);
+      const targetBranchId = data.branchId || emp?.branch_id || activeBranchId;
+
       const { data: newApt, error: err } = await supabase
         .from('appointments')
         .insert({
+          branch_id: targetBranchId,
           employee_id: data.employeeId || null,
           status: 'pending',
           notes: data.notes || '',
@@ -442,6 +514,9 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const completeService = async (payload: CompleteServicePayload): Promise<ServiceRecord | null> => {
     try {
+      const emp = employees.find((e) => e.id === payload.employeeId);
+      const targetBranchId = emp?.branch_id || activeBranchId;
+
       const subtotal = payload.selectedServiceIds.reduce((sum, srvId) => {
         const srv = services.find((s) => s.id === srvId);
         return sum + (srv ? srv.price : 0);
@@ -450,10 +525,11 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       const discount = Math.max(0, Math.min(subtotal, payload.discount || 0));
       const totalAmount = Math.max(0, subtotal - discount);
 
-      // Insert service record header
+      // Insert service record header with branch_id
       const { data: recData, error: recError } = await supabase
         .from('service_records')
         .insert({
+          branch_id: targetBranchId,
           appointment_id: payload.appointmentId || null,
           employee_id: payload.employeeId,
           subtotal,
@@ -637,6 +713,8 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
   // Employee CRUD
   const addEmployee = async (data: Omit<Employee, 'id' | 'created_at'>) => {
     try {
+      const targetBranchId = data.branch_id || activeBranchId;
+
       // 1. Create Profile
       const { data: prof, error: profErr } = await supabase
         .from('profiles')
@@ -645,6 +723,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
           email: data.email || `${data.name.toLowerCase().replace(/\s+/g, '.')}@gurukrupasalon.com`,
           phone: data.phone,
           role: 'employee',
+          branch_id: targetBranchId,
           avatar_url: data.avatar_url,
         })
         .select()
@@ -655,6 +734,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       // 2. Create Employee
       await supabase.from('employees').insert({
         profile_id: prof.id,
+        branch_id: targetBranchId,
         employee_code: `EMP-${Date.now().toString().slice(-4)}`,
         specialization: data.specialization,
         experience_years: data.experience_years,
@@ -915,6 +995,9 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       value={{
         isLoading,
         error,
+        branches,
+        activeBranchId,
+        setActiveBranchId,
         categories,
         services,
         employees,

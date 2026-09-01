@@ -7,12 +7,27 @@ export type PaymentMethod = 'Cash' | 'UPI' | 'Card' | 'Other';
 export type LeaveType = 'full_day' | 'half_day';
 export type LeaveStatus = 'approved' | 'pending' | 'cancelled' | 'rejected';
 
+export interface Branch {
+  id: string;
+  name: string;
+  code: string;
+  address: string;
+  phone?: string;
+  email?: string;
+  description?: string;
+  image_url?: string;
+  status: 'active' | 'inactive';
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
   phone: string;
   role: UserRole;
+  branch_id?: string;
   avatar_url: string;
   created_at?: string;
 }
@@ -44,6 +59,7 @@ export interface Service {
 
 export interface Employee {
   id: string;
+  branch_id: string;
   name: string;
   role_title: string;
   experience_years: number;
@@ -73,6 +89,8 @@ export interface EmployeeLeave {
 
 export interface Appointment {
   id: string;
+  branch_id: string;
+  branch_name?: string;
   customer_id: string;
   customer_name: string;
   customer_phone: string;
@@ -113,6 +131,8 @@ export interface PaymentRecord {
 
 export interface ServiceRecord {
   id: string;
+  branch_id: string;
+  branch_name?: string;
   appointment_id?: string | null;
   customer_id?: string | null;
   customer_name: string;

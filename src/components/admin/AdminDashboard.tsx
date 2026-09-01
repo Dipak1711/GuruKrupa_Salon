@@ -34,8 +34,11 @@ interface AdminDashboardProps {
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView }) => {
-  const { salonStats, appointments, employees, serviceRecords, getEmployeeStats, getPaymentStats } =
+  const { salonStats, appointments, employees, serviceRecords, branches, activeBranchId, getEmployeeStats, getPaymentStats } =
     useSalonData();
+
+  const currentBranch = branches.find((b) => b.id === activeBranchId) || branches[0];
+  const branchEmployees = employees.filter((e) => e.branch_id === activeBranchId);
 
   const paymentStats = getPaymentStats();
 
@@ -50,8 +53,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
     { day: 'Sun', revenue: salonStats.todayRevenue || 12500 },
   ];
 
-  // Employee performance ranking
-  const employeeRanking = employees
+  // Employee performance ranking (Scoped strictly to branch employees)
+  const employeeRanking = branchEmployees
     .filter((e) => e.is_active)
     .map((emp) => {
       const stats = getEmployeeStats(emp.id);
@@ -70,16 +73,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-      {/* Top Header */}
+      {/* Top Header with Branch Banner */}
       <div>
-        <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
-          Executive Overview
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+            Executive Operations Command
+          </span>
+          <span
+            style={{
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              color: '#0A0C10',
+              backgroundColor: '#D4AF37',
+              padding: '2px 8px',
+              borderRadius: '6px',
+              textTransform: 'uppercase',
+            }}
+          >
+            {currentBranch?.code || 'BRANCH_1'}
+          </span>
+        </div>
         <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
-          Salon Operations & Revenue
+          {currentBranch ? currentBranch.name : 'Salon Operations'}
         </h2>
         <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
-          Live metrics, appointment queue health, employee performance, and revenue trends.
+          Live operational health, revenue analytics, and employee ranking for {currentBranch ? currentBranch.name : 'current branch'}.
         </p>
       </div>
 

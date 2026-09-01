@@ -13,8 +13,10 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, setActiveView }) => {
   const { currentRole, currentUser, setRole } = useAuth();
-  const { resetToDemoData } = useSalonData();
+  const { resetToDemoData, branches, activeBranchId, setActiveBranchId } = useSalonData();
   const { info } = useToast();
+
+  const activeBranch = branches.find((b) => b.id === activeBranchId) || branches[0];
 
   const handleResetData = () => {
     if (window.confirm('Reset all salon data, appointments, and financial records to default demo state?')) {
@@ -117,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, setActiveView }
                 display: 'block',
               }}
             >
-              Luxury Grooming Studio
+              {activeBranch ? activeBranch.name : 'Multi-Branch Salon'}
             </span>
           </div>
         </div>
@@ -125,6 +127,34 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, setActiveView }
 
       {/* Center / Right controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Multi-Branch Selector Dropdown (For Admin / Stylist View Demo) */}
+        {branches.length > 0 && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '0.74rem', color: '#D4AF37', textTransform: 'uppercase', fontWeight: 600 }}>
+              Branch:
+            </span>
+            <select
+              className="salon-select"
+              value={activeBranchId}
+              onChange={(e) => setActiveBranchId(e.target.value)}
+              style={{
+                padding: '5px 10px',
+                fontSize: '0.8rem',
+                height: '38px',
+                backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                border: '1px solid rgba(212, 175, 55, 0.3)',
+                color: '#F3E5AB',
+                borderRadius: '8px',
+              }}
+            >
+              {branches.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.code} ({b.name.split('-')[1] || b.name})
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         {/* Salon Direct Hotline */}
         <a
           href="tel:+919823012345"

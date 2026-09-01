@@ -37,6 +37,7 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
     services,
     employeeLeaves,
     serviceRecords,
+    activeBranchId,
     addEmployee,
     updateEmployee,
     toggleEmployeeActive,
@@ -45,6 +46,8 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
     getEmployeeStats,
   } = useSalonData();
   const { success, info } = useToast();
+
+  const branchEmployees = employees.filter((e) => e.branch_id === activeBranchId);
 
   const [isEmpModalOpen, setIsEmpModalOpen] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
@@ -115,6 +118,7 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
       success('Stylist Updated', `${name}'s profile and service assignments saved.`);
     } else {
       addEmployee({
+        branch_id: activeBranchId,
         name,
         role_title: roleTitle,
         experience_years: Number(experienceYears),
@@ -210,7 +214,7 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
 
       {/* Employees Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '20px' }}>
-        {employees.map((emp) => {
+        {branchEmployees.map((emp) => {
           const isAvailable = isEmployeeAvailable(emp.id);
           const empStats = getEmployeeStats(emp.id);
           const assignedServices = services.filter((s) => emp.assigned_service_ids.includes(s.id));

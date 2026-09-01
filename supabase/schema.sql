@@ -6,11 +6,29 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ==============================================================================
+-- 0. BRANCHES (MULTI-BRANCH ARCHITECTURE)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS branches (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name TEXT NOT NULL,
+    code TEXT UNIQUE NOT NULL,
+    address TEXT NOT NULL,
+    phone TEXT,
+    email TEXT,
+    description TEXT,
+    image_url TEXT,
+    status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ==============================================================================
 -- 1. PROFILES
 -- ==============================================================================
 CREATE TABLE IF NOT EXISTS profiles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    branch_id UUID REFERENCES branches(id) ON DELETE SET NULL,
     full_name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     phone TEXT,
@@ -36,6 +54,7 @@ CREATE TABLE IF NOT EXISTS customers (
 CREATE TABLE IF NOT EXISTS employees (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+    branch_id UUID REFERENCES branches(id) ON DELETE RESTRICT,
     employee_code TEXT UNIQUE,
     specialization TEXT,
     experience_years INTEGER DEFAULT 0 CHECK (experience_years >= 0),
@@ -111,10 +130,11 @@ CREATE TABLE IF NOT EXISTS employee_leaves (
 );
 
 -- ==============================================================================
--- 9. APPOINTMENTS (NO DATE/TIME SLOT FIELDS FOR CUSTOMER AS PER STRICT BUSINESS RULE)
+-- 9. APPOINTMENTS (MULTI-BRANCH & NO DATE/TIME SLOT PICKER)
 -- ==============================================================================
 CREATE TABLE IF NOT EXISTS appointments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    branch_id UUID REFERENCES branches(id) ON DELETE RESTRICT,
     customer_id UUID REFERENCES customers(id) ON DELETE SET NULL,
     employee_id UUID REFERENCES employees(id) ON DELETE RESTRICT,
     status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled', 'rejected')),
@@ -138,10 +158,11 @@ CREATE TABLE IF NOT EXISTS appointment_services (
 );
 
 -- ==============================================================================
--- 11. SERVICE RECORDS (COMPLETED JOB HEADERS)
+-- 11. SERVICE RECORDS (COMPLETED JOB HEADERS WITH BRANCH SCOPE)
 -- ==============================================================================
 CREATE TABLE IF NOT EXISTS service_records (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    branch_id UUID REFERENCES branches(id) ON DELETE RESTRICT,
     appointment_id UUID REFERENCES appointments(id) ON DELETE SET NULL,
     customer_id UUID REFERENCES customers(id) ON DELETE SET NULL,
     employee_id UUID REFERENCES employees(id) ON DELETE RESTRICT,
@@ -260,6 +281,7 @@ CREATE INDEX IF NOT EXISTS idx_employee_leaves_end_date ON employee_leaves(end_d
 -- ==============================================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES (NON-RECURSIVE & SAFE FOR PRODUCTION)
 -- ==============================================================================
+ALTER TABLE branches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE employees ENABLE ROW LEVEL SECURITY;
@@ -279,6 +301,9 @@ ALTER TABLE gallery ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 
 -- Non-recursive clean policies for all salon entities
+CREATE POLICY "Allow read branches" ON branches FOR SELECT USING (true);
+CREATE POLICY "Allow write branches" ON branches FOR ALL USING (true);
+
 CREATE POLICY "Allow read profiles" ON profiles FOR SELECT USING (true);
 CREATE POLICY "Allow write profiles" ON profiles FOR ALL USING (true);
 
