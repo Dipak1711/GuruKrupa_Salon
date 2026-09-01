@@ -17,6 +17,17 @@ import {
 import { supabase } from '../lib/supabase';
 import { isToday, isThisMonth, isEmployeeOnLeaveToday } from '../utils/dates';
 
+const isValidUUID = (str: string | null | undefined): boolean => {
+  if (!str) return false;
+  const trimmed = str.trim();
+  const regex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+  return regex.test(trimmed);
+};
+
+const sanitizeUUID = (str: string | null | undefined): string | null => {
+  return isValidUUID(str) ? str!.trim() : null;
+};
+
 interface CompleteServicePayload {
   appointmentId?: string | null;
   customerId?: string | null;
@@ -93,6 +104,23 @@ interface SalonDataContextType {
 
   // Financial & Service Fulfillment Engine
   completeService: (payload: CompleteServicePayload) => Promise<ServiceRecord | null>;
+  updateCustomer: (
+    oldPhone: string,
+    oldName: string,
+    updates: { name: string; phone: string; email?: string }
+  ) => Promise<void>;
+  deleteCustomer: (phoneStr: string, customerName?: string) => Promise<void>;
+  updateServiceRecord: (
+    recordId: string,
+    updates: {
+      subtotal?: number;
+      discount?: number;
+      total_amount?: number;
+      customer_name?: string;
+      customer_phone?: string;
+      payment_method?: string;
+    }
+  ) => Promise<void>;
 
   // Leave Management Actions
   addEmployeeLeave: (data: Omit<EmployeeLeave, 'id' | 'created_at'>) => Promise<void>;
@@ -664,6 +692,196 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
   };
 
+  const updateCustomer = async (
+    oldPhone: string,
+    oldName: string,
+    updates: { name: string; phone: string; email?: string }
+  ): Promise<void> => {
+    try {
+      const cleanOldPhone = (oldPhone || '').trim();
+      const cleanOldName = (oldName || '').trim();
+      const cleanNewPhone = updates.phone.trim();
+      const cleanNewName = updates.name.trim();
+
+      if (cleanOldPhone && cleanOldPhone !== 'N/A') {
+        await supabase
+          .from('profiles')
+          .update({
+            full_name: cleanNewName,
+            phone: cleanNewPhone,
+            ...(updates.email ? { email: updates.email } : {}),
+          })
+          .eq('phone', cleanOldPhone);
+
+        await supabase
+          .from('service_records')
+          .update({
+            customer_name: cleanNewName,
+            customer_phone: cleanNewPhone,
+          })
+          .eq('customer_phone', cleanOldPhone);
+      }
+
+      if (cleanOldName) {
+        await supabase
+          .from('service_records')
+          .update({
+            customer_name: cleanNewName,
+            customer_phone: cleanNewPhone,
+          })
+          .eq('customer_name', cleanOldName);
+      }
+
+      await refreshData();
+    } catch (err) {
+      console.error('Error updating customer in Supabase:', err);
+      throw err;
+    }
+  };
+
+  const deleteCustomer = async (phoneStr: string, customerName?: string): Promise<void> => {
+    try {
+      const cleanPhone = (phoneStr || '').trim();
+      const cleanName = (customerName || '').trim();
+      console.log('Executing FULL CASCADE deleteCustomer in Supabase:', { cleanPhone, cleanName });
+
+      // 1. Find all service_records IDs associated with this customer
+      let recIdsToDelete: string[] = [];
+
+      if (cleanPhone && cleanPhone !== 'N/A') {
+        const { data: recsByPhone } = await supabase
+          .from('service_records')
+          .select('id')
+          .eq('customer_phone', cleanPhone);
+        if (recsByPhone) {
+          recIdsToDelete.push(...recsByPhone.map((r) => r.id));
+        }
+      }
+
+      if (cleanName) {
+        const { data: recsByName } = await supabase
+          .from('service_records')
+          .select('id')
+          .ilike('customer_name', cleanName);
+        if (recsByName) {
+          recIdsToDelete.push(...recsByName.map((r) => r.id));
+        }
+      }
+
+      if (!cleanPhone || cleanPhone === 'N/A' || cleanName.toLowerCase().includes('walk-in')) {
+        const { data: recsWalkin } = await supabase
+          .from('service_records')
+          .select('id')
+          .or('customer_phone.eq.N/A,customer_phone.is.null,customer_name.ilike.%walk-in%');
+        if (recsWalkin) {
+          recIdsToDelete.push(...recsWalkin.map((r) => r.id));
+        }
+      }
+
+      // Deduplicate IDs
+      recIdsToDelete = Array.from(new Set(recIdsToDelete));
+
+      if (recIdsToDelete.length > 0) {
+        console.log('Deleting payments, service_record_items, and service_records for IDs:', recIdsToDelete);
+
+        // Delete linked payments to guarantee zero orphan payments
+        const { error: payErr } = await supabase
+          .from('payments')
+          .delete()
+          .in('service_record_id', recIdsToDelete);
+        if (payErr) console.error('Error deleting payments in Supabase:', payErr);
+
+        // Delete linked service_record_items
+        const { error: itemErr } = await supabase
+          .from('service_record_items')
+          .delete()
+          .in('service_record_id', recIdsToDelete);
+        if (itemErr) console.error('Error deleting service_record_items in Supabase:', itemErr);
+
+        // Delete service_records headers
+        const { error: recErr } = await supabase
+          .from('service_records')
+          .delete()
+          .in('id', recIdsToDelete);
+        if (recErr) console.error('Error deleting service_records in Supabase:', recErr);
+      }
+
+      // 2. Delete profile and customer records from Supabase
+      if (cleanPhone && cleanPhone !== 'N/A') {
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('phone', cleanPhone)
+          .maybeSingle();
+
+        if (prof) {
+          const { data: cust } = await supabase
+            .from('customers')
+            .select('id')
+            .eq('profile_id', prof.id)
+            .maybeSingle();
+
+          if (cust) {
+            await supabase.from('customers').delete().eq('id', cust.id);
+          }
+          await supabase.from('profiles').delete().eq('id', prof.id);
+        }
+      }
+
+      await refreshData();
+    } catch (err) {
+      console.error('Error in cascade deleteCustomer:', err);
+      throw err;
+    }
+  };
+
+  const updateServiceRecord = async (
+    recordId: string,
+    updates: {
+      subtotal?: number;
+      discount?: number;
+      total_amount?: number;
+      customer_name?: string;
+      customer_phone?: string;
+      payment_method?: string;
+    }
+  ): Promise<void> => {
+    try {
+      const validRecordId = sanitizeUUID(recordId);
+      if (!validRecordId) return;
+
+      const recordUpdates: any = {};
+      if (updates.subtotal !== undefined) recordUpdates.subtotal = updates.subtotal;
+      if (updates.discount !== undefined) recordUpdates.discount = updates.discount;
+      if (updates.total_amount !== undefined) recordUpdates.total_amount = updates.total_amount;
+      if (updates.customer_name !== undefined) recordUpdates.customer_name = updates.customer_name;
+      if (updates.customer_phone !== undefined) recordUpdates.customer_phone = updates.customer_phone;
+
+      if (Object.keys(recordUpdates).length > 0) {
+        await supabase
+          .from('service_records')
+          .update(recordUpdates)
+          .eq('id', validRecordId);
+      }
+
+      if (updates.total_amount !== undefined || updates.payment_method !== undefined) {
+        const paymentUpdates: any = {};
+        if (updates.total_amount !== undefined) paymentUpdates.amount = updates.total_amount;
+        if (updates.payment_method !== undefined) paymentUpdates.payment_method = updates.payment_method.toLowerCase();
+
+        await supabase
+          .from('payments')
+          .update(paymentUpdates)
+          .eq('service_record_id', validRecordId);
+      }
+
+      await refreshData();
+    } catch (err) {
+      console.error('Error updating service record in Supabase:', err);
+      throw err;
+    }
+  };
+
   const addEmployeeLeave = async (data: Omit<EmployeeLeave, 'id' | 'created_at'>) => {
     try {
       const { error: err } = await supabase.from('employee_leaves').insert({
@@ -1112,6 +1330,9 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         createAppointment,
         updateAppointmentStatus,
         completeService,
+        updateCustomer,
+        deleteCustomer,
+        updateServiceRecord,
         addEmployeeLeave,
         updateEmployeeLeaveStatus,
         deleteEmployeeLeave,
