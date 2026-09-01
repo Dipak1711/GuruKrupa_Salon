@@ -460,7 +460,7 @@ export const ServiceManager: React.FC = () => {
               <input
                 type="number"
                 min="0"
-                step="10"
+                step="any"
                 className="salon-input"
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}

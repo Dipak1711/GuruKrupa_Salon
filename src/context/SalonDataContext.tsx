@@ -619,8 +619,11 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       const cleanAptId = payload.appointmentId && payload.appointmentId.trim() !== '' ? payload.appointmentId : null;
       const cleanCustId = finalCustomerId && finalCustomerId.trim() !== '' ? finalCustomerId : null;
 
-      console.log("SERVICE RECORD EMPLOYEE ID:", validEmpId);
-      console.log("SERVICE RECORD BRANCH ID:", validBranchId);
+      console.log('COMPLETING SERVICE EMPLOYEE ID:', payload.employeeId);
+      console.log('EMPLOYEE BRANCH ID:', selectedEmployee?.branch_id);
+      console.log('ACTIVE BRANCH ID:', activeBranchId);
+      console.log('SERVICE RECORD EMPLOYEE ID:', validEmpId);
+      console.log('SERVICE RECORD BRANCH ID:', validBranchId);
 
       console.log('Completing Walk-in Service Payload:', {
         branchId: validBranchId,

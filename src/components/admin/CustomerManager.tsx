@@ -33,7 +33,7 @@ interface CustomerAggregated {
 
 export const CustomerManager: React.FC = () => {
   const { currentRole } = useAuth();
-  const { appointments, serviceRecords, updateCustomer, deleteCustomer, updateServiceRecord } = useSalonData();
+  const { appointments, serviceRecords, activeBranchId, updateCustomer, deleteCustomer, updateServiceRecord } = useSalonData();
   const { success, error: toastError } = useToast();
 
   const isAdmin = currentRole === 'admin';
@@ -67,10 +67,15 @@ export const CustomerManager: React.FC = () => {
   const [recordPhone, setRecordPhone] = useState('');
   const [recordPaymentMethod, setRecordPaymentMethod] = useState('UPI');
 
-  // Aggregate customer database
+  // Filter service records strictly by active branch
+  const branchRecords = serviceRecords.filter(
+    (rec) => rec.branch_id === activeBranchId
+  );
+
+  // Aggregate customer database for active branch ONLY
   const customerMap: Record<string, CustomerAggregated> = {};
 
-  serviceRecords.forEach((rec) => {
+  branchRecords.forEach((rec) => {
     const rawName = (rec.customer_name || '').trim();
     const rawPhone = (rec.customer_phone || '').trim();
 
@@ -225,7 +230,7 @@ export const CustomerManager: React.FC = () => {
               {customerList.map((client, idx) => {
                 const isExpanded = expandedPhone === client.phone;
                 const clientRecords = serviceRecords.filter(
-                  (r) => (r.customer_phone || '').trim() === client.phone.trim()
+                  (r) => (r.customer_phone || '').trim() === client.phone.trim() && r.branch_id === activeBranchId
                 );
 
                 return (

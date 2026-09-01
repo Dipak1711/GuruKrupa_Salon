@@ -2,7 +2,7 @@ export type UserRole = 'customer' | 'employee' | 'admin';
 
 export type AppointmentStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'rejected';
 
-export type PaymentMethod = 'Cash' | 'UPI' | 'Card' | 'Other';
+export type PaymentMethod = 'Cash' | 'UPI' | 'Pending' | 'Card' | 'Other';
 
 export type LeaveType = 'full_day' | 'half_day';
 export type LeaveStatus = 'approved' | 'pending' | 'cancelled' | 'rejected';
