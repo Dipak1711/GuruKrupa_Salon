@@ -6,7 +6,7 @@ import { useToast } from '../../context/ToastContext';
 import { formatPrice } from '../../utils/currency';
 import { playLuxuryChime } from '../../utils/sound';
 import { triggerBookingConfetti } from '../../utils/confetti';
-import { CheckCircle2, DollarSign, Plus, Trash2, CreditCard, Banknote, QrCode, Search, UserCheck } from 'lucide-react';
+import { CheckCircle2, DollarSign, Plus, Trash2, CreditCard, Banknote, QrCode, Search, UserCheck, Clock } from 'lucide-react';
 
 interface CompleteServiceModalProps {
   isOpen: boolean;
@@ -159,68 +159,6 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
       }
     >
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        {/* Walk-in Customer Search / Auto-fill (Prompt Requirement) */}
-        {!appointment && existingCustomers.length > 0 && (
-          <div
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              padding: '12px 16px',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-            }}
-          >
-            <label style={{ fontSize: '0.8rem', color: '#D4AF37', fontWeight: 600, display: 'block', marginBottom: '6px' }}>
-              🔍 Search Existing Salon Client (by Name or Phone)
-            </label>
-            <select
-              className="salon-select"
-              value={customerSearch}
-              onChange={(e) => {
-                setCustomerSearch(e.target.value);
-                handleSelectExistingCustomer(e.target.value);
-              }}
-            >
-              <option value="">-- New Walk-in Client OR Select Existing Client --</option>
-              {existingCustomers.map((c) => (
-                <option key={c.phone} value={c.phone}>
-                  {c.name} ({c.phone})
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Customer Info Inputs */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
-          <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-              Client Name *
-            </label>
-            <input
-              type="text"
-              className="salon-input"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              placeholder="e.g. Vikram Deshmukh"
-              required
-            />
-          </div>
-
-          <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-              Client Phone Number *
-            </label>
-            <input
-              type="tel"
-              className="salon-input"
-              value={customerPhone}
-              onChange={(e) => setCustomerPhone(e.target.value)}
-              placeholder="+919876543210"
-              required
-            />
-          </div>
-        </div>
-
         {/* Multi-Service Selector Section (Financial Rule: Auto-calculation) */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
@@ -383,8 +321,8 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
           <label style={{ fontSize: '0.84rem', color: '#F8FAFC', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
             Payment Method
           </label>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(75px, 1fr))', gap: '8px' }}>
-            {(['UPI', 'Cash', 'Card', 'Other'] as PaymentMethod[]).map((method) => {
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+            {(['UPI', 'Cash', 'Pending'] as PaymentMethod[]).map((method) => {
               const isSelected = paymentMethod === method;
               return (
                 <button
@@ -409,43 +347,12 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                 >
                   {method === 'UPI' && <QrCode size={18} />}
                   {method === 'Cash' && <Banknote size={18} />}
-                  {method === 'Card' && <CreditCard size={18} />}
-                  {method === 'Other' && <DollarSign size={18} />}
+                  {method === 'Pending' && <Clock size={18} />}
                   <span>{method}</span>
                 </button>
               );
             })}
           </div>
-        </div>
-
-        {/* Transaction Reference */}
-        {paymentMethod !== 'Cash' && (
-          <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-              Transaction Ref / UPI UTR (Optional)
-            </label>
-            <input
-              type="text"
-              className="salon-input"
-              value={transactionRef}
-              onChange={(e) => setTransactionRef(e.target.value)}
-              placeholder="e.g. UPI/1234567890 or POS Ref"
-            />
-          </div>
-        )}
-
-        {/* Service Notes */}
-        <div>
-          <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-            Service Completion Notes (Optional)
-          </label>
-          <input
-            type="text"
-            className="salon-input"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="e.g. Low skin fade with hot towel eucalyptus shave"
-          />
         </div>
 
         {/* Actions */}

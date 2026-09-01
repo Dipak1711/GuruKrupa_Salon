@@ -681,11 +681,12 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       }
 
       // 4. Insert Payment record
+      const isPendingPay = payload.paymentMethod === 'Pending';
       await supabase.from('payments').insert({
         service_record_id: recData.id,
         amount: totalAmount,
-        payment_method: payload.paymentMethod.toLowerCase(),
-        payment_status: 'completed',
+        payment_method: isPendingPay ? 'other' : payload.paymentMethod.toLowerCase(),
+        payment_status: isPendingPay ? 'pending' : 'completed',
         transaction_reference: payload.transactionRef || null,
       });
 
@@ -1288,6 +1289,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     const methodMap: Record<PaymentMethod, { amount: number; count: number }> = {
       Cash: { amount: 0, count: 0 },
       UPI: { amount: 0, count: 0 },
+      Pending: { amount: 0, count: 0 },
       Card: { amount: 0, count: 0 },
       Other: { amount: 0, count: 0 },
     };
