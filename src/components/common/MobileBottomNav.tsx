@@ -62,6 +62,13 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             onClick={() => handleNav('home')}
           />
           <NavItem
+            icon={<CalendarCheck size={20} />}
+            label="Booking"
+            active={activeView === 'booking'}
+            onClick={() => handleNav('booking')}
+            isSpecial
+          />
+          <NavItem
             icon={<Tag size={20} />}
             label="Offers"
             active={activeView === 'offers'}
@@ -89,33 +96,33 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           <NavItem
             icon={<LayoutDashboard size={20} />}
             label="Dashboard"
-            active={activeView === 'employee-dashboard'}
-            onClick={() => handleNav('employee-dashboard')}
-          />
-          <NavItem
-            icon={<Calendar size={20} />}
-            label="Appointments"
-            active={activeView === 'employee-appointments'}
-            onClick={() => handleNav('employee-appointments')}
+            active={activeView === 'dashboard'}
+            onClick={() => handleNav('dashboard')}
           />
           <NavItem
             icon={<PlusCircle size={20} />}
             label="Walk-in"
-            active={activeView === 'employee-add-service'}
-            onClick={() => handleNav('employee-add-service')}
+            active={activeView === 'add-service'}
+            onClick={() => handleNav('add-service')}
             isSpecial
+          />
+          <NavItem
+            icon={<Users size={20} />}
+            label="Clients"
+            active={activeView === 'my-clients'}
+            onClick={() => handleNav('my-clients')}
           />
           <NavItem
             icon={<DollarSign size={20} />}
             label="Earnings"
-            active={activeView === 'employee-earnings'}
-            onClick={() => handleNav('employee-earnings')}
+            active={activeView === 'my-earnings'}
+            onClick={() => handleNav('my-earnings')}
           />
           <NavItem
             icon={<User size={20} />}
             label="Profile"
-            active={activeView === 'employee-profile'}
-            onClick={() => handleNav('employee-profile')}
+            active={activeView === 'profile'}
+            onClick={() => handleNav('profile')}
           />
         </>
       )}
@@ -126,26 +133,20 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           <NavItem
             icon={<LayoutDashboard size={20} />}
             label="Dashboard"
-            active={activeView === 'admin-dashboard'}
-            onClick={() => handleNav('admin-dashboard')}
+            active={activeView === 'dashboard'}
+            onClick={() => handleNav('dashboard')}
           />
           <NavItem
-            icon={<Calendar size={20} />}
-            label="Queue"
-            active={activeView === 'admin-appointments'}
-            onClick={() => handleNav('admin-appointments')}
+            icon={<Users size={20} />}
+            label="Employees"
+            active={activeView === 'employees'}
+            onClick={() => handleNav('employees')}
           />
           <NavItem
             icon={<DollarSign size={20} />}
             label="Revenue"
-            active={activeView === 'admin-reports'}
-            onClick={() => handleNav('admin-reports')}
-          />
-          <NavItem
-            icon={<Users size={20} />}
-            label="Stylists"
-            active={activeView === 'admin-employees'}
-            onClick={() => handleNav('admin-employees')}
+            active={activeView === 'revenue'}
+            onClick={() => handleNav('revenue')}
           />
           <NavItem
             icon={<Layers size={20} />}

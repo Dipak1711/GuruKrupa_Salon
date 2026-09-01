@@ -7,14 +7,13 @@ import { Sidebar } from './components/common/Sidebar';
 
 // Customer Components
 import { CustomerHome } from './components/customer/CustomerHome';
-import { CustomerAppointments } from './components/customer/CustomerAppointments';
+import { CustomerBookingView } from './components/customer/CustomerBookingView';
 import { OffersView } from './components/customer/OffersView';
 import { GalleryView } from './components/customer/GalleryView';
 import { CustomerProfile } from './components/customer/CustomerProfile';
 
 // Employee Components
 import { EmployeeDashboard } from './components/employee/EmployeeDashboard';
-import { EmployeeAppointments } from './components/employee/EmployeeAppointments';
 import { CompleteServiceModal } from './components/employee/CompleteServiceModal';
 import { EmployeeEarnings } from './components/employee/EmployeeEarnings';
 import { EmployeeClients } from './components/employee/EmployeeClients';
@@ -25,7 +24,6 @@ import { AdminDashboard } from './components/admin/AdminDashboard';
 import { ServiceManager } from './components/admin/ServiceManager';
 import { EmployeeManager } from './components/admin/EmployeeManager';
 import { LeaveManager } from './components/admin/LeaveManager';
-import { AppointmentManager } from './components/admin/AppointmentManager';
 import { RevenueReports } from './components/admin/RevenueReports';
 import { CustomerManager } from './components/admin/CustomerManager';
 import { OfferManager } from './components/admin/OfferManager';
@@ -75,12 +73,12 @@ const SalonApp: React.FC = () => {
     if (currentRole === 'customer') {
       switch (activeView) {
         case 'home':
-        case 'book':
           return <CustomerHome onNavigateToView={setActiveView} />;
+        case 'booking':
+        case 'book':
+          return <CustomerBookingView />;
         case 'offers':
-          return <OffersView onNavigateToBooking={() => setActiveView('home')} />;
-        case 'my-appointments':
-          return <CustomerAppointments onNavigateToBooking={() => setActiveView('home')} />;
+          return <OffersView onNavigateToBooking={() => setActiveView('booking')} />;
         case 'gallery':
           return <GalleryView />;
         case 'profile':
@@ -97,8 +95,6 @@ const SalonApp: React.FC = () => {
       switch (activeView) {
         case 'dashboard':
           return <EmployeeDashboard onNavigateToView={setActiveView} />;
-        case 'my-appointments':
-          return <EmployeeAppointments />;
         case 'my-clients':
           return <EmployeeClients />;
         case 'my-earnings':
@@ -118,8 +114,6 @@ const SalonApp: React.FC = () => {
       switch (activeView) {
         case 'dashboard':
           return <AdminDashboard onNavigateToView={setActiveView} />;
-        case 'appointments':
-          return <AppointmentManager />;
         case 'customers':
           return <CustomerManager />;
         case 'employees':

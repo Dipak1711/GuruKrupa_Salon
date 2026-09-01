@@ -36,15 +36,8 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Derive unique existing customers for quick walk-in search
   const existingCustomers = useMemo(() => {
     const customerMap = new Map<string, { name: string; phone: string }>();
-
-    appointments.forEach((a) => {
-      if (a.customer_phone && !customerMap.has(a.customer_phone)) {
-        customerMap.set(a.customer_phone, { name: a.customer_name, phone: a.customer_phone });
-      }
-    });
 
     serviceRecords.forEach((r) => {
       if (r.customer_phone && !customerMap.has(r.customer_phone)) {
@@ -53,7 +46,7 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
     });
 
     return Array.from(customerMap.values());
-  }, [appointments, serviceRecords]);
+  }, [serviceRecords]);
 
   // Initialize from appointment if provided
   useEffect(() => {

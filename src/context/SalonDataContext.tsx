@@ -346,31 +346,8 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         service_name: 'Signature Grooming',
       }));
 
-      // 8. Fetch Appointments
-      const { data: aptData, error: aptError } = await supabase
-        .from('appointments')
-        .select('*, customers(profile_id, profiles(full_name, phone)), employees(profile_id, profiles(full_name, phone))');
-      if (aptError) throw aptError;
-
-      const formattedAppointments: Appointment[] = (aptData || []).map((a: any) => ({
-        id: a.id,
-        branch_id: a.branch_id || '11111111-1111-1111-1111-111111111111',
-        customer_id: a.customer_id || '',
-        customer_name: a.customers?.profiles?.full_name || 'Walk-in Client',
-        customer_phone: a.customers?.profiles?.phone || '',
-        service_id: '',
-        service_name: 'Salon Service',
-        service_price: 0,
-        employee_id: a.employee_id || '',
-        employee_name: a.employees?.profiles?.full_name || 'Stylist',
-        employee_phone: a.employees?.profiles?.phone || '',
-        status: a.status as AppointmentStatus,
-        notes: a.notes || '',
-        created_at: a.created_at,
-        confirmed_at: a.confirmed_at,
-        completed_at: a.completed_at,
-        cancelled_at: a.cancelled_at,
-      }));
+      // 8. Appointments (Removed - online booking deprecated)
+      const formattedAppointments: Appointment[] = [];
 
       // 9. Fetch Service Records & Payments
       const { data: recData, error: recError } = await supabase
@@ -976,9 +953,6 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     const branchRecords = serviceRecords.filter(
       (r) => !r.branch_id || r.branch_id === activeBranchId
     );
-    const branchAppointments = appointments.filter(
-      (a) => !a.branch_id || a.branch_id === activeBranchId
-    );
     const branchEmployees = employees.filter(
       (e) => e.branch_id === activeBranchId && e.is_active
     );
@@ -992,17 +966,14 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       .filter((r) => isToday(r.completed_at))
       .reduce((sum, r) => sum + r.total_amount, 0);
 
-    const todayAppointmentsCount = branchAppointments.filter((a) => isToday(a.created_at)).length;
-    const completedAppointmentsCount = branchAppointments.filter((a) => a.status === 'completed').length;
-    const pendingAppointmentsCount = branchAppointments.filter((a) => a.status === 'pending').length;
-    const cancelledAppointmentsCount = branchAppointments.filter(
-      (a) => a.status === 'cancelled' || a.status === 'rejected'
-    ).length;
+    const todayAppointmentsCount = branchRecords.filter((r) => isToday(r.completed_at)).length;
+    const completedAppointmentsCount = branchRecords.length;
+    const pendingAppointmentsCount = 0;
+    const cancelledAppointmentsCount = 0;
 
-    const uniqueCustomers = new Set([
-      ...branchAppointments.map((a) => a.customer_phone),
-      ...branchRecords.map((r) => r.customer_phone),
-    ]);
+    const uniqueCustomers = new Set(
+      branchRecords.map((r) => r.customer_phone).filter(Boolean)
+    );
 
     return {
       todayRevenue,
@@ -1014,7 +985,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       totalCustomers: Math.max(uniqueCustomers.size, 0),
       totalEmployees: branchEmployees.length,
     };
-  }, [serviceRecords, appointments, employees, activeBranchId]);
+  }, [serviceRecords, employees, activeBranchId]);
 
   const getEmployeeStats = (employeeId: string) => {
     const empRecords = serviceRecords.filter((r) => r.employee_id === employeeId);
@@ -1030,14 +1001,12 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       .filter((r) => isThisMonth(r.completed_at))
       .reduce((sum, r) => sum + r.total_amount, 0);
 
-    const empAppointments = appointments.filter((a) => a.employee_id === employeeId);
-    const completedCount = empAppointments.filter((a) => a.status === 'completed').length + empRecords.filter(r => r.is_walkin).length;
-    const pendingCount = empAppointments.filter((a) => a.status === 'pending').length;
+    const completedCount = empRecords.length;
+    const pendingCount = 0;
 
-    const uniqueClients = new Set([
-      ...empAppointments.map((a) => a.customer_phone),
-      ...empRecords.map((r) => r.customer_phone),
-    ]);
+    const uniqueClients = new Set(
+      empRecords.map((r) => r.customer_phone).filter(Boolean)
+    );
 
     return {
       todayRevenue,

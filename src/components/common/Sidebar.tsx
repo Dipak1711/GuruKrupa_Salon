@@ -21,6 +21,7 @@ import {
   Settings,
   Sparkles,
   UserCheck,
+  Phone,
   X,
 } from 'lucide-react';
 import { useSalonData } from '../../context/SalonDataContext';
@@ -70,6 +71,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             label="Home"
             active={activeView === 'home'}
             onClick={() => handleNavClick('home')}
+          />
+          <NavItem
+            icon={<Phone size={18} />}
+            label="Booking"
+            active={activeView === 'booking'}
+            onClick={() => handleNavClick('booking')}
+            highlight
           />
           <NavItem
             icon={<Tag size={18} />}

@@ -6,18 +6,13 @@ import { User, Phone, Mail, Save, CalendarCheck, ShieldCheck, Sparkles } from 'l
 
 export const CustomerProfile: React.FC = () => {
   const { currentUser, updateUserProfile } = useAuth();
-  const { appointments } = useSalonData();
   const { success } = useToast();
 
-  const [name, setName] = useState(currentUser.name);
-  const [email, setEmail] = useState(currentUser.email);
-  const [phone, setPhone] = useState(currentUser.phone);
-  const [avatarUrl, setAvatarUrl] = useState(currentUser.avatar_url);
+  const [name, setName] = useState(currentUser?.name || '');
+  const [email, setEmail] = useState(currentUser?.email || '');
+  const [phone, setPhone] = useState(currentUser?.phone || '');
+  const [avatarUrl, setAvatarUrl] = useState(currentUser?.avatar_url || '');
   const [isSaving, setIsSaving] = useState(false);
-
-  const customerAppointments = appointments.filter(
-    (a) => a.customer_id === currentUser.id || a.customer_phone === currentUser.phone
-  );
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();

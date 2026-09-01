@@ -124,10 +124,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
           subtitle="All completed services"
         />
         <StatCard
-          title="Today's Bookings"
-          value={salonStats.todayAppointmentsCount}
-          icon={<CalendarCheck size={22} />}
-          subtitle={`${salonStats.pendingAppointmentsCount} pending review`}
+          title="Total Services Fulfilled"
+          value={salonStats.completedAppointmentsCount}
+          icon={<CheckCircle2 size={22} />}
+          subtitle="Completed jobs"
         />
         <StatCard
           title="Total Customers"
@@ -319,56 +319,62 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
         </div>
       </div>
 
-      {/* Recent Appointments Table */}
+      {/* Recent Service Fulfillment Transactions */}
       <div className="glass-card" style={{ padding: '24px', overflowX: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 className="font-serif" style={{ fontSize: '1.35rem', color: '#F8FAFC', fontWeight: 600 }}>
-            Recent Salon Booking Requests
+            Recent Service Fulfillment Transactions
           </h3>
 
           {onNavigateToView && (
-            <button onClick={() => onNavigateToView('appointments')} className="btn-gold-outline" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
-              Manage All Appointments
+            <button onClick={() => onNavigateToView('reports')} className="btn-gold-outline" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
+              View Financial Reports
             </button>
           )}
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#94A3B8', fontSize: '0.8rem', textTransform: 'uppercase' }}>
-              <th style={{ padding: '10px 12px' }}>Status</th>
-              <th style={{ padding: '10px 12px' }}>Client</th>
-              <th style={{ padding: '10px 12px' }}>Service</th>
-              <th style={{ padding: '10px 12px' }}>Stylist</th>
-              <th style={{ padding: '10px 12px' }}>Price</th>
-              <th style={{ padding: '10px 12px' }}>Timestamp</th>
-            </tr>
-          </thead>
-          <tbody>
-            {appointments.slice(0, 6).map((apt) => (
-              <tr key={apt.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.86rem' }}>
-                <td style={{ padding: '12px' }}>
-                  <Badge status={apt.status} size="sm" />
-                </td>
-                <td style={{ padding: '12px', color: '#F8FAFC', fontWeight: 500 }}>
-                  {apt.customer_name}
-                </td>
-                <td style={{ padding: '12px', color: '#CBD5E1' }}>
-                  {apt.service_name}
-                </td>
-                <td style={{ padding: '12px', color: '#F3E5AB' }}>
-                  {apt.employee_name}
-                </td>
-                <td style={{ padding: '12px', fontWeight: 600, color: '#10B981' }}>
-                  {formatPrice(apt.service_price || 0)}
-                </td>
-                <td style={{ padding: '12px', color: '#94A3B8', fontSize: '0.78rem' }}>
-                  {formatDateTime(apt.created_at)}
-                </td>
+        {serviceRecords.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '24px', color: '#94A3B8' }}>
+            No recent service transactions recorded.
+          </div>
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#94A3B8', fontSize: '0.8rem', textTransform: 'uppercase' }}>
+                <th style={{ padding: '10px 12px' }}>Client</th>
+                <th style={{ padding: '10px 12px' }}>Services</th>
+                <th style={{ padding: '10px 12px' }}>Stylist</th>
+                <th style={{ padding: '10px 12px' }}>Amount</th>
+                <th style={{ padding: '10px 12px' }}>Payment Method</th>
+                <th style={{ padding: '10px 12px' }}>Timestamp</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {serviceRecords.slice(0, 6).map((rec) => (
+                <tr key={rec.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.86rem' }}>
+                  <td style={{ padding: '12px', color: '#F8FAFC', fontWeight: 500 }}>
+                    {rec.customer_name}
+                  </td>
+                  <td style={{ padding: '12px', color: '#CBD5E1' }}>
+                    {rec.items.map((i) => i.service_name).join(', ')}
+                  </td>
+                  <td style={{ padding: '12px', color: '#F3E5AB' }}>
+                    {rec.employee_name || 'Stylist'}
+                  </td>
+                  <td style={{ padding: '12px', fontWeight: 600, color: '#10B981' }}>
+                    {formatPrice(rec.total_amount)}
+                  </td>
+                  <td style={{ padding: '12px', color: '#CBD5E1', textTransform: 'uppercase', fontSize: '0.78rem' }}>
+                    {rec.payment?.payment_method || 'UPI'}
+                  </td>
+                  <td style={{ padding: '12px', color: '#94A3B8', fontSize: '0.78rem' }}>
+                    {formatDateTime(rec.completed_at)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

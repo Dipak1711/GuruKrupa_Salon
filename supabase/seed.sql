@@ -1,8 +1,7 @@
 -- ==============================================================================
--- GURUKRUPA SALON — PRODUCTION SEED DATA FOR DEMONSTRATION
--- Valid Hexadecimal UUIDs only (0-9, a-f)
--- Multi-branch dataset: Branches, Customers, Stylists, Services,
--- Appointments, Completed Sales Records, Payments, Offers, Gallery & Reviews.
+-- GURUKRUPA SALON — INITIAL SEED DATA FOR SUPABASE
+-- Execute this script in Supabase SQL Editor after running schema.sql
+-- Note: All UUIDs must contain valid hexadecimal characters (0-9, a-f)
 -- ==============================================================================
 
 -- ------------------------------------------------------------------------------
