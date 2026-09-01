@@ -39,6 +39,30 @@ export const RevenueReports: React.FC = () => {
       ? serviceRecords
       : serviceRecords.filter((r) => r.employee_id === selectedEmpFilter);
 
+  const handleExportCSV = () => {
+    const headers = ['Record ID', 'Completed At', 'Stylist', 'Client Name', 'Client Phone', 'Items Performed', 'Payment Method', 'Discount (INR)', 'Total Revenue (INR)'];
+    const rows = filteredRecords.map((rec) => [
+      rec.id,
+      rec.completed_at,
+      `"${rec.employee_name}"`,
+      `"${rec.customer_name}"`,
+      `"${rec.customer_phone}"`,
+      `"${rec.items.map((i) => i.service_name).join(', ')}"`,
+      rec.payment.payment_method,
+      rec.discount,
+      rec.total_amount,
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `gurukrupa_revenue_report_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       {/* Header */}
@@ -61,10 +85,10 @@ export const RevenueReports: React.FC = () => {
           <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
             Comprehensive revenue analytics derived strictly from immutable completed service and payment records.
           </p>
-        </div>
+      </div>
 
-        {/* Filter by employee */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Filter by employee & Export CSV */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           <select
             className="salon-select"
             value={selectedEmpFilter}
@@ -78,6 +102,11 @@ export const RevenueReports: React.FC = () => {
               </option>
             ))}
           </select>
+
+          <button onClick={handleExportCSV} className="btn-gold" style={{ padding: '8px 16px', fontSize: '0.84rem' }}>
+            <Download size={15} />
+            <span>Export CSV</span>
+          </button>
         </div>
       </div>
 

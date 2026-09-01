@@ -161,6 +161,7 @@ export interface Review {
   rating: number;
   comment: string;
   service_name?: string;
+  status: 'approved' | 'pending' | 'rejected';
   created_at: string;
 }
 

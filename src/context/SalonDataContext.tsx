@@ -113,7 +113,9 @@ interface SalonDataContextType {
   updateOffer: (id: string, offer: Partial<Offer>) => Promise<void>;
   toggleOfferActive: (id: string) => Promise<void>;
   addGalleryItem: (item: GalleryItem) => Promise<void>;
-  addReview: (review: Omit<Review, 'id' | 'created_at'>) => Promise<void>;
+  addReview: (review: Omit<Review, 'id' | 'created_at' | 'status'>) => Promise<void>;
+  updateReviewStatus: (id: string, status: 'approved' | 'pending' | 'rejected') => Promise<void>;
+  deleteReview: (id: string) => Promise<void>;
 
   // Utility & Refresh
   refreshData: () => Promise<void>;
@@ -274,6 +276,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         customer_name: 'Valued Client',
         rating: r.rating,
         comment: r.comment,
+        status: r.status || 'approved',
         created_at: r.created_at,
         service_name: 'Signature Grooming',
       }));
@@ -742,7 +745,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
   };
 
-  const addReview = async (reviewData: Omit<Review, 'id' | 'created_at'>) => {
+  const addReview = async (reviewData: Omit<Review, 'id' | 'created_at' | 'status'>) => {
     try {
       await supabase.from('reviews').insert({
         rating: reviewData.rating,
@@ -752,6 +755,24 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       await refreshData();
     } catch (err) {
       console.error('Error adding review:', err);
+    }
+  };
+
+  const updateReviewStatus = async (id: string, status: 'approved' | 'pending' | 'rejected') => {
+    try {
+      setReviews((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
+      await supabase.from('reviews').update({ status }).eq('id', id);
+    } catch (err) {
+      console.error('Error updating review status:', err);
+    }
+  };
+
+  const deleteReview = async (id: string) => {
+    try {
+      setReviews((prev) => prev.filter((r) => r.id !== id));
+      await supabase.from('reviews').delete().eq('id', id);
+    } catch (err) {
+      console.error('Error deleting review:', err);
     }
   };
 
@@ -928,6 +949,8 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         toggleOfferActive,
         addGalleryItem,
         addReview,
+        updateReviewStatus,
+        deleteReview,
         refreshData,
         resetToDemoData,
       }}
