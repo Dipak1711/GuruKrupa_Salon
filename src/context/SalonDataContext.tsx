@@ -38,6 +38,7 @@ interface CompleteServicePayload {
   selectedServiceIds: string[];
   discount?: number;
   paymentMethod: PaymentMethod;
+  paymentStatus?: 'completed' | 'pending' | 'cancelled';
   notes?: string;
   transactionRef?: string;
 }
@@ -637,6 +638,8 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
         paymentMethod: payload.paymentMethod,
       });
 
+      const pStatus = payload.paymentStatus || (payload.paymentMethod === 'Pending' ? 'pending' : 'completed');
+
       // 2. Insert service record header with sanitized branch_id, employee_id, customer_id
       const { data: recData, error: recError } = await supabase
         .from('service_records')
@@ -650,7 +653,7 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
           subtotal,
           discount,
           total_amount: totalAmount,
-          payment_status: 'paid',
+          payment_status: pStatus === 'completed' ? 'paid' : pStatus,
           notes: payload.notes || '',
         })
         .select()
@@ -681,13 +684,15 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       }
 
       // 4. Insert Payment record
-      const isPendingPay = payload.paymentMethod === 'Pending';
+      const isPendingPay = pStatus === 'pending' || pStatus === 'cancelled';
+      const cleanMethod = payload.paymentMethod === 'Pending' ? 'other' : payload.paymentMethod.toLowerCase();
       await supabase.from('payments').insert({
         service_record_id: recData.id,
         amount: totalAmount,
-        payment_method: isPendingPay ? 'other' : payload.paymentMethod.toLowerCase(),
-        payment_status: isPendingPay ? 'pending' : 'completed',
+        payment_method: cleanMethod === 'pending' ? 'other' : cleanMethod,
+        payment_status: pStatus,
         transaction_reference: payload.transactionRef || null,
+        paid_at: pStatus === 'completed' ? new Date().toISOString() : null,
       });
 
       if (payload.appointmentId) {

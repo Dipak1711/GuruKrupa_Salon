@@ -461,14 +461,14 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
                   {emp.experience_years} Yrs Exp • ★ {emp.rating} ({emp.reviews_count})
                 </span>
 
-                <a
-                  href={`tel:${emp.phone}`}
+                <button
+                  onClick={() => onNavigateToView('booking')}
                   className="btn-gold-outline"
                   style={{ width: '100%', padding: '9px 12px', fontSize: '0.82rem' }}
                 >
-                  <Phone size={14} color="#D4AF37" />
-                  <span>Call {emp.name.split(' ')[0]}</span>
-                </a>
+                  <Scissors size={14} color="#D4AF37" />
+                  <span>Book at Branch</span>
+                </button>
               </div>
             ))}
         </div>

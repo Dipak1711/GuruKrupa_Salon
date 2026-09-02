@@ -197,7 +197,7 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
               </button>
             </div>
 
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <div
                 style={{
                   display: 'inline-flex',
@@ -219,8 +219,57 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                 Meet Our Artists
               </h1>
               <p style={{ color: '#94A3B8', fontSize: '0.92rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.5 }}>
-                Choose an artist and connect directly by phone to discuss your service and schedule.
+                Browse our master artists below, then call the branch owner directly to discuss your service and schedule.
               </p>
+            </div>
+
+            {/* Prominent Branch Owner Call Hero Section */}
+            <div
+              style={{
+                backgroundColor: 'rgba(212, 175, 55, 0.08)',
+                border: '1px solid rgba(212, 175, 55, 0.3)',
+                borderRadius: '16px',
+                padding: '20px 24px',
+                marginBottom: '32px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                gap: '12px',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Phone size={20} color="#D4AF37" />
+                <span style={{ fontSize: '1.05rem', color: '#F3E5AB', fontWeight: 700 }}>
+                  Direct Branch Desk — {selectedBranch.name}
+                </span>
+              </div>
+              <p style={{ color: '#94A3B8', fontSize: '0.86rem', margin: 0, maxWidth: '540px', lineHeight: 1.5 }}>
+                Connect directly with our branch desk manager to discuss artist availability, VIP services, and schedule your appointment.
+              </p>
+              <a
+                href={`tel:${(selectedBranch.phone || '+91 98230 12345').replace(/\s+/g, '')}`}
+                className="btn-gold"
+                style={{
+                  padding: '14px 28px',
+                  borderRadius: '12px',
+                  fontWeight: 700,
+                  fontSize: '1rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  textDecoration: 'none',
+                  boxShadow: '0 4px 20px rgba(212, 175, 55, 0.4)',
+                  minHeight: '48px',
+                  width: '100%',
+                  maxWidth: '380px',
+                }}
+              >
+                <Phone size={20} />
+                <span>📞 Call Branch Owner ({selectedBranch.phone || '+91 98230 12345'})</span>
+              </a>
             </div>
 
             {branchArtists.length === 0 ? (
@@ -248,9 +297,6 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                 }}
               >
                 {branchArtists.map((artist) => {
-                  const phoneNum = artist.phone?.trim();
-                  const hasPhone = Boolean(phoneNum && phoneNum.length > 3);
-
                   // Extract services assigned to this artist if available
                   const assignedServices = services.filter((s) =>
                     (artist.assigned_service_ids || []).includes(s.id)
@@ -341,7 +387,7 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
 
                         {/* Specialization Pills */}
                         {assignedServices.length > 0 && (
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                             {assignedServices.slice(0, 3).map((srv) => (
                               <span
                                 key={srv.id}
@@ -358,51 +404,6 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                               </span>
                             ))}
                           </div>
-                        )}
-                      </div>
-
-                      {/* Direct Phone Call Button */}
-                      <div>
-                        {hasPhone ? (
-                          <a
-                            href={`tel:${phoneNum}`}
-                            className="btn-gold"
-                            style={{
-                              width: '100%',
-                              padding: '12px 16px',
-                              borderRadius: '10px',
-                              fontWeight: 700,
-                              fontSize: '0.92rem',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '8px',
-                              textDecoration: 'none',
-                              boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
-                              minHeight: '46px',
-                            }}
-                          >
-                            <Phone size={18} />
-                            <span>📞 Call {artist.name.split(' ')[0]}</span>
-                          </a>
-                        ) : (
-                          <button
-                            disabled
-                            style={{
-                              width: '100%',
-                              padding: '12px 16px',
-                              borderRadius: '10px',
-                              fontWeight: 600,
-                              fontSize: '0.85rem',
-                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                              border: '1px solid rgba(255, 255, 255, 0.1)',
-                              color: '#64748B',
-                              cursor: 'not-allowed',
-                              minHeight: '46px',
-                            }}
-                          >
-                            Phone number unavailable
-                          </button>
                         )}
                       </div>
                     </motion.div>
