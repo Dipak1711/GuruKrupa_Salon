@@ -98,11 +98,17 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
     setIsEmpModalOpen(true);
   };
 
+  const handleOpenAddLeave = (emp: Employee) => {
+    setTargetLeaveEmp(emp);
+    setLeaveType('full_day');
+    setStartDate(new Date().toISOString().split('T')[0]);
+    setEndDate(new Date().toISOString().split('T')[0]);
+    setReason('');
+    setIsLeaveModalOpen(true);
+  };
+
   const handleSaveEmp = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Prevent duplicate service assignments
-    const uniqueServiceIds = Array.from(new Set(assignedServiceIds));
 
     if (editingEmp) {
       updateEmployee(editingEmp.id, {
@@ -113,9 +119,9 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
         phone,
         avatar_url: avatarUrl,
         bio,
-        assigned_service_ids: uniqueServiceIds,
+        assigned_service_ids: assignedServiceIds,
       });
-      success('Stylist Updated', `${name}'s profile and service assignments saved.`);
+      success('Employee Updated', `Stylist profile for "${name}" updated.`);
     } else {
       addEmployee({
         branch_id: activeBranchId,
@@ -124,26 +130,18 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
         experience_years: Number(experienceYears),
         specialization,
         phone,
+        email: `${name.toLowerCase().replace(/\s+/g, '')}@gurukrupasalon.com`,
         avatar_url: avatarUrl,
+        rating: 4.8,
+        reviews_count: 10,
         bio,
-        rating: 4.9,
-        reviews_count: 0,
         is_active: true,
-        assigned_service_ids: uniqueServiceIds,
+        assigned_service_ids: assignedServiceIds,
       });
-      success('Stylist Added', `${name} registered to the salon team.`);
+      success('Employee Registered', `Master craftsman "${name}" added to salon roster.`);
     }
 
     setIsEmpModalOpen(false);
-  };
-
-  const handleOpenLeaveModal = (emp: Employee) => {
-    setTargetLeaveEmp(emp);
-    setLeaveType('full_day');
-    setStartDate(new Date().toISOString().split('T')[0]);
-    setEndDate(new Date().toISOString().split('T')[0]);
-    setReason('');
-    setIsLeaveModalOpen(true);
   };
 
   const handleSaveLeave = (e: React.FormEvent) => {
@@ -152,6 +150,7 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
 
     addEmployeeLeave({
       employee_id: targetLeaveEmp.id,
+      employee_name: targetLeaveEmp.name,
       leave_type: leaveType,
       start_date: startDate,
       end_date: endDate,
@@ -159,24 +158,26 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
       status: 'approved',
     });
 
-    success(
-      'Leave Logged',
-      `${targetLeaveEmp.name} marked on leave. Customer booking availability locked accordingly.`
-    );
+    success('Leave Approved', `Leave logged for ${targetLeaveEmp.name} (${startDate} to ${endDate}).`);
     setIsLeaveModalOpen(false);
   };
 
-  const handleToggleStatus = (emp: Employee) => {
-    toggleEmployeeActive(emp.id);
-    info(
-      'Stylist Status Updated',
-      `${emp.name} is now ${emp.is_active ? 'Inactive (Disabled)' : 'Active'}.`
-    );
+  const handleToggleActive = (empId: string, empName: string) => {
+    toggleEmployeeActive(empId);
+    info('Status Updated', `Employee state modified for "${empName}".`);
+  };
+
+  const handleServiceCheckboxChange = (srvId: string) => {
+    if (assignedServiceIds.includes(srvId)) {
+      setAssignedServiceIds(assignedServiceIds.filter((id) => id !== srvId));
+    } else {
+      setAssignedServiceIds([...assignedServiceIds, srvId]);
+    }
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-      {/* Header */}
+      {/* Top Header & Actions */}
       <div
         style={{
           display: 'flex',
@@ -187,13 +188,13 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
         }}
       >
         <div>
-          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Staff & Performance Command Center
           </span>
-          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
             Employee Management ({employees.length})
           </h2>
-          <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
+          <p style={{ fontSize: '0.92rem', color: '#6F6A62', marginTop: '4px' }}>
             Register staff, assign qualified services, view verified revenue analytics, and manage leave availability.
           </p>
         </div>
@@ -230,11 +231,13 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
                 justifyContent: 'space-between',
                 gap: '16px',
                 opacity: emp.is_active ? 1 : 0.6,
+                backgroundColor: '#FFFFFF',
                 border: emp.is_active
                   ? isAvailable
-                    ? '1px solid rgba(212, 175, 55, 0.25)'
-                    : '1px dashed rgba(244, 63, 94, 0.4)'
-                  : '1px solid rgba(255, 255, 255, 0.08)',
+                    ? '1px solid #E4DED4'
+                    : '1px dashed #C94A4A'
+                  : '1px solid #E4DED4',
+                borderRadius: '18px',
               }}
             >
               {/* Top Row: Avatar & Metadata */}
@@ -250,20 +253,20 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
                       objectFit: 'cover',
                       border: emp.is_active
                         ? isAvailable
-                          ? '2px solid #D4AF37'
-                          : '2px solid #F43F5E'
-                        : '2px solid #64748B',
+                          ? '2px solid #C9A227'
+                          : '2px solid #C94A4A'
+                        : '2px solid #8C857B',
                       flexShrink: 0,
                     }}
                   />
 
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
-                      <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#F8FAFC', fontWeight: 600 }}>
+                      <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#171717', fontWeight: 600 }}>
                         {emp.name}
                       </h3>
                       {!emp.is_active ? (
-                        <span style={{ fontSize: '0.7rem', color: '#FB7185', backgroundColor: 'rgba(244, 63, 94, 0.12)', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>
+                        <span style={{ fontSize: '0.7rem', color: '#C94A4A', backgroundColor: 'rgba(201, 74, 74, 0.12)', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>
                           Disabled
                         </span>
                       ) : isAvailable ? (
@@ -273,45 +276,46 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
                       )}
                     </div>
 
-                    <p style={{ fontSize: '0.82rem', color: '#D4AF37', fontWeight: 500 }}>
+                    <p style={{ fontSize: '0.82rem', color: '#C9A227', fontWeight: 600 }}>
                       {emp.role_title}
                     </p>
 
-                    <span style={{ fontSize: '0.78rem', color: '#94A3B8' }}>
+                    <span style={{ fontSize: '0.78rem', color: '#6F6A62' }}>
                       {emp.experience_years} Yrs Exp. • ★ {emp.rating} ({emp.reviews_count})
                     </span>
                   </div>
                 </div>
 
-                <div style={{ fontSize: '0.82rem', color: '#CBD5E1', marginBottom: '12px' }}>
+                <div style={{ fontSize: '0.82rem', color: '#6F6A62', marginBottom: '12px' }}>
                   <strong>Specialization:</strong> {emp.specialization}
                 </div>
 
-                {/* Revenue & Service Statistics (No manual revenue editing allowed) */}
+                {/* Revenue & Service Statistics */}
                 <div
                   style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(3, 1fr)',
                     gap: '8px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                    backgroundColor: '#F1EDE6',
                     padding: '10px 12px',
                     borderRadius: '10px',
                     fontSize: '0.78rem',
                     marginBottom: '14px',
                     textAlign: 'center',
+                    border: '1px solid #E4DED4',
                   }}
                 >
                   <div>
-                    <span style={{ color: '#94A3B8', fontSize: '0.72rem', display: 'block' }}>Total Revenue</span>
-                    <strong style={{ color: '#10B981', fontSize: '0.95rem' }}>{formatPrice(empStats.totalRevenue)}</strong>
+                    <span style={{ color: '#6F6A62', fontSize: '0.72rem', display: 'block', fontWeight: 600 }}>Total Revenue</span>
+                    <strong style={{ color: '#16845B', fontSize: '0.95rem' }}>{formatPrice(empStats.totalRevenue)}</strong>
                   </div>
                   <div>
-                    <span style={{ color: '#94A3B8', fontSize: '0.72rem', display: 'block' }}>Clients</span>
-                    <strong style={{ fontSize: '0.95rem', color: '#F8FAFC' }}>{empStats.clientsCount}</strong>
+                    <span style={{ color: '#6F6A62', fontSize: '0.72rem', display: 'block', fontWeight: 600 }}>Clients</span>
+                    <strong style={{ fontSize: '0.95rem', color: '#171717' }}>{empStats.clientsCount}</strong>
                   </div>
                   <div>
-                    <span style={{ color: '#94A3B8', fontSize: '0.72rem', display: 'block' }}>Skills</span>
-                    <strong style={{ color: '#F3E5AB', fontSize: '0.95rem' }}>{assignedServices.length}</strong>
+                    <span style={{ color: '#6F6A62', fontSize: '0.72rem', display: 'block', fontWeight: 600 }}>Skills</span>
+                    <strong style={{ color: '#9A7B1C', fontSize: '0.95rem' }}>{assignedServices.length}</strong>
                   </div>
                 </div>
 
@@ -321,96 +325,79 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
                     <span
                       key={s.id}
                       style={{
-                        fontSize: '0.7rem',
-                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                        color: '#94A3B8',
-                        padding: '2px 8px',
+                        fontSize: '0.72rem',
+                        backgroundColor: 'rgba(201, 162, 39, 0.1)',
+                        border: '1px solid rgba(201, 162, 39, 0.25)',
+                        color: '#9A7B1C',
+                        padding: '2px 7px',
                         borderRadius: '6px',
+                        fontWeight: 500,
                       }}
                     >
                       {s.name}
                     </span>
                   ))}
                   {assignedServices.length > 3 && (
-                    <span style={{ fontSize: '0.7rem', color: '#D4AF37', alignSelf: 'center' }}>
+                    <span style={{ fontSize: '0.72rem', color: '#6F6A62' }}>
                       +{assignedServices.length - 3} more
                     </span>
                   )}
                 </div>
               </div>
 
-              {/* Action Buttons Bar */}
+              {/* Action Buttons Footer */}
               <div
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderTop: '1px solid #E4DED4',
                   paddingTop: '14px',
-                  flexWrap: 'wrap',
                   gap: '8px',
+                  flexWrap: 'wrap',
                 }}
               >
                 <div style={{ display: 'flex', gap: '6px' }}>
-                  {/* View Details Modal button */}
                   <button
                     onClick={() => setViewEmpDetail(emp)}
-                    className="btn-dark"
-                    style={{ padding: '6px 12px', fontSize: '0.78rem', minHeight: '40px' }}
+                    className="btn-gold-outline"
+                    style={{ padding: '6px 10px', fontSize: '0.78rem' }}
                   >
-                    <BarChart3 size={14} color="#D4AF37" />
-                    <span>View Details</span>
+                    <BarChart3 size={13} />
+                    <span>Stats</span>
                   </button>
 
                   <button
-                    onClick={() => handleOpenLeaveModal(emp)}
-                    style={{
-                      padding: '6px 10px',
-                      minHeight: '40px',
-                      borderRadius: '8px',
-                      backgroundColor: 'rgba(244, 63, 94, 0.1)',
-                      border: '1px solid rgba(244, 63, 94, 0.3)',
-                      color: '#FB7185',
-                      fontSize: '0.78rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                    }}
+                    onClick={() => handleOpenAddLeave(emp)}
+                    className="btn-gold-outline"
+                    style={{ padding: '6px 10px', fontSize: '0.78rem' }}
                   >
-                    <CalendarX size={13} />
-                    <span>Leave</span>
+                    <CalendarX size={13} color="#C9A227" />
+                    <span>Log Leave</span>
                   </button>
                 </div>
 
                 <div style={{ display: 'flex', gap: '6px' }}>
-                  {/* Disable / Activate Toggle */}
                   <button
-                    onClick={() => handleToggleStatus(emp)}
-                    title={emp.is_active ? 'Disable Employee' : 'Activate Employee'}
+                    onClick={() => handleToggleActive(emp.id, emp.name)}
                     style={{
                       padding: '6px 10px',
-                      minHeight: '40px',
                       borderRadius: '8px',
-                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      color: emp.is_active ? '#94A3B8' : '#10B981',
+                      backgroundColor: '#F1EDE6',
+                      border: '1px solid #E4DED4',
+                      color: emp.is_active ? '#6F6A62' : '#16845B',
                       cursor: 'pointer',
                       fontSize: '0.78rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
+                      fontWeight: 600,
                     }}
                   >
-                    {emp.is_active ? <UserX size={14} /> : <UserCheck size={14} />}
-                    <span>{emp.is_active ? 'Disable' : 'Activate'}</span>
+                    {emp.is_active ? 'Disable' : 'Enable'}
                   </button>
 
                   <button
                     onClick={() => handleOpenEditEmp(emp)}
-                    className="btn-gold-outline"
-                    style={{ padding: '6px 12px', fontSize: '0.78rem', minHeight: '40px' }}
+                    className="btn-gold"
+                    style={{ padding: '6px 12px', fontSize: '0.78rem' }}
                   >
                     <Edit2 size={13} />
                     <span>Edit</span>
@@ -422,148 +409,112 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
         })}
       </div>
 
-      {/* ADMIN EMPLOYEE DETAILS MODAL (Prompt requirement) */}
+      {/* ------------------------------------------------------------------------- */}
+      {/* 1. STYLIST STATS & HISTORY DETAIL MODAL                                   */}
+      {/* ------------------------------------------------------------------------- */}
       <Modal
-        isOpen={!!viewEmpDetail}
+        isOpen={Boolean(viewEmpDetail)}
         onClose={() => setViewEmpDetail(null)}
-        maxWidth="2xl"
+        maxWidth="xl"
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <UserCheck size={20} color="#D4AF37" />
-            <span className="font-serif" style={{ fontSize: '1.4rem', color: '#F8FAFC' }}>
-              Employee Performance: {viewEmpDetail?.name}
+            <Users size={20} color="#C9A227" />
+            <span className="font-serif" style={{ fontSize: '1.4rem', color: '#171717' }}>
+              Stylist Analytics: {viewEmpDetail?.name}
             </span>
           </div>
         }
-        subtitle="Verified sales metrics derived from immutable service records."
+        subtitle="Verified live financial performance and completed jobs history."
       >
         {viewEmpDetail && (() => {
           const empStats = getEmployeeStats(viewEmpDetail.id);
           const empRecords = serviceRecords.filter((r) => r.employee_id === viewEmpDetail.id);
-          const assignedServices = services.filter((s) => viewEmpDetail.assigned_service_ids.includes(s.id));
-          const isAvailable = isEmployeeAvailable(viewEmpDetail.id);
 
           return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-              {/* Profile Card Header */}
-              <div style={{ display: 'flex', gap: '16px', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '18px', borderRadius: '16px', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
-                <img
-                  src={viewEmpDetail.avatar_url}
-                  alt={viewEmpDetail.name}
-                  style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #D4AF37' }}
-                />
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-                    <h3 className="font-serif" style={{ fontSize: '1.4rem', color: '#F8FAFC', fontWeight: 700 }}>
-                      {viewEmpDetail.name}
-                    </h3>
-                    <Badge status={viewEmpDetail.is_active ? (isAvailable ? 'available' : 'leave') : 'rejected'} label={viewEmpDetail.is_active ? (isAvailable ? 'Active' : 'On Leave') : 'Disabled'} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {/* Stat Cards Row */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
+                <div style={{ padding: '14px', backgroundColor: '#F1EDE6', borderRadius: '12px', border: '1px solid #E4DED4' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#6F6A62', textTransform: 'uppercase', fontWeight: 600 }}>Lifetime Revenue</span>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#16845B', marginTop: '2px' }}>
+                    {formatPrice(empStats.totalRevenue)}
                   </div>
-                  <p style={{ fontSize: '0.88rem', color: '#D4AF37', fontWeight: 500 }}>
-                    {viewEmpDetail.role_title} • {viewEmpDetail.experience_years} Years Experience
-                  </p>
-                  <p style={{ fontSize: '0.82rem', color: '#94A3B8', marginTop: '2px' }}>
-                    Phone: {viewEmpDetail.phone} • ★ {viewEmpDetail.rating} ({viewEmpDetail.reviews_count} reviews)
-                  </p>
+                </div>
+
+                <div style={{ padding: '14px', backgroundColor: '#F1EDE6', borderRadius: '12px', border: '1px solid #E4DED4' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#6F6A62', textTransform: 'uppercase', fontWeight: 600 }}>Today's Revenue</span>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#C9A227', marginTop: '2px' }}>
+                    {formatPrice(empStats.todayRevenue)}
+                  </div>
+                </div>
+
+                <div style={{ padding: '14px', backgroundColor: '#F1EDE6', borderRadius: '12px', border: '1px solid #E4DED4' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#6F6A62', textTransform: 'uppercase', fontWeight: 600 }}>Clients Served</span>
+                  <strong style={{ fontSize: '1.25rem', color: '#171717', display: 'block', marginTop: '2px' }}>{empStats.clientsCount}</strong>
                 </div>
               </div>
 
-              {/* Verified Financial & Fulfillment Metrics */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px' }}>
-                <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)', padding: '14px', borderRadius: '12px' }}>
-                  <span style={{ fontSize: '0.74rem', color: '#94A3B8', display: 'block' }}>Today's Revenue</span>
-                  <strong style={{ fontSize: '1.25rem', color: '#10B981' }}>{formatPrice(empStats.todayRevenue)}</strong>
-                </div>
-                <div style={{ backgroundColor: 'rgba(212, 175, 55, 0.08)', border: '1px solid rgba(212, 175, 55, 0.25)', padding: '14px', borderRadius: '12px' }}>
-                  <span style={{ fontSize: '0.74rem', color: '#94A3B8', display: 'block' }}>Monthly Revenue</span>
-                  <strong style={{ fontSize: '1.25rem', color: '#F3E5AB' }}>{formatPrice(empStats.monthRevenue)}</strong>
-                </div>
-                <div style={{ backgroundColor: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.25)', padding: '14px', borderRadius: '12px' }}>
-                  <span style={{ fontSize: '0.74rem', color: '#94A3B8', display: 'block' }}>Total Lifetime Revenue</span>
-                  <strong style={{ fontSize: '1.25rem', color: '#38BDF8' }}>{formatPrice(empStats.totalRevenue)}</strong>
-                </div>
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', padding: '14px', borderRadius: '12px' }}>
-                  <span style={{ fontSize: '0.74rem', color: '#94A3B8', display: 'block' }}>Total Clients Served</span>
-                  <strong style={{ fontSize: '1.25rem', color: '#F8FAFC' }}>{empStats.clientsCount}</strong>
-                </div>
-              </div>
-
-              {/* Assigned Services List */}
+              {/* Service Records Table */}
               <div>
-                <h4 style={{ fontSize: '0.96rem', color: '#F8FAFC', fontWeight: 600, marginBottom: '8px' }}>
-                  Assigned Services ({assignedServices.length})
-                </h4>
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  {assignedServices.map((s) => (
-                    <span key={s.id} style={{ fontSize: '0.78rem', backgroundColor: 'rgba(212, 175, 55, 0.12)', color: '#F3E5AB', padding: '4px 10px', borderRadius: '8px', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
-                      {s.name} ({formatPrice(s.price)})
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Recent Services Executed Table */}
-              <div>
-                <h4 style={{ fontSize: '0.96rem', color: '#F8FAFC', fontWeight: 600, marginBottom: '8px' }}>
+                <h4 style={{ fontSize: '0.96rem', color: '#171717', fontWeight: 600, marginBottom: '8px' }}>
                   Recent Completed Jobs ({empRecords.length})
                 </h4>
-                <div className="table-responsive-wrapper" style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
-                    <thead>
-                      <tr style={{ color: '#94A3B8', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                        <th style={{ padding: '8px' }}>Date</th>
-                        <th style={{ padding: '8px' }}>Client</th>
-                        <th style={{ padding: '8px' }}>Items</th>
-                        <th style={{ padding: '8px', textAlign: 'right' }}>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {empRecords.map((r) => (
-                        <tr key={r.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                          <td style={{ padding: '8px', color: '#94A3B8' }}>{formatDateTime(r.completed_at)}</td>
-                          <td style={{ padding: '8px', color: '#F8FAFC' }}>{r.customer_name}</td>
-                          <td style={{ padding: '8px', color: '#CBD5E1' }}>
-                            {r.items.map((i) => i.service_name).join(', ')}
-                          </td>
-                          <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700, color: '#10B981' }}>
-                            {formatPrice(r.total_amount)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '14px' }}>
-                <button onClick={() => setViewEmpDetail(null)} className="btn-dark" style={{ padding: '8px 20px' }}>
-                  Close Details
-                </button>
+                {empRecords.length === 0 ? (
+                  <p style={{ color: '#6F6A62', fontSize: '0.86rem' }}>No completed services recorded for this stylist yet.</p>
+                ) : (
+                  <div style={{ overflowX: 'auto', border: '1px solid #E4DED4', borderRadius: '10px' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
+                      <thead>
+                        <tr style={{ backgroundColor: '#F1EDE6', color: '#6F6A62', borderBottom: '1px solid #E4DED4' }}>
+                          <th style={{ padding: '8px 12px' }}>Date</th>
+                          <th style={{ padding: '8px 12px' }}>Client</th>
+                          <th style={{ padding: '8px 12px' }}>Services</th>
+                          <th style={{ padding: '8px 12px', textAlign: 'right' }}>Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {empRecords.map((r) => (
+                          <tr key={r.id} style={{ borderBottom: '1px solid #E4DED4' }}>
+                            <td style={{ padding: '8px 12px', color: '#6F6A62' }}>{formatDateTime(r.completed_at)}</td>
+                            <td style={{ padding: '8px 12px', color: '#171717', fontWeight: 600 }}>{r.customer_name}</td>
+                            <td style={{ padding: '8px 12px', color: '#6F6A62' }}>{r.items.map((i) => i.service_name).join(', ')}</td>
+                            <td style={{ padding: '8px 12px', textAlign: 'right', fontWeight: 700, color: '#16845B' }}>
+                              {formatPrice(r.total_amount)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             </div>
           );
         })()}
       </Modal>
 
-      {/* Add / Edit Employee Modal */}
+      {/* ------------------------------------------------------------------------- */}
+      {/* 2. ADD / EDIT EMPLOYEE MODAL                                              */}
+      {/* ------------------------------------------------------------------------- */}
       <Modal
         isOpen={isEmpModalOpen}
         onClose={() => setIsEmpModalOpen(false)}
-        maxWidth="2xl"
+        maxWidth="lg"
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Users size={20} color="#D4AF37" />
-            <span className="font-serif" style={{ fontSize: '1.4rem', color: '#F8FAFC' }}>
-              {editingEmp ? `Edit Stylist: ${editingEmp.name}` : 'Register Master Stylist'}
+            <Users size={20} color="#C9A227" />
+            <span className="font-serif" style={{ fontSize: '1.4rem', color: '#171717' }}>
+              {editingEmp ? `Edit Stylist: ${editingEmp.name}` : 'Register New Master Stylist'}
             </span>
           </div>
         }
-        subtitle="Manage employee contact details, role designation, and assigned skills."
+        subtitle="Manage master craftsman profile details and assign skill qualifications."
       >
         <form onSubmit={handleSaveEmp} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
                 Full Name *
               </label>
               <input
@@ -571,44 +522,30 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
                 className="salon-input"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Rahul Sharma"
+                placeholder="e.g. Ramesh Kumar"
                 required
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-                Role Title *
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+                Role / Title *
               </label>
               <input
                 type="text"
                 className="salon-input"
                 value={roleTitle}
                 onChange={(e) => setRoleTitle(e.target.value)}
-                placeholder="e.g. Master Creative Director"
+                placeholder="Master Stylist, Senior Barber..."
                 required
               />
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-                Phone Number (Direct Call tel:) *
-              </label>
-              <input
-                type="tel"
-                className="salon-input"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+919823012345"
-                required
-              />
-            </div>
-
-            <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-                Years of Experience *
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+                Years of Experience
               </label>
               <input
                 type="number"
@@ -616,13 +553,26 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
                 className="salon-input"
                 value={experienceYears}
                 onChange={(e) => setExperienceYears(Number(e.target.value))}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+                Direct Phone Number *
+              </label>
+              <input
+                type="tel"
+                className="salon-input"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+91 98230 12345"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
               Specialization *
             </label>
             <input
@@ -630,14 +580,14 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
               className="salon-input"
               value={specialization}
               onChange={(e) => setSpecialization(e.target.value)}
-              placeholder="e.g. Artisan Scissor Craft, Modern Skin Fades & Groom Styling"
+              placeholder="e.g. Scissor Haircuts & Beard Grooming Specialist"
               required
             />
           </div>
 
           <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-              Profile Avatar URL
+            <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              Avatar Image URL
             </label>
             <input
               type="url"
@@ -649,129 +599,120 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
           </div>
 
           <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-              Bio / Experience Summary
+            <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              Short Bio / Background
             </label>
             <textarea
               className="salon-input"
-              rows={3}
+              rows={2}
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Stylist background and craftsmanship story..."
+              placeholder="Master craftsman trained in classic grooming..."
             />
           </div>
 
-          {/* Assigned Services Checklist (Prevents duplicates via Set) */}
+          {/* Assigned Services Checklist */}
           <div>
-            <label style={{ fontSize: '0.84rem', color: '#F8FAFC', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
-              Assign Capable Services ({assignedServiceIds.length})
+            <label style={{ fontSize: '0.84rem', color: '#171717', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
+              Assigned Skill Qualifications ({assignedServiceIds.length} Selected)
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '8px', maxHeight: '180px', overflowY: 'auto', padding: '4px' }}>
-              {services.map((s) => {
-                const isChecked = assignedServiceIds.includes(s.id);
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '8px',
+                maxHeight: '180px',
+                overflowY: 'auto',
+                backgroundColor: '#F1EDE6',
+                padding: '12px',
+                borderRadius: '12px',
+                border: '1px solid #E4DED4',
+              }}
+            >
+              {services.map((srv) => {
+                const isChecked = assignedServiceIds.includes(srv.id);
                 return (
                   <label
-                    key={s.id}
+                    key={srv.id}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
-                      padding: '8px 10px',
-                      borderRadius: '8px',
-                      backgroundColor: isChecked ? 'rgba(212, 175, 55, 0.12)' : 'rgba(255, 255, 255, 0.03)',
-                      border: isChecked ? '1px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.08)',
-                      cursor: 'pointer',
                       fontSize: '0.82rem',
-                      color: isChecked ? '#F3E5AB' : '#CBD5E1',
+                      color: isChecked ? '#171717' : '#6F6A62',
+                      cursor: 'pointer',
+                      fontWeight: isChecked ? 600 : 400,
                     }}
                   >
                     <input
                       type="checkbox"
                       checked={isChecked}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setAssignedServiceIds((prev) => Array.from(new Set([...prev, s.id])));
-                        } else {
-                          setAssignedServiceIds((prev) => prev.filter((id) => id !== s.id));
-                        }
-                      }}
+                      onChange={() => handleServiceCheckboxChange(srv.id)}
+                      style={{ accentColor: '#C9A227' }}
                     />
-                    <span>{s.name}</span>
+                    <span>{srv.name} (₹{srv.price})</span>
                   </label>
                 );
               })}
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '16px' }}>
-            <button type="button" onClick={() => setIsEmpModalOpen(false)} className="btn-dark" style={{ padding: '10px 18px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderTop: '1px solid #E4DED4',
+              paddingTop: '16px',
+            }}
+          >
+            <button type="button" onClick={() => setIsEmpModalOpen(false)} className="btn-gold-outline" style={{ padding: '10px 18px' }}>
               Cancel
             </button>
-            <button type="submit" className="btn-gold" style={{ padding: '10px 24px', minHeight: '44px' }}>
+
+            <button type="submit" className="btn-gold" style={{ padding: '10px 24px' }}>
               <CheckCircle2 size={16} />
-              <span>{editingEmp ? 'Save Changes' : 'Register Stylist'}</span>
+              <span>{editingEmp ? 'Save Employee Profile' : 'Register Employee'}</span>
             </button>
           </div>
         </form>
       </Modal>
 
-      {/* Mark Leave Modal */}
+      {/* ------------------------------------------------------------------------- */}
+      {/* 3. LOG LEAVE MODAL                                                        */}
+      {/* ------------------------------------------------------------------------- */}
       <Modal
         isOpen={isLeaveModalOpen}
         onClose={() => setIsLeaveModalOpen(false)}
         maxWidth="md"
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <CalendarX size={20} color="#F43F5E" />
-            <span className="font-serif" style={{ fontSize: '1.35rem', color: '#F8FAFC' }}>
-              Mark Leave for {targetLeaveEmp?.name}
+            <CalendarX size={20} color="#C9A227" />
+            <span className="font-serif" style={{ fontSize: '1.35rem', color: '#171717' }}>
+              Log Leave for {targetLeaveEmp?.name}
             </span>
           </div>
         }
-        subtitle="Stylist will be marked unavailable for customer booking requests during this period."
+        subtitle="Record leave periods to manage availability across branches."
       >
         <form onSubmit={handleSaveLeave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
               Leave Type *
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <button
-                type="button"
-                onClick={() => setLeaveType('full_day')}
-                style={{
-                  padding: '10px',
-                  borderRadius: '10px',
-                  border: leaveType === 'full_day' ? '1.5px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
-                  backgroundColor: leaveType === 'full_day' ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                  color: leaveType === 'full_day' ? '#F3E5AB' : '#94A3B8',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Full-Day Leave
-              </button>
-              <button
-                type="button"
-                onClick={() => setLeaveType('half_day')}
-                style={{
-                  padding: '10px',
-                  borderRadius: '10px',
-                  border: leaveType === 'half_day' ? '1.5px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
-                  backgroundColor: leaveType === 'half_day' ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                  color: leaveType === 'half_day' ? '#F3E5AB' : '#94A3B8',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Half-Day Leave
-              </button>
-            </div>
+            <select
+              className="salon-select"
+              value={leaveType}
+              onChange={(e) => setLeaveType(e.target.value as LeaveType)}
+            >
+              <option value="full_day">Full-Day Leave</option>
+              <option value="half_day">Half-Day Leave</option>
+            </select>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
                 Start Date *
               </label>
               <input
@@ -782,8 +723,9 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
                 required
               />
             </div>
+
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
                 End Date *
               </label>
               <input
@@ -797,37 +739,35 @@ export const EmployeeManager: React.FC<EmployeeManagerProps> = ({ onOpenLeaveMan
           </div>
 
           <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
               Reason for Leave *
             </label>
-            <textarea
+            <input
+              type="text"
               className="salon-input"
-              rows={3}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="e.g. Personal emergency, family event, medical checkup..."
+              placeholder="e.g. Personal leave, Family event..."
               required
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '16px' }}>
-            <button type="button" onClick={() => setIsLeaveModalOpen(false)} className="btn-dark" style={{ padding: '10px 18px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderTop: '1px solid #E4DED4',
+              paddingTop: '16px',
+            }}
+          >
+            <button type="button" onClick={() => setIsLeaveModalOpen(false)} className="btn-gold-outline" style={{ padding: '10px 18px' }}>
               Cancel
             </button>
-            <button
-              type="submit"
-              style={{
-                padding: '10px 22px',
-                borderRadius: '12px',
-                border: 'none',
-                backgroundColor: '#E11D48',
-                color: '#FFFFFF',
-                fontWeight: 600,
-                cursor: 'pointer',
-                minHeight: '44px',
-              }}
-            >
-              Approve & Mark Leave
+
+            <button type="submit" className="btn-gold" style={{ padding: '10px 22px' }}>
+              <CheckCircle2 size={16} />
+              <span>Approve & Record Leave</span>
             </button>
           </div>
         </form>

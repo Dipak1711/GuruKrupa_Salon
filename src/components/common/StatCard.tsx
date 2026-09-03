@@ -30,6 +30,10 @@ export const StatCard: React.FC<StatCardProps> = ({
         justifyContent: 'space-between',
         position: 'relative',
         overflow: 'hidden',
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #E4DED4',
+        borderRadius: '18px',
+        boxShadow: '0 4px 20px rgba(23, 23, 23, 0.04)',
       }}
     >
       {/* Glow decorative corner */}
@@ -41,14 +45,14 @@ export const StatCard: React.FC<StatCardProps> = ({
           width: '80px',
           height: '80px',
           borderRadius: '50%',
-          backgroundColor: 'rgba(212, 175, 55, 0.08)',
-          filter: 'blur(20px)',
+          backgroundColor: 'rgba(201, 162, 39, 0.06)',
+          filter: 'blur(16px)',
           pointerEvents: 'none',
         }}
       />
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-        <span style={{ fontSize: '0.84rem', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <span style={{ fontSize: '0.84rem', fontWeight: 600, color: '#6F6A62', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           {title}
         </span>
         <div
@@ -56,9 +60,9 @@ export const StatCard: React.FC<StatCardProps> = ({
             width: '42px',
             height: '42px',
             borderRadius: '12px',
-            backgroundColor: 'rgba(212, 175, 55, 0.12)',
-            border: '1px solid rgba(212, 175, 55, 0.25)',
-            color: '#D4AF37',
+            backgroundColor: '#F1EDE6',
+            border: '1px solid #E4DED4',
+            color: '#C9A227',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -73,7 +77,7 @@ export const StatCard: React.FC<StatCardProps> = ({
           style={{
             fontSize: '1.9rem',
             fontWeight: 700,
-            color: '#F8FAFC',
+            color: '#171717',
             fontFamily: 'var(--font-sans)',
             letterSpacing: '-0.02em',
           }}
@@ -88,8 +92,8 @@ export const StatCard: React.FC<StatCardProps> = ({
                 style={{
                   fontSize: '0.78rem',
                   fontWeight: 600,
-                  color: trendPositive ? '#10B981' : '#F43F5E',
-                  backgroundColor: trendPositive ? 'rgba(16, 185, 129, 0.12)' : 'rgba(244, 63, 94, 0.12)',
+                  color: trendPositive ? '#16845B' : '#C94A4A',
+                  backgroundColor: trendPositive ? 'rgba(22, 132, 91, 0.12)' : 'rgba(201, 74, 74, 0.12)',
                   padding: '2px 6px',
                   borderRadius: '6px',
                 }}
@@ -98,7 +102,7 @@ export const StatCard: React.FC<StatCardProps> = ({
               </span>
             )}
             {subtitle && (
-              <span style={{ fontSize: '0.8rem', color: '#64748B' }}>{subtitle}</span>
+              <span style={{ fontSize: '0.8rem', color: '#8C857B' }}>{subtitle}</span>
             )}
           </div>
         )}

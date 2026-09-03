@@ -79,13 +79,13 @@ export const CategoryManager: React.FC = () => {
         }}
       >
         <div>
-          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Taxonomy & Disciplines
           </span>
-          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
             Service Categories ({categories.length})
           </h2>
-          <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
+          <p style={{ fontSize: '0.92rem', color: '#6F6A62', marginTop: '4px' }}>
             Categories organize dynamic services on the customer discovery home page.
           </p>
         </div>
@@ -111,7 +111,9 @@ export const CategoryManager: React.FC = () => {
                 justifyContent: 'space-between',
                 gap: '16px',
                 opacity: cat.is_active ? 1 : 0.6,
-                border: cat.is_active ? '1px solid rgba(212, 175, 55, 0.25)' : '1px dashed rgba(244, 63, 94, 0.35)',
+                backgroundColor: '#FFFFFF',
+                border: cat.is_active ? '1px solid #E4DED4' : '1px dashed #C94A4A',
+                borderRadius: '18px',
               }}
             >
               <div>
@@ -122,38 +124,38 @@ export const CategoryManager: React.FC = () => {
                         width: '42px',
                         height: '42px',
                         borderRadius: '10px',
-                        backgroundColor: 'rgba(212, 175, 55, 0.15)',
+                        backgroundColor: '#F1EDE6',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: '#D4AF37',
+                        color: '#C9A227',
                       }}
                     >
                       <Layers size={20} />
                     </div>
                     <div>
-                      <h3 className="font-serif" style={{ fontSize: '1.25rem', color: '#F8FAFC', fontWeight: 600 }}>
+                      <h3 className="font-serif" style={{ fontSize: '1.25rem', color: '#171717', fontWeight: 600 }}>
                         {cat.name}
                       </h3>
-                      <span style={{ fontSize: '0.78rem', color: '#D4AF37' }}>
+                      <span style={{ fontSize: '0.78rem', color: '#C9A227', fontWeight: 600 }}>
                         {catServices.length} Dynamic Services
                       </span>
                     </div>
                   </div>
 
                   {!cat.is_active && (
-                    <span style={{ fontSize: '0.72rem', color: '#FB7185', fontWeight: 600, backgroundColor: 'rgba(244, 63, 94, 0.12)', padding: '2px 8px', borderRadius: '6px' }}>
+                    <span style={{ fontSize: '0.72rem', color: '#C94A4A', fontWeight: 600, backgroundColor: 'rgba(201, 74, 74, 0.12)', padding: '2px 8px', borderRadius: '6px' }}>
                       Archived
                     </span>
                   )}
                 </div>
 
-                <p style={{ fontSize: '0.86rem', color: '#CBD5E1', lineHeight: 1.45, marginBottom: '14px' }}>
+                <p style={{ fontSize: '0.86rem', color: '#6F6A62', lineHeight: 1.45, marginBottom: '14px' }}>
                   {cat.description}
                 </p>
 
-                <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '12px' }}>
-                  <span style={{ fontSize: '0.74rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+                <div style={{ borderTop: '1px solid #E4DED4', paddingTop: '12px' }}>
+                  <span style={{ fontSize: '0.74rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
                     Services in this Category:
                   </span>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -162,17 +164,18 @@ export const CategoryManager: React.FC = () => {
                         key={s.id}
                         style={{
                           fontSize: '0.72rem',
-                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                          color: '#CBD5E1',
+                          backgroundColor: '#F1EDE6',
+                          color: '#171717',
                           padding: '3px 8px',
                           borderRadius: '6px',
+                          border: '1px solid #E4DED4',
                         }}
                       >
                         {s.name} (₹{s.price})
                       </span>
                     ))}
                     {catServices.length === 0 && (
-                      <span style={{ fontSize: '0.76rem', color: '#64748B' }}>No services assigned yet.</span>
+                      <span style={{ fontSize: '0.76rem', color: '#6F6A62' }}>No services assigned yet.</span>
                     )}
                   </div>
                 </div>
@@ -184,7 +187,7 @@ export const CategoryManager: React.FC = () => {
                   display: 'flex',
                   justifyContent: 'flex-end',
                   gap: '8px',
-                  borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderTop: '1px solid #E4DED4',
                   paddingTop: '14px',
                 }}
               >
@@ -193,14 +196,15 @@ export const CategoryManager: React.FC = () => {
                   style={{
                     padding: '7px 12px',
                     borderRadius: '8px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    color: cat.is_active ? '#94A3B8' : '#10B981',
+                    backgroundColor: '#F1EDE6',
+                    border: '1px solid #E4DED4',
+                    color: cat.is_active ? '#6F6A62' : '#16845B',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px',
                     fontSize: '0.8rem',
+                    fontWeight: 600,
                   }}
                 >
                   {cat.is_active ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -228,8 +232,8 @@ export const CategoryManager: React.FC = () => {
         maxWidth="md"
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Layers size={20} color="#D4AF37" />
-            <span className="font-serif" style={{ fontSize: '1.4rem', color: '#F8FAFC' }}>
+            <Layers size={20} color="#C9A227" />
+            <span className="font-serif" style={{ fontSize: '1.4rem', color: '#171717' }}>
               {editingCategory ? `Edit Category: ${editingCategory.name}` : 'Add Service Category'}
             </span>
           </div>
@@ -238,7 +242,7 @@ export const CategoryManager: React.FC = () => {
       >
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div>
-            <label style={{ fontSize: '0.84rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
               Category Name *
             </label>
             <input
@@ -252,7 +256,7 @@ export const CategoryManager: React.FC = () => {
           </div>
 
           <div>
-            <label style={{ fontSize: '0.84rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
               Description *
             </label>
             <textarea
@@ -267,7 +271,7 @@ export const CategoryManager: React.FC = () => {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ fontSize: '0.84rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
                 Icon Reference
               </label>
               <input
@@ -280,7 +284,7 @@ export const CategoryManager: React.FC = () => {
             </div>
 
             <div>
-              <label style={{ fontSize: '0.84rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
                 Display Order
               </label>
               <input
@@ -298,11 +302,11 @@ export const CategoryManager: React.FC = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+              borderTop: '1px solid #E4DED4',
               paddingTop: '16px',
             }}
           >
-            <button type="button" onClick={() => setIsModalOpen(false)} className="btn-dark" style={{ padding: '10px 18px' }}>
+            <button type="button" onClick={() => setIsModalOpen(false)} className="btn-gold-outline" style={{ padding: '10px 18px' }}>
               Cancel
             </button>
 

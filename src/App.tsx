@@ -144,7 +144,7 @@ const SalonApp: React.FC = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#08090C' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#F7F4EF' }}>
       {/* Sticky Luxury Header */}
       <Header
         activeView={activeView}
@@ -206,10 +206,10 @@ const SalonApp: React.FC = () => {
       {/* Luxury Salon Footer */}
       <footer
         style={{
-          borderTop: '1px solid rgba(212, 175, 55, 0.2)',
-          backgroundColor: '#07080b',
+          borderTop: '1px solid #E4DED4',
+          backgroundColor: '#FFFFFF',
           padding: '40px 32px 24px 32px',
-          color: '#94A3B8',
+          color: '#6F6A62',
           fontSize: '0.86rem',
         }}
       >
@@ -230,54 +230,54 @@ const SalonApp: React.FC = () => {
                   width: '28px',
                   height: '28px',
                   borderRadius: '8px',
-                  backgroundColor: '#D4AF37',
+                  backgroundColor: '#C9A227',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <Scissors size={16} color="#0D0F14" />
+                <Scissors size={16} color="#FFFFFF" />
               </div>
-              <span className="font-serif" style={{ fontSize: '1.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+              <span className="font-serif" style={{ fontSize: '1.2rem', color: '#171717', fontWeight: 700 }}>
                 GuruKrupa SALON
               </span>
             </div>
-            <p style={{ lineHeight: 1.5, color: '#94A3B8', fontSize: '0.82rem' }}>
+            <p style={{ lineHeight: 1.5, color: '#6F6A62', fontSize: '0.82rem' }}>
               Premier luxury grooming, precision scissor craft, signature beard architecture, and restorative skin rejuvenation.
             </p>
           </div>
 
           <div>
-            <h4 style={{ color: '#F8FAFC', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>VIP Hotline</h4>
+            <h4 style={{ color: '#171717', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>VIP Hotline</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <a
                 href="tel:+919823012345"
-                style={{ color: '#F3E5AB', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}
+                style={{ color: '#9A7B1C', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}
               >
-                <Phone size={14} color="#D4AF37" />
+                <Phone size={14} color="#C9A227" />
                 <span>+91 98230 12345 (Direct Call)</span>
               </a>
-              <span style={{ fontSize: '0.8rem', color: '#64748B' }}>
+              <span style={{ fontSize: '0.8rem', color: '#8C857B' }}>
                 Instant phone consultation available with master stylists
               </span>
             </div>
           </div>
 
           <div>
-            <h4 style={{ color: '#F8FAFC', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>Operating Hours</h4>
+            <h4 style={{ color: '#171717', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>Operating Hours</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.82rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#CBD5E1' }}>
-                <Clock size={14} color="#D4AF37" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#171717' }}>
+                <Clock size={14} color="#C9A227" />
                 <span>Mon – Sun: 09:00 AM – 09:30 PM</span>
               </div>
-              <span style={{ color: '#10B981', fontSize: '0.78rem' }}>Open 7 Days • Valet Parking Available</span>
+              <span style={{ color: '#16845B', fontSize: '0.78rem', fontWeight: 600 }}>Open 7 Days • Valet Parking Available</span>
             </div>
           </div>
 
           <div>
-            <h4 style={{ color: '#F8FAFC', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>Studio Location</h4>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '0.82rem', color: '#CBD5E1' }}>
-              <MapPin size={15} color="#D4AF37" style={{ marginTop: '2px', flexShrink: 0 }} />
+            <h4 style={{ color: '#171717', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>Studio Location</h4>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '0.82rem', color: '#171717' }}>
+              <MapPin size={15} color="#C9A227" style={{ marginTop: '2px', flexShrink: 0 }} />
               <span>Linking Road, Bandra West, Mumbai, Maharashtra 400050</span>
             </div>
           </div>
@@ -287,7 +287,7 @@ const SalonApp: React.FC = () => {
           style={{
             maxWidth: '1360px',
             margin: '0 auto',
-            borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+            borderTop: '1px solid #E4DED4',
             paddingTop: '20px',
             display: 'flex',
             justifyContent: 'space-between',
@@ -295,13 +295,13 @@ const SalonApp: React.FC = () => {
             flexWrap: 'wrap',
             gap: '12px',
             fontSize: '0.78rem',
-            color: '#64748B',
+            color: '#8C857B',
           }}
         >
           <span>© {new Date().getFullYear()} GuruKrupa SALON. All rights reserved.</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span>Crafted for luxury salon operations</span>
-            <ShieldCheck size={14} color="#D4AF37" />
+            <ShieldCheck size={14} color="#C9A227" />
           </div>
         </div>
       </footer>

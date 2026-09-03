@@ -79,9 +79,10 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
           position: 'relative',
           overflow: 'hidden',
           padding: '52px 36px',
-          background: 'linear-gradient(135deg, rgba(22, 26, 36, 0.95) 0%, rgba(10, 12, 16, 0.98) 100%)',
-          border: '1px solid rgba(212, 175, 55, 0.35)',
+          background: 'linear-gradient(135deg, #FFFFFF 0%, #F1EDE6 100%)',
+          border: '1px solid #E4DED4',
           borderRadius: '28px',
+          boxShadow: '0 8px 30px rgba(23, 23, 23, 0.04)',
         }}
       >
         <div
@@ -92,8 +93,8 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
             width: '320px',
             height: '320px',
             borderRadius: '50%',
-            backgroundColor: 'rgba(212, 175, 55, 0.12)',
-            filter: 'blur(60px)',
+            backgroundColor: 'rgba(201, 162, 39, 0.08)',
+            filter: 'blur(50px)',
             pointerEvents: 'none',
           }}
         />
@@ -104,17 +105,17 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              backgroundColor: 'rgba(212, 175, 55, 0.12)',
-              border: '1px solid rgba(212, 175, 55, 0.3)',
+              backgroundColor: 'rgba(201, 162, 39, 0.12)',
+              border: '1px solid rgba(201, 162, 39, 0.3)',
               borderRadius: '9999px',
               padding: '6px 14px',
               fontSize: '0.82rem',
               fontWeight: 600,
-              color: '#F3E5AB',
+              color: '#9A7B1C',
               marginBottom: '18px',
             }}
           >
-            <Sparkles size={14} color="#D4AF37" />
+            <Sparkles size={14} color="#C9A227" />
             <span>The Royal Standard in Grooming & Styling</span>
           </div>
 
@@ -124,7 +125,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
               fontSize: 'clamp(2.1rem, 4vw, 3.2rem)',
               fontWeight: 700,
               lineHeight: 1.15,
-              color: '#FFFFFF',
+              color: '#171717',
               marginBottom: '16px',
             }}
           >
@@ -134,7 +135,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
           <p
             style={{
               fontSize: '1rem',
-              color: '#CBD5E1',
+              color: '#6F6A62',
               lineHeight: 1.6,
               marginBottom: '28px',
             }}
@@ -161,7 +162,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
               className="btn-gold-outline"
               style={{ padding: '13px 22px' }}
             >
-              <Sparkles size={16} />
+              <Sparkles size={16} color="#C9A227" />
               <span>View Privileges & Offers</span>
             </button>
           </div>
@@ -171,10 +172,10 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
       {/* 2. SERVICE CATEGORIES SECTION */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div>
-          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Taxonomy & Disciplines
           </span>
-          <h2 className="font-serif" style={{ fontSize: '2rem', color: '#F8FAFC', fontWeight: 700 }}>
+          <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
             Service Categories
           </h2>
         </div>
@@ -206,8 +207,8 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
                   alignItems: 'flex-start',
                   textAlign: 'left',
                   cursor: 'pointer',
-                  border: isSelected ? '1.5px solid #D4AF37' : '1px solid rgba(212, 175, 55, 0.2)',
-                  backgroundColor: isSelected ? 'rgba(212, 175, 55, 0.14)' : 'rgba(18, 22, 30, 0.8)',
+                  border: isSelected ? '1.5px solid #C9A227' : '1px solid #E4DED4',
+                  backgroundColor: isSelected ? 'rgba(201, 162, 39, 0.1)' : '#FFFFFF',
                   minHeight: '110px',
                 }}
               >
@@ -216,21 +217,21 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
                     width: '36px',
                     height: '36px',
                     borderRadius: '10px',
-                    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+                    backgroundColor: '#F1EDE6',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#D4AF37',
+                    color: '#C9A227',
                     marginBottom: '10px',
                   }}
                 >
                   <Layers size={18} />
                 </div>
 
-                <h4 style={{ fontSize: '0.96rem', color: '#F8FAFC', fontWeight: 600, marginBottom: '2px' }}>
+                <h4 style={{ fontSize: '0.96rem', color: '#171717', fontWeight: 600, marginBottom: '2px' }}>
                   {cat.name}
                 </h4>
-                <span style={{ fontSize: '0.76rem', color: '#94A3B8' }}>{catCount} Services</span>
+                <span style={{ fontSize: '0.76rem', color: '#6F6A62' }}>{catCount} Services</span>
               </motion.button>
             );
           })}
@@ -241,13 +242,13 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
       <div id="services-section" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
               Curated Menu
             </span>
-            <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+            <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
               Dynamic Services ({filteredServices.length})
             </h2>
-            <p style={{ fontSize: '0.9rem', color: '#94A3B8', marginTop: '2px' }}>
+            <p style={{ fontSize: '0.9rem', color: '#6F6A62', marginTop: '2px' }}>
               Prices and descriptions are served live from our database.
             </p>
           </div>
@@ -270,9 +271,9 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
             style={{
               padding: '10px 20px',
               borderRadius: '9999px',
-              border: selectedCategory === 'all' ? '1px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
-              backgroundColor: selectedCategory === 'all' ? 'rgba(212, 175, 55, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-              color: selectedCategory === 'all' ? '#F3E5AB' : '#94A3B8',
+              border: selectedCategory === 'all' ? '1px solid #C9A227' : '1px solid #E4DED4',
+              backgroundColor: selectedCategory === 'all' ? 'rgba(201, 162, 39, 0.14)' : '#FFFFFF',
+              color: selectedCategory === 'all' ? '#171717' : '#6F6A62',
               fontSize: '0.86rem',
               fontWeight: 600,
               cursor: 'pointer',
@@ -291,9 +292,9 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
               style={{
                 padding: '10px 20px',
                 borderRadius: '9999px',
-                border: selectedCategory === cat.id ? '1px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
-                backgroundColor: selectedCategory === cat.id ? 'rgba(212, 175, 55, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-                color: selectedCategory === cat.id ? '#F3E5AB' : '#94A3B8',
+                border: selectedCategory === cat.id ? '1px solid #C9A227' : '1px solid #E4DED4',
+                backgroundColor: selectedCategory === cat.id ? 'rgba(201, 162, 39, 0.14)' : '#FFFFFF',
+                color: selectedCategory === cat.id ? '#171717' : '#6F6A62',
                 fontSize: '0.86rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -307,10 +308,10 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
           ))}
         </div>
 
-        {/* Responsive Grid for Services (1 column mobile, 2+ column desktop) */}
+        {/* Responsive Grid for Services */}
         {isLoading ? (
-          <div style={{ padding: '48px', textAlign: 'center', color: '#94A3B8' }}>
-            <Sparkles size={24} color="#D4AF37" style={{ marginBottom: '12px', animation: 'spin 2s linear infinite' }} />
+          <div style={{ padding: '48px', textAlign: 'center', color: '#6F6A62' }}>
+            <Sparkles size={24} color="#C9A227" style={{ marginBottom: '12px', animation: 'spin 2s linear infinite' }} />
             <p>Loading live services from Supabase...</p>
           </div>
         ) : filteredServices.length === 0 ? (
@@ -348,10 +349,10 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
               Privileges
             </span>
-            <h2 className="font-serif" style={{ fontSize: '2rem', color: '#F8FAFC', fontWeight: 700 }}>
+            <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
               Exclusive Salon Offers
             </h2>
           </div>
@@ -373,6 +374,8 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
                 alignItems: 'center',
                 gap: '18px',
                 flexWrap: 'wrap',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #E4DED4',
               }}
             >
               <img
@@ -382,17 +385,17 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
               />
               <div style={{ flex: 1, minWidth: '180px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#D4AF37', backgroundColor: 'rgba(212, 175, 55, 0.15)', padding: '2px 8px', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9A7B1C', backgroundColor: 'rgba(201, 162, 39, 0.15)', padding: '2px 8px', borderRadius: '6px' }}>
                     {offer.code}
                   </span>
-                  <span style={{ fontSize: '0.75rem', color: '#10B981', fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.75rem', color: '#16845B', fontWeight: 600 }}>
                     {offer.discount_type === 'percentage' ? `${offer.discount_value}% OFF` : `Save ₹${offer.discount_value}`}
                   </span>
                 </div>
-                <h4 style={{ fontSize: '1rem', color: '#F8FAFC', fontWeight: 600, marginBottom: '4px' }}>
+                <h4 style={{ fontSize: '1rem', color: '#171717', fontWeight: 600, marginBottom: '4px' }}>
                   {offer.title}
                 </h4>
-                <p style={{ fontSize: '0.8rem', color: '#CBD5E1', lineHeight: 1.35 }}>
+                <p style={{ fontSize: '0.8rem', color: '#6F6A62', lineHeight: 1.35 }}>
                   {offer.description}
                 </p>
               </div>
@@ -402,7 +405,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
                 className="btn-gold-outline"
                 style={{ padding: '8px 12px', fontSize: '0.8rem' }}
               >
-                {copiedCode === offer.code ? <Check size={14} color="#10B981" /> : <Copy size={14} />}
+                {copiedCode === offer.code ? <Check size={14} color="#16845B" /> : <Copy size={14} />}
                 <span>{copiedCode === offer.code ? 'Copied' : 'Copy Code'}</span>
               </button>
             </div>
@@ -413,13 +416,13 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
       {/* 5. FEATURED EMPLOYEES / STYLISTS SECTION */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div>
-          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Master Craftsmen
           </span>
-          <h2 className="font-serif" style={{ fontSize: '2rem', color: '#F8FAFC', fontWeight: 700 }}>
+          <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
             Featured Master Stylists
           </h2>
-          <p style={{ fontSize: '0.9rem', color: '#94A3B8', marginTop: '2px' }}>
+          <p style={{ fontSize: '0.9rem', color: '#6F6A62', marginTop: '2px' }}>
             Directly selectable stylists for your booking request with direct phone call links.
           </p>
         </div>
@@ -437,6 +440,8 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
                   flexDirection: 'column',
                   alignItems: 'center',
                   textAlign: 'center',
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E4DED4',
                 }}
               >
                 <img
@@ -447,17 +452,17 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
                     height: '80px',
                     borderRadius: '50%',
                     objectFit: 'cover',
-                    border: '2px solid #D4AF37',
+                    border: '2px solid #C9A227',
                     marginBottom: '12px',
                   }}
                 />
-                <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#F8FAFC', fontWeight: 600 }}>
+                <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#171717', fontWeight: 600 }}>
                   {emp.name}
                 </h3>
-                <span style={{ fontSize: '0.82rem', color: '#D4AF37', fontWeight: 500, marginBottom: '6px' }}>
+                <span style={{ fontSize: '0.82rem', color: '#C9A227', fontWeight: 600, marginBottom: '6px' }}>
                   {emp.role_title}
                 </span>
-                <span style={{ fontSize: '0.78rem', color: '#94A3B8', marginBottom: '14px' }}>
+                <span style={{ fontSize: '0.78rem', color: '#6F6A62', marginBottom: '14px' }}>
                   {emp.experience_years} Yrs Exp • ★ {emp.rating} ({emp.reviews_count})
                 </span>
 
@@ -466,7 +471,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
                   className="btn-gold-outline"
                   style={{ width: '100%', padding: '9px 12px', fontSize: '0.82rem' }}
                 >
-                  <Scissors size={14} color="#D4AF37" />
+                  <Scissors size={14} color="#C9A227" />
                   <span>Book at Branch</span>
                 </button>
               </div>
@@ -478,10 +483,10 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
               Showcase Portfolio
             </span>
-            <h2 className="font-serif" style={{ fontSize: '2rem', color: '#F8FAFC', fontWeight: 700 }}>
+            <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
               Transformations & Styles
             </h2>
           </div>
@@ -494,18 +499,18 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '18px' }}>
           {gallery.slice(0, 3).map((item, idx) => (
-            <div key={item.id || idx} className="glass-card" style={{ overflow: 'hidden' }}>
+            <div key={item.id || idx} className="glass-card" style={{ overflow: 'hidden', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
               <div style={{ position: 'relative', height: '220px' }}>
                 <img src={item.image_url} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                <div style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: 'rgba(10, 12, 16, 0.85)', color: '#F3E5AB', padding: '3px 8px', borderRadius: '6px', fontSize: '0.74rem', fontWeight: 600 }}>
+                <div style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: 'rgba(255, 255, 255, 0.9)', color: '#171717', padding: '3px 8px', borderRadius: '6px', fontSize: '0.74rem', fontWeight: 600, border: '1px solid #E4DED4' }}>
                   {item.category}
                 </div>
               </div>
               <div style={{ padding: '16px' }}>
-                <h4 className="font-serif" style={{ fontSize: '1.1rem', color: '#F8FAFC', fontWeight: 600, marginBottom: '4px' }}>
+                <h4 className="font-serif" style={{ fontSize: '1.1rem', color: '#171717', fontWeight: 600, marginBottom: '4px' }}>
                   {item.title}
                 </h4>
-                <p style={{ fontSize: '0.82rem', color: '#CBD5E1', lineHeight: 1.4 }}>
+                <p style={{ fontSize: '0.82rem', color: '#6F6A62', lineHeight: 1.4 }}>
                   {item.description}
                 </p>
               </div>
@@ -519,14 +524,15 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
         className="glass-card"
         style={{
           padding: '36px 28px',
-          background: 'linear-gradient(135deg, rgba(22, 26, 36, 0.8) 0%, rgba(12, 15, 21, 0.9) 100%)',
+          background: 'linear-gradient(135deg, #FFFFFF 0%, #F1EDE6 100%)',
+          border: '1px solid #E4DED4',
         }}
       >
         <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 24px auto' }}>
-          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Client Endorsements
           </span>
-          <h2 className="font-serif" style={{ fontSize: '2rem', color: '#F8FAFC', fontWeight: 700 }}>
+          <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
             Celebrated by Mumbai Connoisseurs
           </h2>
         </div>
@@ -536,8 +542,8 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
             <div
               key={rev.id}
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #E4DED4',
                 borderRadius: '16px',
                 padding: '20px',
                 display: 'flex',
@@ -548,17 +554,17 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
               <div>
                 <div style={{ display: 'flex', gap: '3px', marginBottom: '10px' }}>
                   {[...Array(rev.rating)].map((_, i) => (
-                    <Star key={i} size={15} color="#F59E0B" fill="#F59E0B" />
+                    <Star key={i} size={15} color="#B7791F" fill="#B7791F" />
                   ))}
                 </div>
-                <p style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5, fontStyle: 'italic' }}>
+                <p style={{ fontSize: '0.88rem', color: '#171717', lineHeight: 1.5, fontStyle: 'italic' }}>
                   "{rev.comment}"
                 </p>
               </div>
 
-              <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.06)', paddingTop: '12px', marginTop: '14px' }}>
-                <h4 style={{ fontSize: '0.92rem', color: '#F8FAFC', fontWeight: 600 }}>{rev.customer_name}</h4>
-                <span style={{ fontSize: '0.78rem', color: '#D4AF37' }}>{rev.service_name}</span>
+              <div style={{ borderTop: '1px solid #E4DED4', paddingTop: '12px', marginTop: '14px' }}>
+                <h4 style={{ fontSize: '0.92rem', color: '#171717', fontWeight: 600 }}>{rev.customer_name}</h4>
+                <span style={{ fontSize: '0.78rem', color: '#C9A227', fontWeight: 600 }}>{rev.service_name}</span>
               </div>
             </div>
           ))}
@@ -566,43 +572,43 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
       </div>
 
       {/* 8. CONTACT & STUDIO INFO SECTION */}
-      <div className="glass-card" style={{ padding: '28px' }}>
+      <div className="glass-card" style={{ padding: '28px', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#D4AF37', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#C9A227', marginBottom: '8px' }}>
               <Phone size={18} />
-              <h4 style={{ fontSize: '1rem', color: '#F8FAFC', fontWeight: 600 }}>Direct VIP Phone Desk</h4>
+              <h4 style={{ fontSize: '1rem', color: '#171717', fontWeight: 600 }}>Direct VIP Phone Desk</h4>
             </div>
             <a
               href="tel:+919823012345"
-              style={{ fontSize: '1.25rem', fontWeight: 700, color: '#F3E5AB', textDecoration: 'none', display: 'block', marginBottom: '4px' }}
+              style={{ fontSize: '1.25rem', fontWeight: 700, color: '#9A7B1C', textDecoration: 'none', display: 'block', marginBottom: '4px' }}
             >
               +91 98230 12345
             </a>
-            <p style={{ fontSize: '0.82rem', color: '#94A3B8' }}>
+            <p style={{ fontSize: '0.82rem', color: '#6F6A62' }}>
               Instant call desk for consultations & special arrangements
             </p>
           </div>
 
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#D4AF37', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#C9A227', marginBottom: '8px' }}>
               <Clock size={18} />
-              <h4 style={{ fontSize: '1rem', color: '#F8FAFC', fontWeight: 600 }}>Studio Hours</h4>
+              <h4 style={{ fontSize: '1rem', color: '#171717', fontWeight: 600 }}>Studio Hours</h4>
             </div>
-            <p style={{ fontSize: '0.96rem', color: '#CBD5E1', fontWeight: 600, marginBottom: '2px' }}>
+            <p style={{ fontSize: '0.96rem', color: '#171717', fontWeight: 600, marginBottom: '2px' }}>
               Monday – Sunday: 09:00 AM – 09:30 PM
             </p>
-            <p style={{ fontSize: '0.82rem', color: '#10B981' }}>
+            <p style={{ fontSize: '0.82rem', color: '#16845B', fontWeight: 600 }}>
               Open 7 days a week • Valet parking available
             </p>
           </div>
 
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#D4AF37', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#C9A227', marginBottom: '8px' }}>
               <MapPin size={18} />
-              <h4 style={{ fontSize: '1rem', color: '#F8FAFC', fontWeight: 600 }}>Studio Address</h4>
+              <h4 style={{ fontSize: '1rem', color: '#171717', fontWeight: 600 }}>Studio Address</h4>
             </div>
-            <p style={{ fontSize: '0.88rem', color: '#CBD5E1', lineHeight: 1.4 }}>
+            <p style={{ fontSize: '0.88rem', color: '#6F6A62', lineHeight: 1.4 }}>
               Linking Road, Bandra West, Mumbai, Maharashtra 400050
             </p>
           </div>

@@ -69,22 +69,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
     })
     .sort((a, b) => b.revenue - a.revenue);
 
-  const COLORS = ['#D4AF37', '#10B981', '#38BDF8', '#F59E0B'];
+  const COLORS = ['#C9A227', '#16845B', '#2B6CB0', '#B7791F'];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       {/* Top Header with Branch Banner */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Executive Operations Command
           </span>
           <span
             style={{
               fontSize: '0.72rem',
               fontWeight: 700,
-              color: '#0A0C10',
-              backgroundColor: '#D4AF37',
+              color: '#FFFFFF',
+              backgroundColor: '#C9A227',
               padding: '2px 8px',
               borderRadius: '6px',
               textTransform: 'uppercase',
@@ -93,10 +93,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
             {currentBranch?.code || 'BRANCH_1'}
           </span>
         </div>
-        <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+        <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
           {currentBranch ? currentBranch.name : 'Salon Operations'}
         </h2>
-        <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
+        <p style={{ fontSize: '0.92rem', color: '#6F6A62', marginTop: '4px' }}>
           Live operational health, revenue analytics, and employee ranking for {currentBranch ? currentBranch.name : 'current branch'}.
         </p>
       </div>
@@ -152,15 +152,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
         }}
       >
         {/* Revenue Trends Area Chart */}
-        <div className="glass-card" style={{ padding: '24px' }}>
+        <div className="glass-card" style={{ padding: '24px', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
-              <h3 className="font-serif" style={{ fontSize: '1.25rem', color: '#F8FAFC', fontWeight: 600 }}>
+              <h3 className="font-serif" style={{ fontSize: '1.25rem', color: '#171717', fontWeight: 600 }}>
                 Weekly Revenue Trend
               </h3>
-              <span style={{ fontSize: '0.8rem', color: '#94A3B8' }}>7-day revenue performance</span>
+              <span style={{ fontSize: '0.8rem', color: '#6F6A62' }}>7-day revenue performance</span>
             </div>
-            <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#F3E5AB' }}>
+            <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#C9A227' }}>
               {formatPrice(salonStats.totalRevenue)}
             </span>
           </div>
@@ -170,33 +170,34 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
               <AreaChart data={dailyChartData}>
                 <defs>
                   <linearGradient id="goldArea" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#D4AF37" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#C9A227" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#C9A227" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="day" stroke="#64748B" fontSize={12} tickLine={false} />
-                <YAxis stroke="#64748B" fontSize={12} tickLine={false} tickFormatter={(v) => `₹${v}`} />
+                <XAxis dataKey="day" stroke="#6F6A62" fontSize={12} tickLine={false} />
+                <YAxis stroke="#6F6A62" fontSize={12} tickLine={false} tickFormatter={(v) => `₹${v}`} />
                 <Tooltip
                   formatter={(value: any) => [formatPrice(Number(value)), 'Revenue']}
                   contentStyle={{
-                    backgroundColor: '#12151D',
-                    border: '1px solid rgba(212, 175, 55, 0.4)',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #E4DED4',
                     borderRadius: '10px',
-                    color: '#F8FAFC',
+                    color: '#171717',
+                    boxShadow: '0 4px 14px rgba(23, 23, 23, 0.08)',
                   }}
                 />
-                <Area type="monotone" dataKey="revenue" stroke="#D4AF37" strokeWidth={2.5} fill="url(#goldArea)" />
+                <Area type="monotone" dataKey="revenue" stroke="#C9A227" strokeWidth={2.5} fill="url(#goldArea)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Payment Methods Breakdown */}
-        <div className="glass-card" style={{ padding: '24px' }}>
-          <h3 className="font-serif" style={{ fontSize: '1.25rem', color: '#F8FAFC', fontWeight: 600, marginBottom: '6px' }}>
+        <div className="glass-card" style={{ padding: '24px', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
+          <h3 className="font-serif" style={{ fontSize: '1.25rem', color: '#171717', fontWeight: 600, marginBottom: '6px' }}>
             Payment Method Split
           </h3>
-          <span style={{ fontSize: '0.8rem', color: '#94A3B8', display: 'block', marginBottom: '18px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#6F6A62', display: 'block', marginBottom: '18px' }}>
             UPI vs. Cash vs. Card collections
           </span>
 
@@ -220,7 +221,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
                   </Pie>
                   <Tooltip
                     formatter={(val: any) => [formatPrice(Number(val)), 'Amount']}
-                    contentStyle={{ backgroundColor: '#12151D', borderRadius: '8px', border: '1px solid #D4AF37' }}
+                    contentStyle={{ backgroundColor: '#FFFFFF', borderRadius: '8px', border: '1px solid #E4DED4' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -231,9 +232,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
                 <div key={p.method} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.86rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: COLORS[idx % COLORS.length] }} />
-                    <span style={{ color: '#E2E8F0' }}>{p.method} ({p.percentage}%)</span>
+                    <span style={{ color: '#171717' }}>{p.method} ({p.percentage}%)</span>
                   </div>
-                  <span style={{ fontWeight: 600, color: '#F3E5AB' }}>{formatPrice(p.amount)}</span>
+                  <span style={{ fontWeight: 600, color: '#C9A227' }}>{formatPrice(p.amount)}</span>
                 </div>
               ))}
             </div>
@@ -242,13 +243,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
       </div>
 
       {/* Stylist Performance Leaderboard */}
-      <div className="glass-card" style={{ padding: '24px' }}>
+      <div className="glass-card" style={{ padding: '24px', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
           <div>
-            <h3 className="font-serif" style={{ fontSize: '1.35rem', color: '#F8FAFC', fontWeight: 600 }}>
+            <h3 className="font-serif" style={{ fontSize: '1.35rem', color: '#171717', fontWeight: 600 }}>
               Master Stylist Performance Leaderboard
             </h3>
-            <span style={{ fontSize: '0.82rem', color: '#94A3B8' }}>
+            <span style={{ fontSize: '0.82rem', color: '#6F6A62' }}>
               Revenue generated and clients served by each craftsman
             </span>
           </div>
@@ -265,8 +266,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
             <div
               key={emp.id}
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                backgroundColor: '#F1EDE6',
+                border: '1px solid #E4DED4',
                 borderRadius: '14px',
                 padding: '16px',
                 display: 'flex',
@@ -278,7 +279,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
                 <img
                   src={emp.avatar_url}
                   alt={emp.name}
-                  style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #D4AF37' }}
+                  style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #C9A227' }}
                 />
                 {index === 0 && (
                   <div
@@ -286,8 +287,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
                       position: 'absolute',
                       top: '-6px',
                       right: '-6px',
-                      backgroundColor: '#D4AF37',
-                      color: '#0D0F14',
+                      backgroundColor: '#C9A227',
+                      color: '#FFFFFF',
                       borderRadius: '50%',
                       width: '20px',
                       height: '20px',
@@ -304,15 +305,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
               </div>
 
               <div style={{ flex: 1 }}>
-                <h4 style={{ fontSize: '1rem', color: '#F8FAFC', fontWeight: 600 }}>{emp.name}</h4>
-                <span style={{ fontSize: '0.78rem', color: '#94A3B8' }}>{emp.completed} Services Completed</span>
+                <h4 style={{ fontSize: '1rem', color: '#171717', fontWeight: 600 }}>{emp.name}</h4>
+                <span style={{ fontSize: '0.78rem', color: '#6F6A62' }}>{emp.completed} Services Completed</span>
               </div>
 
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#10B981' }}>
+                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#16845B' }}>
                   {formatPrice(emp.revenue)}
                 </div>
-                <span style={{ fontSize: '0.76rem', color: '#F59E0B' }}>★ {emp.rating}</span>
+                <span style={{ fontSize: '0.76rem', color: '#B7791F', fontWeight: 600 }}>★ {emp.rating}</span>
               </div>
             </div>
           ))}
@@ -320,9 +321,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
       </div>
 
       {/* Recent Service Fulfillment Transactions */}
-      <div className="glass-card" style={{ padding: '24px', overflowX: 'auto' }}>
+      <div className="glass-card" style={{ padding: '24px', overflowX: 'auto', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h3 className="font-serif" style={{ fontSize: '1.35rem', color: '#F8FAFC', fontWeight: 600 }}>
+          <h3 className="font-serif" style={{ fontSize: '1.35rem', color: '#171717', fontWeight: 600 }}>
             Recent Service Fulfillment Transactions
           </h3>
 
@@ -334,13 +335,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
         </div>
 
         {serviceRecords.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '24px', color: '#94A3B8' }}>
+          <div style={{ textAlign: 'center', padding: '24px', color: '#6F6A62' }}>
             No recent service transactions recorded.
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#94A3B8', fontSize: '0.8rem', textTransform: 'uppercase' }}>
+              <tr style={{ borderBottom: '1px solid #E4DED4', color: '#6F6A62', fontSize: '0.8rem', textTransform: 'uppercase' }}>
                 <th style={{ padding: '10px 12px' }}>Client</th>
                 <th style={{ padding: '10px 12px' }}>Services</th>
                 <th style={{ padding: '10px 12px' }}>Stylist</th>
@@ -351,23 +352,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToView
             </thead>
             <tbody>
               {serviceRecords.slice(0, 6).map((rec) => (
-                <tr key={rec.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.86rem' }}>
-                  <td style={{ padding: '12px', color: '#F8FAFC', fontWeight: 500 }}>
+                <tr key={rec.id} style={{ borderBottom: '1px solid #E4DED4', fontSize: '0.86rem' }}>
+                  <td style={{ padding: '12px', color: '#171717', fontWeight: 600 }}>
                     {rec.customer_name}
                   </td>
-                  <td style={{ padding: '12px', color: '#CBD5E1' }}>
+                  <td style={{ padding: '12px', color: '#6F6A62' }}>
                     {rec.items.map((i) => i.service_name).join(', ')}
                   </td>
-                  <td style={{ padding: '12px', color: '#F3E5AB' }}>
+                  <td style={{ padding: '12px', color: '#C9A227', fontWeight: 600 }}>
                     {rec.employee_name || 'Stylist'}
                   </td>
-                  <td style={{ padding: '12px', fontWeight: 600, color: '#10B981' }}>
+                  <td style={{ padding: '12px', fontWeight: 700, color: '#16845B' }}>
                     {formatPrice(rec.total_amount)}
                   </td>
-                  <td style={{ padding: '12px', color: '#CBD5E1', textTransform: 'uppercase', fontSize: '0.78rem' }}>
+                  <td style={{ padding: '12px', color: '#171717', textTransform: 'uppercase', fontSize: '0.78rem', fontWeight: 500 }}>
                     {rec.payment?.payment_method || 'UPI'}
                   </td>
-                  <td style={{ padding: '12px', color: '#94A3B8', fontSize: '0.78rem' }}>
+                  <td style={{ padding: '12px', color: '#6F6A62', fontSize: '0.78rem' }}>
                     {formatDateTime(rec.completed_at)}
                   </td>
                 </tr>

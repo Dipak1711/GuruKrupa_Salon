@@ -44,7 +44,7 @@ export const SettingsView: React.FC = () => {
   const [notifyOnLeaveRequest, setNotifyOnLeaveRequest] = useState(true);
 
   // Appearance State
-  const [themeMode, setThemeMode] = useState('Obsidian Gold Luxury');
+  const [themeMode, setThemeMode] = useState('Light Luxury Salon UI');
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,13 +61,13 @@ export const SettingsView: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', maxWidth: '980px', margin: '0 auto' }}>
       <div>
-        <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+        <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
           Configuration & Environment
         </span>
-        <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+        <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
           Admin Salon Settings
         </h2>
-        <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
+        <p style={{ fontSize: '0.92rem', color: '#6F6A62', marginTop: '4px' }}>
           Manage branding, contact information, operational preferences, and system notifications.
         </p>
       </div>
@@ -79,7 +79,7 @@ export const SettingsView: React.FC = () => {
           gap: '8px',
           overflowX: 'auto',
           paddingBottom: '4px',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          borderBottom: '1px solid #E4DED4',
         }}
       >
         {[
@@ -98,9 +98,9 @@ export const SettingsView: React.FC = () => {
               padding: '10px 16px',
               borderRadius: '10px 10px 0 0',
               border: 'none',
-              backgroundColor: activeTab === tab.id ? 'rgba(212, 175, 55, 0.16)' : 'transparent',
-              borderBottom: activeTab === tab.id ? '2px solid #D4AF37' : '2px solid transparent',
-              color: activeTab === tab.id ? '#F3E5AB' : '#94A3B8',
+              backgroundColor: activeTab === tab.id ? 'rgba(201, 162, 39, 0.16)' : 'transparent',
+              borderBottom: activeTab === tab.id ? '2px solid #C9A227' : '2px solid transparent',
+              color: activeTab === tab.id ? '#9A7B1C' : '#6F6A62',
               fontSize: '0.86rem',
               fontWeight: 600,
               cursor: 'pointer',
@@ -118,7 +118,7 @@ export const SettingsView: React.FC = () => {
       </div>
 
       {/* Form Body */}
-      <form onSubmit={handleSave} className="glass-card" style={{ padding: '28px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <form onSubmit={handleSave} className="glass-card" style={{ padding: '28px', display: 'flex', flexDirection: 'column', gap: '24px', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4', borderRadius: '18px' }}>
         {/* TAB 1: Salon Information */}
         {activeTab === 'info' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
@@ -126,10 +126,10 @@ export const SettingsView: React.FC = () => {
               <img
                 src={logoUrl}
                 alt="Salon Logo"
-                style={{ width: '74px', height: '74px', borderRadius: '16px', objectFit: 'cover', border: '2px solid #D4AF37' }}
+                style={{ width: '74px', height: '74px', borderRadius: '16px', objectFit: 'cover', border: '2px solid #C9A227' }}
               />
               <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Logo URL</label>
+                <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Logo URL</label>
                 <input
                   type="url"
                   className="salon-input"
@@ -142,18 +142,18 @@ export const SettingsView: React.FC = () => {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '18px' }}>
               <div>
-                <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Salon Name *</label>
+                <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Salon Name *</label>
                 <input type="text" className="salon-input" value={salonName} onChange={(e) => setSalonName(e.target.value)} required />
               </div>
 
               <div>
-                <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Tagline *</label>
+                <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Tagline *</label>
                 <input type="text" className="salon-input" value={tagline} onChange={(e) => setTagline(e.target.value)} required />
               </div>
             </div>
 
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Salon Description & About</label>
+              <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Salon Description & About</label>
               <textarea className="salon-input" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} required />
             </div>
           </div>
@@ -164,30 +164,30 @@ export const SettingsView: React.FC = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '18px' }}>
               <div>
-                <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Phone Hotline (tel: link) *</label>
+                <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Phone Hotline (tel: link) *</label>
                 <input type="tel" className="salon-input" value={hotline} onChange={(e) => setHotline(e.target.value)} required />
               </div>
 
               <div>
-                <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Contact Email *</label>
+                <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Contact Email *</label>
                 <input type="email" className="salon-input" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px' }}>
               <div>
-                <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Daily Opening Time *</label>
+                <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Daily Opening Time *</label>
                 <input type="text" className="salon-input" value={openingTime} onChange={(e) => setOpeningTime(e.target.value)} required />
               </div>
 
               <div>
-                <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Daily Closing Time *</label>
+                <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Daily Closing Time *</label>
                 <input type="text" className="salon-input" value={closingTime} onChange={(e) => setClosingTime(e.target.value)} required />
               </div>
             </div>
 
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Physical Address *</label>
+              <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Physical Address *</label>
               <textarea className="salon-input" rows={2} value={address} onChange={(e) => setAddress(e.target.value)} required />
             </div>
           </div>
@@ -197,12 +197,12 @@ export const SettingsView: React.FC = () => {
         {activeTab === 'business' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Currency Symbol</label>
+              <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Currency Symbol</label>
               <input type="text" className="salon-input" value={currencySymbol} onChange={(e) => setCurrencySymbol(e.target.value)} required />
             </div>
 
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Booking Notice Policy Text</label>
+              <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Booking Notice Policy Text</label>
               <textarea className="salon-input" rows={3} value={bookingNotice} onChange={(e) => setBookingNotice(e.target.value)} required />
             </div>
           </div>
@@ -211,9 +211,9 @@ export const SettingsView: React.FC = () => {
         {/* TAB 4: Service Rules */}
         {activeTab === 'service' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ padding: '16px', borderRadius: '12px', backgroundColor: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-              <h4 style={{ color: '#F8FAFC', fontSize: '1rem', marginBottom: '4px' }}>Direct Booking Rule (No Time-Slots)</h4>
-              <p style={{ fontSize: '0.84rem', color: '#94A3B8', lineHeight: 1.45 }}>
+            <div style={{ padding: '16px', borderRadius: '12px', backgroundColor: '#F1EDE6', border: '1px solid #E4DED4' }}>
+              <h4 style={{ color: '#171717', fontSize: '1rem', marginBottom: '4px', fontWeight: 600 }}>Direct Booking Rule (No Time-Slots)</h4>
+              <p style={{ fontSize: '0.84rem', color: '#6F6A62', lineHeight: 1.45 }}>
                 Customers book directly with their preferred master stylist. No artificial time-slot generation or calendar grid is forced.
               </p>
             </div>
@@ -223,22 +223,22 @@ export const SettingsView: React.FC = () => {
         {/* TAB 5: Notification Preferences */}
         {activeTab === 'notifications' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', fontSize: '0.9rem', color: '#F8FAFC' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', fontSize: '0.9rem', color: '#171717', fontWeight: 500 }}>
               <input
                 type="checkbox"
                 checked={notifyOnNewBooking}
                 onChange={(e) => setNotifyOnNewBooking(e.target.checked)}
-                style={{ width: '18px', height: '18px', accentColor: '#D4AF37' }}
+                style={{ width: '18px', height: '18px', accentColor: '#C9A227' }}
               />
               <span>Notify salon desk on new appointment requests</span>
             </label>
 
-            <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', fontSize: '0.9rem', color: '#F8FAFC' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', fontSize: '0.9rem', color: '#171717', fontWeight: 500 }}>
               <input
                 type="checkbox"
                 checked={notifyOnLeaveRequest}
                 onChange={(e) => setNotifyOnLeaveRequest(e.target.checked)}
-                style={{ width: '18px', height: '18px', accentColor: '#D4AF37' }}
+                style={{ width: '18px', height: '18px', accentColor: '#C9A227' }}
               />
               <span>Notify admin when employee leave is requested</span>
             </label>
@@ -249,25 +249,25 @@ export const SettingsView: React.FC = () => {
         {activeTab === 'appearance' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>Active UI Theme Palette</label>
-              <input type="text" className="salon-input" value={themeMode} disabled style={{ opacity: 0.6 }} />
+              <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Active UI Theme Palette</label>
+              <input type="text" className="salon-input" value={themeMode} disabled style={{ opacity: 0.7, backgroundColor: '#F1EDE6' }} />
             </div>
           </div>
         )}
 
         {/* Form Actions Footer */}
-        <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+        <div style={{ borderTop: '1px solid #E4DED4', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <button
             type="button"
             onClick={handleReset}
             style={{
               padding: '10px 18px',
               borderRadius: '10px',
-              border: '1px solid rgba(244, 63, 94, 0.3)',
-              backgroundColor: 'rgba(244, 63, 94, 0.1)',
-              color: '#FB7185',
+              border: '1px solid rgba(201, 74, 74, 0.3)',
+              backgroundColor: 'rgba(201, 74, 74, 0.1)',
+              color: '#C94A4A',
               fontSize: '0.84rem',
-              fontWeight: 500,
+              fontWeight: 600,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',

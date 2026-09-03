@@ -40,22 +40,22 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  backgroundColor: 'rgba(201, 162, 39, 0.12)',
+                  border: '1px solid rgba(201, 162, 39, 0.3)',
                   padding: '6px 14px',
                   borderRadius: '999px',
                   marginBottom: '12px',
                 }}
               >
-                <Scissors size={14} color="#D4AF37" />
-                <span style={{ fontSize: '0.78rem', color: '#F3E5AB', fontWeight: 600, letterSpacing: '0.05em' }}>
+                <Scissors size={14} color="#C9A227" />
+                <span style={{ fontSize: '0.78rem', color: '#9A7B1C', fontWeight: 600, letterSpacing: '0.05em' }}>
                   STEP 1 OF 2
                 </span>
               </div>
-              <h1 className="font-serif" style={{ fontSize: '2rem', color: '#F8FAFC', fontWeight: 700, marginBottom: '8px' }}>
+              <h1 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700, marginBottom: '8px' }}>
                 Choose Your Salon
               </h1>
-              <p style={{ color: '#94A3B8', fontSize: '0.92rem', maxWidth: '540px', margin: '0 auto' }}>
+              <p style={{ color: '#6F6A62', fontSize: '0.92rem', maxWidth: '540px', margin: '0 auto' }}>
                 Select a branch location to view available master artists and connect directly by phone.
               </p>
             </div>
@@ -77,17 +77,17 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                     key={branch.id}
                     whileHover={{ y: -4 }}
                     style={{
-                      backgroundColor: '#0F1218',
-                      borderRadius: '16px',
-                      border: '1px solid rgba(212, 175, 55, 0.2)',
+                      backgroundColor: '#FFFFFF',
+                      borderRadius: '18px',
+                      border: '1px solid #E4DED4',
                       overflow: 'hidden',
                       display: 'flex',
                       flexDirection: 'column',
-                      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
+                      boxShadow: '0 4px 20px rgba(23, 23, 23, 0.04)',
                     }}
                   >
                     {/* Branch Image Header */}
-                    <div style={{ height: '180px', position: 'relative', overflow: 'hidden', backgroundColor: '#1E293B' }}>
+                    <div style={{ height: '180px', position: 'relative', overflow: 'hidden', backgroundColor: '#F1EDE6' }}>
                       <img
                         src={
                           branch.image_url ||
@@ -100,7 +100,7 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                         style={{
                           position: 'absolute',
                           inset: 0,
-                          background: 'linear-gradient(to top, #0F1218 0%, rgba(15, 18, 24, 0.2) 70%, transparent 100%)',
+                          background: 'linear-gradient(to top, rgba(23, 23, 23, 0.4) 0%, transparent 100%)',
                         }}
                       />
                       <div
@@ -111,30 +111,31 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '6px',
-                          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
                           backdropFilter: 'blur(8px)',
                           padding: '4px 10px',
                           borderRadius: '8px',
-                          border: '1px solid rgba(212, 175, 55, 0.3)',
+                          border: '1px solid #E4DED4',
                           fontSize: '0.78rem',
-                          color: '#F3E5AB',
+                          color: '#171717',
+                          fontWeight: 600,
                         }}
                       >
-                        <Users size={13} color="#D4AF37" />
+                        <Users size={13} color="#C9A227" />
                         <span>{staffCount} Master Artists</span>
                       </div>
                     </div>
 
                     {/* Branch Content */}
                     <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                      <h2 className="font-serif" style={{ fontSize: '1.25rem', color: '#F8FAFC', fontWeight: 600, marginBottom: '6px' }}>
+                      <h2 className="font-serif" style={{ fontSize: '1.25rem', color: '#171717', fontWeight: 600, marginBottom: '6px' }}>
                         {branch.name}
                       </h2>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94A3B8', fontSize: '0.84rem', marginBottom: '12px' }}>
-                        <MapPin size={14} color="#D4AF37" style={{ flexShrink: 0 }} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#6F6A62', fontSize: '0.84rem', marginBottom: '12px' }}>
+                        <MapPin size={14} color="#C9A227" style={{ flexShrink: 0 }} />
                         <span>{branch.address}</span>
                       </div>
-                      <p style={{ color: '#64748B', fontSize: '0.84rem', lineHeight: 1.5, marginBottom: '20px', flex: 1 }}>
+                      <p style={{ color: '#6F6A62', fontSize: '0.84rem', lineHeight: 1.5, marginBottom: '20px', flex: 1 }}>
                         {branch.description || 'Premium luxury salon offering master haircutting, beard architecture, and scalp wellness.'}
                       </p>
 
@@ -181,7 +182,7 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#D4AF37',
+                  color: '#C9A227',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
@@ -203,22 +204,22 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  backgroundColor: 'rgba(201, 162, 39, 0.12)',
+                  border: '1px solid rgba(201, 162, 39, 0.3)',
                   padding: '6px 14px',
                   borderRadius: '999px',
                   marginBottom: '12px',
                 }}
               >
-                <MapPin size={14} color="#D4AF37" />
-                <span style={{ fontSize: '0.78rem', color: '#F3E5AB', fontWeight: 600, letterSpacing: '0.05em' }}>
+                <MapPin size={14} color="#C9A227" />
+                <span style={{ fontSize: '0.78rem', color: '#9A7B1C', fontWeight: 600, letterSpacing: '0.05em' }}>
                   {selectedBranch.name}
                 </span>
               </div>
-              <h1 className="font-serif" style={{ fontSize: '2rem', color: '#F8FAFC', fontWeight: 700, marginBottom: '8px' }}>
+              <h1 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700, marginBottom: '8px' }}>
                 Meet Our Artists
               </h1>
-              <p style={{ color: '#94A3B8', fontSize: '0.92rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.5 }}>
+              <p style={{ color: '#6F6A62', fontSize: '0.92rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.5 }}>
                 Browse our master artists below, then call the branch owner directly to discuss your service and schedule.
               </p>
             </div>
@@ -226,8 +227,8 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
             {/* Prominent Branch Owner Call Hero Section */}
             <div
               style={{
-                backgroundColor: 'rgba(212, 175, 55, 0.08)',
-                border: '1px solid rgba(212, 175, 55, 0.3)',
+                backgroundColor: 'rgba(201, 162, 39, 0.08)',
+                border: '1px solid rgba(201, 162, 39, 0.3)',
                 borderRadius: '16px',
                 padding: '20px 24px',
                 marginBottom: '32px',
@@ -236,16 +237,16 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                 alignItems: 'center',
                 textAlign: 'center',
                 gap: '12px',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+                boxShadow: '0 4px 18px rgba(201, 162, 39, 0.12)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Phone size={20} color="#D4AF37" />
-                <span style={{ fontSize: '1.05rem', color: '#F3E5AB', fontWeight: 700 }}>
+                <Phone size={20} color="#C9A227" />
+                <span style={{ fontSize: '1.05rem', color: '#171717', fontWeight: 700 }}>
                   Direct Branch Desk — {selectedBranch.name}
                 </span>
               </div>
-              <p style={{ color: '#94A3B8', fontSize: '0.86rem', margin: 0, maxWidth: '540px', lineHeight: 1.5 }}>
+              <p style={{ color: '#6F6A62', fontSize: '0.86rem', margin: 0, maxWidth: '540px', lineHeight: 1.5 }}>
                 Connect directly with our branch desk manager to discuss artist availability, VIP services, and schedule your appointment.
               </p>
               <a
@@ -261,7 +262,6 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                   justifyContent: 'center',
                   gap: '10px',
                   textDecoration: 'none',
-                  boxShadow: '0 4px 20px rgba(212, 175, 55, 0.4)',
                   minHeight: '48px',
                   width: '100%',
                   maxWidth: '380px',
@@ -275,16 +275,16 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
             {branchArtists.length === 0 ? (
               <div
                 style={{
-                  backgroundColor: '#0F1218',
+                  backgroundColor: '#FFFFFF',
                   borderRadius: '16px',
                   padding: '40px 24px',
                   textAlign: 'center',
-                  border: '1px solid rgba(212, 175, 55, 0.15)',
+                  border: '1px solid #E4DED4',
                 }}
               >
-                <Users size={36} color="#64748B" style={{ marginBottom: '12px' }} />
-                <h3 style={{ color: '#F8FAFC', marginBottom: '6px', fontSize: '1.1rem' }}>No Artists Listed</h3>
-                <p style={{ color: '#64748B', fontSize: '0.88rem' }}>
+                <Users size={36} color="#8C857B" style={{ marginBottom: '12px' }} />
+                <h3 style={{ color: '#171717', marginBottom: '6px', fontSize: '1.1rem' }}>No Artists Listed</h3>
+                <p style={{ color: '#6F6A62', fontSize: '0.88rem' }}>
                   There are currently no active stylists assigned to {selectedBranch.name}. Please select another branch.
                 </p>
               </div>
@@ -297,7 +297,6 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                 }}
               >
                 {branchArtists.map((artist) => {
-                  // Extract services assigned to this artist if available
                   const assignedServices = services.filter((s) =>
                     (artist.assigned_service_ids || []).includes(s.id)
                   );
@@ -307,14 +306,14 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                       key={artist.id}
                       whileHover={{ y: -4 }}
                       style={{
-                        backgroundColor: '#0F1218',
-                        borderRadius: '16px',
-                        border: '1px solid rgba(212, 175, 55, 0.22)',
+                        backgroundColor: '#FFFFFF',
+                        borderRadius: '18px',
+                        border: '1px solid #E4DED4',
                         padding: '24px',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-between',
-                        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
+                        boxShadow: '0 4px 20px rgba(23, 23, 23, 0.04)',
                       }}
                     >
                       <div>
@@ -331,34 +330,34 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                               height: '76px',
                               borderRadius: '50%',
                               objectFit: 'cover',
-                              border: '2px solid #D4AF37',
+                              border: '2px solid #C9A227',
                               flexShrink: 0,
                             }}
                           />
                           <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-                              <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+                              <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#171717', fontWeight: 700 }}>
                                 {artist.name}
                               </h3>
                               {artist.rating && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#F3E5AB', fontSize: '0.78rem' }}>
-                                  <Star size={12} color="#D4AF37" fill="#D4AF37" />
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#B7791F', fontSize: '0.78rem', fontWeight: 600 }}>
+                                  <Star size={12} color="#B7791F" fill="#B7791F" />
                                   <span>{artist.rating}</span>
                                 </div>
                               )}
                             </div>
-                            <p style={{ color: '#D4AF37', fontSize: '0.84rem', fontWeight: 600, marginBottom: '4px' }}>
+                            <p style={{ color: '#C9A227', fontSize: '0.84rem', fontWeight: 600, marginBottom: '4px' }}>
                               {artist.role_title || 'Master Stylist'}
                             </p>
                             {artist.experience_years && (
                               <span
                                 style={{
                                   display: 'inline-block',
-                                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                                  backgroundColor: '#F1EDE6',
                                   padding: '2px 8px',
                                   borderRadius: '6px',
                                   fontSize: '0.75rem',
-                                  color: '#CBD5E1',
+                                  color: '#6F6A62',
                                 }}
                               >
                                 {artist.experience_years} Years Experience
@@ -370,17 +369,17 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                         {/* Specialization / Bio */}
                         {artist.specialization && (
                           <div style={{ marginBottom: '14px' }}>
-                            <span style={{ fontSize: '0.74rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
+                            <span style={{ fontSize: '0.74rem', color: '#8C857B', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
                               Specialization
                             </span>
-                            <p style={{ color: '#F1F5F9', fontSize: '0.86rem', fontWeight: 500 }}>
+                            <p style={{ color: '#171717', fontSize: '0.86rem', fontWeight: 500 }}>
                               {artist.specialization}
                             </p>
                           </div>
                         )}
 
                         {artist.bio && (
-                          <p style={{ color: '#94A3B8', fontSize: '0.82rem', lineHeight: 1.5, marginBottom: '16px' }}>
+                          <p style={{ color: '#6F6A62', fontSize: '0.82rem', lineHeight: 1.5, marginBottom: '16px' }}>
                             {artist.bio}
                           </p>
                         )}
@@ -392,12 +391,13 @@ export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
                               <span
                                 key={srv.id}
                                 style={{
-                                  backgroundColor: 'rgba(212, 175, 55, 0.08)',
-                                  border: '1px solid rgba(212, 175, 55, 0.2)',
-                                  color: '#F3E5AB',
+                                  backgroundColor: 'rgba(201, 162, 39, 0.1)',
+                                  border: '1px solid rgba(201, 162, 39, 0.25)',
+                                  color: '#9A7B1C',
                                   fontSize: '0.75rem',
                                   padding: '3px 8px',
                                   borderRadius: '6px',
+                                  fontWeight: 500,
                                 }}
                               >
                                 {srv.name}

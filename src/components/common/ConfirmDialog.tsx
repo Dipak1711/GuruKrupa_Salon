@@ -31,9 +31,9 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             width: '56px',
             height: '56px',
             borderRadius: '50%',
-            backgroundColor: isDestructive ? 'rgba(244, 63, 94, 0.15)' : 'rgba(212, 175, 55, 0.15)',
-            border: isDestructive ? '1px solid rgba(244, 63, 94, 0.4)' : '1px solid rgba(212, 175, 55, 0.4)',
-            color: isDestructive ? '#F43F5E' : '#D4AF37',
+            backgroundColor: isDestructive ? 'rgba(201, 74, 74, 0.12)' : 'rgba(201, 162, 39, 0.12)',
+            border: isDestructive ? '1px solid rgba(201, 74, 74, 0.3)' : '1px solid rgba(201, 162, 39, 0.3)',
+            color: isDestructive ? '#C94A4A' : '#C9A227',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -45,19 +45,19 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
         <h3
           className="font-serif"
-          style={{ fontSize: '1.35rem', fontWeight: 600, color: '#F8FAFC', marginBottom: '8px' }}
+          style={{ fontSize: '1.35rem', fontWeight: 600, color: '#171717', marginBottom: '8px' }}
         >
           {title}
         </h3>
 
-        <p style={{ fontSize: '0.9rem', color: '#94A3B8', lineHeight: 1.5, marginBottom: '24px' }}>
+        <p style={{ fontSize: '0.9rem', color: '#6F6A62', lineHeight: 1.5, marginBottom: '24px' }}>
           {message}
         </p>
 
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
           <button
             onClick={onClose}
-            className="btn-dark"
+            className="btn-gold-outline"
             style={{ flex: 1, padding: '10px 18px' }}
           >
             {cancelLabel}
@@ -75,10 +75,10 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
               fontWeight: 600,
               cursor: 'pointer',
               color: '#FFFFFF',
-              backgroundColor: isDestructive ? '#E11D48' : '#D4AF37',
+              backgroundColor: isDestructive ? '#C94A4A' : '#C9A227',
               boxShadow: isDestructive
-                ? '0 4px 16px rgba(225, 29, 72, 0.35)'
-                : '0 4px 16px rgba(212, 175, 55, 0.35)',
+                ? '0 4px 14px rgba(201, 74, 74, 0.25)'
+                : '0 4px 14px rgba(201, 162, 39, 0.25)',
               transition: 'all 0.2s',
             }}
           >

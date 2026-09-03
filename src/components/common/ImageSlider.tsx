@@ -21,12 +21,13 @@ export const ImageSlider: React.FC<ImageSliderProps> = ({
         style={{
           width: '100%',
           height,
-          backgroundColor: '#161a22',
+          backgroundColor: '#F1EDE6',
           borderRadius: '16px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#64748b',
+          color: '#6F6A62',
+          border: '1px solid #E4DED4',
         }}
       >
         No Images Available
@@ -54,8 +55,8 @@ export const ImageSlider: React.FC<ImageSliderProps> = ({
           height,
           borderRadius: '18px',
           overflow: 'hidden',
-          backgroundColor: '#0d1017',
-          border: '1px solid rgba(212, 175, 55, 0.25)',
+          backgroundColor: '#F1EDE6',
+          border: '1px solid #E4DED4',
           touchAction: 'pan-y',
         }}
       >
@@ -93,7 +94,7 @@ export const ImageSlider: React.FC<ImageSliderProps> = ({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to top, rgba(10, 12, 16, 0.6) 0%, rgba(10, 12, 16, 0) 50%)',
+            background: 'linear-gradient(to top, rgba(23, 23, 23, 0.4) 0%, rgba(0, 0, 0, 0) 40%)',
             pointerEvents: 'none',
           }}
         />
@@ -111,10 +112,10 @@ export const ImageSlider: React.FC<ImageSliderProps> = ({
                 width: '42px',
                 height: '42px',
                 borderRadius: '50%',
-                backgroundColor: 'rgba(15, 18, 24, 0.75)',
+                backgroundColor: 'rgba(255, 255, 255, 0.85)',
                 backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(212, 175, 55, 0.3)',
-                color: '#F8FAFC',
+                border: '1px solid #E4DED4',
+                color: '#171717',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -136,10 +137,10 @@ export const ImageSlider: React.FC<ImageSliderProps> = ({
                 width: '42px',
                 height: '42px',
                 borderRadius: '50%',
-                backgroundColor: 'rgba(15, 18, 24, 0.75)',
+                backgroundColor: 'rgba(255, 255, 255, 0.85)',
                 backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(212, 175, 55, 0.3)',
-                color: '#F8FAFC',
+                border: '1px solid #E4DED4',
+                color: '#171717',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -174,7 +175,7 @@ export const ImageSlider: React.FC<ImageSliderProps> = ({
                     width: currentIndex === i ? '22px' : '8px',
                     height: '8px',
                     borderRadius: '4px',
-                    backgroundColor: currentIndex === i ? '#D4AF37' : 'rgba(255, 255, 255, 0.4)',
+                    backgroundColor: currentIndex === i ? '#C9A227' : 'rgba(255, 255, 255, 0.7)',
                     border: 'none',
                     cursor: 'pointer',
                     transition: 'all 0.25s',
@@ -199,10 +200,10 @@ export const ImageSlider: React.FC<ImageSliderProps> = ({
                 flexShrink: 0,
                 borderRadius: '10px',
                 overflow: 'hidden',
-                border: currentIndex === idx ? '2px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
+                border: currentIndex === idx ? '2px solid #C9A227' : '1px solid #E4DED4',
                 padding: 0,
                 cursor: 'pointer',
-                opacity: currentIndex === idx ? 1 : 0.6,
+                opacity: currentIndex === idx ? 1 : 0.7,
                 transition: 'all 0.2s',
               }}
             >

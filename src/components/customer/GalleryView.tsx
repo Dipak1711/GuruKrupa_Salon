@@ -17,13 +17,13 @@ export const GalleryView: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       <div>
-        <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+        <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
           Master Craft & Aesthetics
         </span>
-        <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+        <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
           Salon Gallery & Transformations
         </h2>
-        <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
+        <p style={{ fontSize: '0.92rem', color: '#6F6A62', marginTop: '4px' }}>
           Explore signature hairstyles, beard architecture, and skincare rejuvenation crafted by our master artists.
         </p>
       </div>
@@ -37,9 +37,9 @@ export const GalleryView: React.FC = () => {
             style={{
               padding: '8px 18px',
               borderRadius: '9999px',
-              border: selectedCategory === cat ? '1px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
-              backgroundColor: selectedCategory === cat ? 'rgba(212, 175, 55, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-              color: selectedCategory === cat ? '#F3E5AB' : '#94A3B8',
+              border: selectedCategory === cat ? '1px solid #C9A227' : '1px solid #E4DED4',
+              backgroundColor: selectedCategory === cat ? 'rgba(201, 162, 39, 0.14)' : '#FFFFFF',
+              color: selectedCategory === cat ? '#171717' : '#6F6A62',
               fontSize: '0.84rem',
               fontWeight: 600,
               cursor: 'pointer',
@@ -71,6 +71,10 @@ export const GalleryView: React.FC = () => {
               overflow: 'hidden',
               display: 'flex',
               flexDirection: 'column',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #E4DED4',
+              borderRadius: '18px',
+              boxShadow: '0 4px 20px rgba(23, 23, 23, 0.04)',
             }}
           >
             <div style={{ position: 'relative', height: '280px', width: '100%', overflow: 'hidden' }}>
@@ -79,7 +83,7 @@ export const GalleryView: React.FC = () => {
                 alt={item.title}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.05)';
+                  e.currentTarget.style.transform = 'scale(1.04)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'scale(1)';
@@ -89,7 +93,7 @@ export const GalleryView: React.FC = () => {
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'linear-gradient(to top, rgba(10, 12, 16, 0.95) 0%, rgba(10, 12, 16, 0.1) 60%, rgba(0,0,0,0) 100%)',
+                  background: 'linear-gradient(to top, rgba(23, 23, 23, 0.4) 0%, transparent 60%)',
                 }}
               />
               <div
@@ -97,10 +101,10 @@ export const GalleryView: React.FC = () => {
                   position: 'absolute',
                   top: '14px',
                   left: '14px',
-                  backgroundColor: 'rgba(10, 12, 16, 0.8)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
                   backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)',
-                  color: '#F3E5AB',
+                  border: '1px solid #E4DED4',
+                  color: '#171717',
                   padding: '4px 10px',
                   borderRadius: '9999px',
                   fontSize: '0.74rem',
@@ -112,14 +116,14 @@ export const GalleryView: React.FC = () => {
             </div>
 
             <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#F8FAFC', fontWeight: 600 }}>
+              <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#171717', fontWeight: 600 }}>
                 {item.title}
               </h3>
-              <p style={{ fontSize: '0.86rem', color: '#CBD5E1', lineHeight: 1.45 }}>
+              <p style={{ fontSize: '0.86rem', color: '#6F6A62', lineHeight: 1.45 }}>
                 {item.description}
               </p>
               {item.stylist_name && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: '#D4AF37', marginTop: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: '#C9A227', marginTop: '6px', fontWeight: 600 }}>
                   <Sparkles size={13} />
                   <span>Master Artist: {item.stylist_name}</span>
                 </div>

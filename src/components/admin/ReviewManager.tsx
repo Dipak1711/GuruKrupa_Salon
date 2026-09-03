@@ -35,13 +35,13 @@ export const ReviewManager: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Client Sentiment & Feedback Moderation
           </span>
-          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
             Customer Reviews & Testimonials ({reviews.length})
           </h2>
-          <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
+          <p style={{ fontSize: '0.92rem', color: '#6F6A62', marginTop: '4px' }}>
             Moderate customer feedback. Only approved reviews appear on customer pages.
           </p>
         </div>
@@ -55,9 +55,9 @@ export const ReviewManager: React.FC = () => {
               style={{
                 padding: '6px 14px',
                 borderRadius: '9999px',
-                border: statusFilter === st ? '1px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
-                backgroundColor: statusFilter === st ? 'rgba(212, 175, 55, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-                color: statusFilter === st ? '#F3E5AB' : '#94A3B8',
+                border: statusFilter === st ? '1px solid #C9A227' : '1px solid #E4DED4',
+                backgroundColor: statusFilter === st ? 'rgba(201, 162, 39, 0.18)' : '#F1EDE6',
+                color: statusFilter === st ? '#9A7B1C' : '#6F6A62',
                 fontSize: '0.82rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -72,9 +72,9 @@ export const ReviewManager: React.FC = () => {
 
       {/* Review Cards Grid */}
       {filteredReviews.length === 0 ? (
-        <div className="glass-card" style={{ padding: '36px', textAlign: 'center', color: '#94A3B8' }}>
-          <MessageSquare size={32} color="#D4AF37" style={{ marginBottom: '10px' }} />
-          <h4 style={{ color: '#F8FAFC', fontSize: '1.1rem', marginBottom: '4px' }}>No Reviews Found</h4>
+        <div className="glass-card" style={{ padding: '36px', textAlign: 'center', color: '#6F6A62', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
+          <MessageSquare size={32} color="#C9A227" style={{ marginBottom: '10px' }} />
+          <h4 style={{ color: '#171717', fontSize: '1.1rem', marginBottom: '4px' }}>No Reviews Found</h4>
           <p style={{ fontSize: '0.86rem' }}>Try clearing filters to see all client testimonials.</p>
         </div>
       ) : (
@@ -89,7 +89,9 @@ export const ReviewManager: React.FC = () => {
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 gap: '16px',
-                border: rev.status === 'approved' || !rev.status ? '1px solid rgba(212, 175, 55, 0.25)' : '1px solid rgba(255, 255, 255, 0.08)',
+                backgroundColor: '#FFFFFF',
+                border: rev.status === 'approved' || !rev.status ? '1px solid #E4DED4' : '1px solid #E4DED4',
+                borderRadius: '18px',
               }}
             >
               <div>
@@ -99,24 +101,24 @@ export const ReviewManager: React.FC = () => {
                       <Star
                         key={i}
                         size={16}
-                        color={i < rev.rating ? '#F59E0B' : '#64748B'}
-                        fill={i < rev.rating ? '#F59E0B' : 'transparent'}
+                        color={i < rev.rating ? '#B7791F' : '#E4DED4'}
+                        fill={i < rev.rating ? '#B7791F' : 'transparent'}
                       />
                     ))}
                   </div>
-                  <span style={{ fontSize: '0.78rem', color: '#94A3B8' }}>{formatDate(rev.created_at)}</span>
+                  <span style={{ fontSize: '0.78rem', color: '#6F6A62' }}>{formatDate(rev.created_at)}</span>
                 </div>
 
-                <p style={{ fontSize: '0.92rem', color: '#E2E8F0', lineHeight: 1.5, fontStyle: 'italic', marginBottom: '14px' }}>
+                <p style={{ fontSize: '0.92rem', color: '#171717', lineHeight: 1.5, fontStyle: 'italic', marginBottom: '14px' }}>
                   "{rev.comment}"
                 </p>
               </div>
 
               <div>
-                <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                <div style={{ borderTop: '1px solid #E4DED4', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                   <div>
-                    <h4 style={{ fontSize: '0.96rem', color: '#F8FAFC', fontWeight: 600 }}>{rev.customer_name}</h4>
-                    <div style={{ fontSize: '0.8rem', color: '#D4AF37', marginTop: '2px' }}>
+                    <h4 style={{ fontSize: '0.96rem', color: '#171717', fontWeight: 600 }}>{rev.customer_name}</h4>
+                    <div style={{ fontSize: '0.8rem', color: '#C9A227', marginTop: '2px', fontWeight: 600 }}>
                       Stylist: {rev.employee_name || 'Salon Staff'} • {rev.service_name}
                     </div>
                   </div>
@@ -129,16 +131,16 @@ export const ReviewManager: React.FC = () => {
                       borderRadius: '6px',
                       backgroundColor:
                         rev.status === 'approved' || !rev.status
-                          ? 'rgba(16, 185, 129, 0.12)'
+                          ? 'rgba(22, 132, 91, 0.12)'
                           : rev.status === 'rejected'
-                          ? 'rgba(244, 63, 94, 0.12)'
-                          : 'rgba(245, 158, 11, 0.12)',
+                          ? 'rgba(201, 74, 74, 0.12)'
+                          : 'rgba(183, 121, 31, 0.12)',
                       color:
                         rev.status === 'approved' || !rev.status
-                          ? '#10B981'
+                          ? '#16845B'
                           : rev.status === 'rejected'
-                          ? '#FB7185'
-                          : '#F59E0B',
+                          ? '#C94A4A'
+                          : '#B7791F',
                       textTransform: 'uppercase',
                     }}
                   >
@@ -147,7 +149,7 @@ export const ReviewManager: React.FC = () => {
                 </div>
 
                 {/* Moderation Action Buttons */}
-                <div style={{ display: 'flex', gap: '8px', marginTop: '14px', borderTop: '1px dashed rgba(255, 255, 255, 0.08)', paddingTop: '12px' }}>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '14px', borderTop: '1px dashed #E4DED4', paddingTop: '12px' }}>
                   {rev.status !== 'approved' && (
                     <button
                       onClick={() => handleApprove(rev.id, rev.customer_name)}
@@ -155,9 +157,9 @@ export const ReviewManager: React.FC = () => {
                         flex: 1,
                         padding: '6px',
                         borderRadius: '8px',
-                        backgroundColor: 'rgba(16, 185, 129, 0.12)',
-                        border: '1px solid rgba(16, 185, 129, 0.3)',
-                        color: '#10B981',
+                        backgroundColor: 'rgba(22, 132, 91, 0.12)',
+                        border: '1px solid rgba(22, 132, 91, 0.3)',
+                        color: '#16845B',
                         fontSize: '0.78rem',
                         fontWeight: 600,
                         cursor: 'pointer',
@@ -179,9 +181,9 @@ export const ReviewManager: React.FC = () => {
                         flex: 1,
                         padding: '6px',
                         borderRadius: '8px',
-                        backgroundColor: 'rgba(244, 63, 94, 0.1)',
-                        border: '1px solid rgba(244, 63, 94, 0.3)',
-                        color: '#FB7185',
+                        backgroundColor: 'rgba(201, 74, 74, 0.1)',
+                        border: '1px solid rgba(201, 74, 74, 0.3)',
+                        color: '#C94A4A',
                         fontSize: '0.78rem',
                         fontWeight: 600,
                         cursor: 'pointer',
@@ -201,9 +203,9 @@ export const ReviewManager: React.FC = () => {
                     style={{
                       padding: '6px 10px',
                       borderRadius: '8px',
-                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      color: '#64748B',
+                      backgroundColor: '#F1EDE6',
+                      border: '1px solid #E4DED4',
+                      color: '#6F6A62',
                       cursor: 'pointer',
                     }}
                   >

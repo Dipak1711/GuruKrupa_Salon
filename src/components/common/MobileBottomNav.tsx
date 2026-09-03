@@ -41,15 +41,15 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         left: 0,
         right: 0,
         zIndex: 95,
-        backgroundColor: 'rgba(12, 14, 20, 0.96)',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderTop: '1px solid rgba(212, 175, 55, 0.25)',
+        borderTop: '1px solid #E4DED4',
         padding: '6px 8px calc(6px + env(safe-area-inset-bottom, 0px)) 8px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-around',
-        boxShadow: '0 -10px 30px rgba(0, 0, 0, 0.7)',
+        boxShadow: '0 -4px 20px rgba(23, 23, 23, 0.06)',
       }}
     >
       {/* 1. CUSTOMER MOBILE BOTTOM NAV */}
@@ -190,7 +190,7 @@ const NavItem: React.FC<NavItemProps> = ({
         minHeight: '48px',
         backgroundColor: 'transparent',
         border: 'none',
-        color: active ? '#D4AF37' : '#94A3B8',
+        color: active ? '#C9A227' : '#6F6A62',
         cursor: 'pointer',
         position: 'relative',
         transition: 'color 0.2s ease',
@@ -202,13 +202,13 @@ const NavItem: React.FC<NavItemProps> = ({
             width: '38px',
             height: '38px',
             borderRadius: '50%',
-            backgroundColor: '#D4AF37',
-            color: '#0A0C10',
+            backgroundColor: '#C9A227',
+            color: '#FFFFFF',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: '2px',
-            boxShadow: '0 4px 14px rgba(212, 175, 55, 0.4)',
+            boxShadow: '0 4px 12px rgba(201, 162, 39, 0.35)',
           }}
         >
           {icon}
@@ -225,7 +225,7 @@ const NavItem: React.FC<NavItemProps> = ({
                 width: '7px',
                 height: '7px',
                 borderRadius: '50%',
-                backgroundColor: '#D4AF37',
+                backgroundColor: '#C9A227',
               }}
             />
           )}
@@ -236,7 +236,7 @@ const NavItem: React.FC<NavItemProps> = ({
         style={{
           fontSize: '0.68rem',
           fontWeight: active ? 700 : 500,
-          color: active ? '#F3E5AB' : isSpecial ? '#D4AF37' : '#94A3B8',
+          color: active ? '#171717' : isSpecial ? '#C9A227' : '#6F6A62',
           letterSpacing: '0.01em',
         }}
       >

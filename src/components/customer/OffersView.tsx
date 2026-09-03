@@ -27,13 +27,13 @@ export const OffersView: React.FC<OffersViewProps> = ({ onNavigateToBooking }) =
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
       <div>
-        <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+        <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
           Exclusive Privileges & Discounts
         </span>
-        <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+        <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
           Salon Offers & Deals
         </h2>
-        <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
+        <p style={{ fontSize: '0.92rem', color: '#6F6A62', marginTop: '4px' }}>
           Enjoy curated seasonal privileges on haircuts, signature beard grooming, and rejuvenating skin therapies.
         </p>
       </div>
@@ -57,6 +57,10 @@ export const OffersView: React.FC<OffersViewProps> = ({ onNavigateToBooking }) =
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #E4DED4',
+              borderRadius: '18px',
+              boxShadow: '0 4px 20px rgba(23, 23, 23, 0.04)',
             }}
           >
             {/* Banner Image */}
@@ -70,7 +74,7 @@ export const OffersView: React.FC<OffersViewProps> = ({ onNavigateToBooking }) =
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'linear-gradient(to top, rgba(12, 15, 21, 0.95) 0%, rgba(12, 15, 21, 0.2) 60%, rgba(0,0,0,0) 100%)',
+                  background: 'linear-gradient(to top, rgba(23, 23, 23, 0.4) 0%, transparent 100%)',
                 }}
               />
               <div
@@ -78,8 +82,8 @@ export const OffersView: React.FC<OffersViewProps> = ({ onNavigateToBooking }) =
                   position: 'absolute',
                   top: '14px',
                   left: '14px',
-                  backgroundColor: 'rgba(212, 175, 55, 0.95)',
-                  color: '#0A0C10',
+                  backgroundColor: '#C9A227',
+                  color: '#FFFFFF',
                   padding: '4px 10px',
                   borderRadius: '8px',
                   fontWeight: 700,
@@ -87,6 +91,7 @@ export const OffersView: React.FC<OffersViewProps> = ({ onNavigateToBooking }) =
                   display: 'flex',
                   alignItems: 'center',
                   gap: '5px',
+                  boxShadow: '0 4px 12px rgba(201, 162, 39, 0.3)',
                 }}
               >
                 <Sparkles size={13} />
@@ -101,14 +106,14 @@ export const OffersView: React.FC<OffersViewProps> = ({ onNavigateToBooking }) =
             {/* Offer Body */}
             <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
               <div>
-                <h3 className="font-serif" style={{ fontSize: '1.3rem', color: '#F8FAFC', fontWeight: 600, marginBottom: '8px' }}>
+                <h3 className="font-serif" style={{ fontSize: '1.3rem', color: '#171717', fontWeight: 600, marginBottom: '8px' }}>
                   {offer.title}
                 </h3>
-                <p style={{ fontSize: '0.86rem', color: '#CBD5E1', lineHeight: 1.5, marginBottom: '16px' }}>
+                <p style={{ fontSize: '0.86rem', color: '#6F6A62', lineHeight: 1.5, marginBottom: '16px' }}>
                   {offer.description}
                 </p>
 
-                <div style={{ fontSize: '0.8rem', color: '#94A3B8', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '18px' }}>
+                <div style={{ fontSize: '0.8rem', color: '#6F6A62', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '18px' }}>
                   <span>Min. Service Bill: {formatPrice(offer.min_bill_amount)}</span>
                   <span>Valid Until: {formatDate(offer.valid_until)}</span>
                 </div>
@@ -120,17 +125,17 @@ export const OffersView: React.FC<OffersViewProps> = ({ onNavigateToBooking }) =
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                  border: '1px dashed rgba(212, 175, 55, 0.4)',
+                  backgroundColor: '#F1EDE6',
+                  border: '1px dashed #C9A227',
                   borderRadius: '12px',
                   padding: '10px 14px',
                 }}
               >
                 <div>
-                  <span style={{ fontSize: '0.72rem', color: '#94A3B8', textTransform: 'uppercase' }}>
+                  <span style={{ fontSize: '0.72rem', color: '#6F6A62', textTransform: 'uppercase' }}>
                     Promo Code
                   </span>
-                  <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#F3E5AB', letterSpacing: '0.05em' }}>
+                  <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#171717', letterSpacing: '0.05em' }}>
                     {offer.code}
                   </div>
                 </div>
@@ -142,8 +147,8 @@ export const OffersView: React.FC<OffersViewProps> = ({ onNavigateToBooking }) =
                 >
                   {copiedCode === offer.code ? (
                     <>
-                      <Check size={14} color="#10B981" />
-                      <span style={{ color: '#10B981' }}>Copied</span>
+                      <Check size={14} color="#16845B" />
+                      <span style={{ color: '#16845B' }}>Copied</span>
                     </>
                   ) : (
                     <>

@@ -61,7 +61,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       return (
         <>
           <div style={{ padding: '0 16px 8px 16px' }}>
-            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748B', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#6F6A62', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
               Customer Experience
             </span>
           </div>
@@ -107,7 +107,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       return (
         <>
           <div style={{ padding: '0 16px 8px 16px' }}>
-            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748B', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#6F6A62', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
               Stylist Portal
             </span>
           </div>
@@ -116,20 +116,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div style={{ padding: '0 12px 14px 12px' }}>
             <div
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid rgba(212, 175, 55, 0.2)',
+                backgroundColor: '#F1EDE6',
+                border: '1px solid #E4DED4',
                 borderRadius: '12px',
                 padding: '8px 10px',
               }}
             >
-              <label style={{ fontSize: '0.72rem', color: '#94A3B8', display: 'block', marginBottom: '4px' }}>
+              <label style={{ fontSize: '0.72rem', color: '#6F6A62', display: 'block', marginBottom: '4px', fontWeight: 600 }}>
                 Active Stylist Account:
               </label>
               <select
                 className="salon-select"
                 value={activeEmployeeId}
                 onChange={(e) => setActiveEmployeeId(e.target.value)}
-                style={{ padding: '6px 10px', fontSize: '0.82rem', borderRadius: '8px', minHeight: '36px' }}
+                style={{ padding: '6px 10px', fontSize: '0.82rem', borderRadius: '8px', minHeight: '36px', backgroundColor: '#FFFFFF' }}
               >
                 {employees
                   .filter((e) => e.is_active)
@@ -187,7 +187,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     return (
       <>
         <div style={{ padding: '0 16px 8px 16px' }}>
-          <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748B', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#6F6A62', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
             Admin Command Center
           </span>
         </div>
@@ -277,8 +277,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           }`}
         style={{
           width: '260px',
-          backgroundColor: '#0c0e14',
-          borderRight: '1px solid rgba(212, 175, 55, 0.16)',
+          backgroundColor: '#FFFFFF',
+          borderRight: '1px solid #E4DED4',
           display: 'flex',
           flexDirection: 'column',
           height: 'calc(100vh - 70px)',
@@ -287,13 +287,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           overflowY: 'auto',
           padding: '20px 12px',
           zIndex: 95,
+          boxShadow: '2px 0 12px rgba(23, 23, 23, 0.02)',
         }}
       >
         {/* Mobile Header Close Button */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 12px 14px 12px', marginBottom: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 12px 14px 12px', marginBottom: '8px', borderBottom: '1px solid #E4DED4' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Scissors size={18} color="#D4AF37" />
-            <span className="font-serif" style={{ fontSize: '1.1rem', color: '#F8FAFC', fontWeight: 600 }}>
+            <Scissors size={18} color="#C9A227" />
+            <span className="font-serif" style={{ fontSize: '1.1rem', color: '#171717', fontWeight: 600 }}>
               Menu
             </span>
           </div>
@@ -303,7 +304,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: '#94A3B8',
+                color: '#6F6A62',
                 cursor: 'pointer',
                 padding: '4px',
                 display: 'flex',
@@ -321,7 +322,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Logout button */}
         <div
           style={{
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            borderTop: '1px solid #E4DED4',
             paddingTop: '16px',
             marginTop: '16px',
           }}
@@ -340,20 +341,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
               minHeight: '44px',
               borderRadius: '12px',
               backgroundColor: 'transparent',
-              border: '1px solid rgba(244, 63, 94, 0.2)',
-              color: '#FB7185',
+              border: '1px solid rgba(201, 74, 74, 0.25)',
+              color: '#C94A4A',
               fontSize: '0.88rem',
-              fontWeight: 500,
+              fontWeight: 600,
               cursor: 'pointer',
               transition: 'all 0.2s',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(244, 63, 94, 0.12)';
-              e.currentTarget.style.borderColor = '#F43F5E';
+              e.currentTarget.style.backgroundColor = 'rgba(201, 74, 74, 0.08)';
+              e.currentTarget.style.borderColor = '#C94A4A';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.borderColor = 'rgba(244, 63, 94, 0.2)';
+              e.currentTarget.style.borderColor = 'rgba(201, 74, 74, 0.25)';
             }}
           >
             <LogOut size={17} />
@@ -402,34 +403,34 @@ const NavItem: React.FC<NavItemProps> = ({
         textAlign: 'left',
         transition: 'all 0.2s ease',
         backgroundColor: active
-          ? 'rgba(212, 175, 55, 0.16)'
+          ? 'rgba(201, 162, 39, 0.12)'
           : highlight
-            ? 'rgba(212, 175, 55, 0.08)'
+            ? 'rgba(201, 162, 39, 0.06)'
             : 'transparent',
         color: active
-          ? '#F3E5AB'
+          ? '#171717'
           : highlight
-            ? '#F6E29F'
-            : '#CBD5E1',
-        borderLeft: active ? '3px solid #D4AF37' : '3px solid transparent',
+            ? '#9A7B1C'
+            : '#6F6A62',
+        borderLeft: active ? '3px solid #C9A227' : '3px solid transparent',
       }}
       onMouseEnter={(e) => {
         if (!active) {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-          e.currentTarget.style.color = '#FFFFFF';
+          e.currentTarget.style.backgroundColor = '#F1EDE6';
+          e.currentTarget.style.color = '#171717';
         }
       }}
       onMouseLeave={(e) => {
         if (!active) {
           e.currentTarget.style.backgroundColor = highlight
-            ? 'rgba(212, 175, 55, 0.08)'
+            ? 'rgba(201, 162, 39, 0.06)'
             : 'transparent';
-          e.currentTarget.style.color = highlight ? '#F6E29F' : '#CBD5E1';
+          e.currentTarget.style.color = highlight ? '#9A7B1C' : '#6F6A62';
         }
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <span style={{ color: active || highlight ? '#D4AF37' : '#94A3B8', display: 'flex' }}>
+        <span style={{ color: active || highlight ? '#C9A227' : '#8C857B', display: 'flex' }}>
           {icon}
         </span>
         <span>{label}</span>
@@ -440,8 +441,8 @@ const NavItem: React.FC<NavItemProps> = ({
           style={{
             fontSize: '0.7rem',
             fontWeight: 700,
-            color: '#D4AF37',
-            backgroundColor: 'rgba(212, 175, 55, 0.2)',
+            color: '#9A7B1C',
+            backgroundColor: 'rgba(201, 162, 39, 0.15)',
             padding: '2px 7px',
             borderRadius: '9999px',
           }}
@@ -455,8 +456,8 @@ const NavItem: React.FC<NavItemProps> = ({
           style={{
             fontSize: '0.72rem',
             fontWeight: 700,
-            color: '#000000',
-            backgroundColor: '#F59E0B',
+            color: '#FFFFFF',
+            backgroundColor: '#B7791F',
             width: '20px',
             height: '20px',
             borderRadius: '50%',

@@ -28,8 +28,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(18, 22, 30, 0.4)',
-        border: '1px dashed rgba(212, 175, 55, 0.25)',
+        backgroundColor: '#FFFFFF',
+        border: '1px dashed #E4DED4',
         borderRadius: '20px',
       }}
     >
@@ -38,9 +38,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           width: '64px',
           height: '64px',
           borderRadius: '50%',
-          backgroundColor: 'rgba(212, 175, 55, 0.1)',
-          border: '1px solid rgba(212, 175, 55, 0.3)',
-          color: '#D4AF37',
+          backgroundColor: '#F1EDE6',
+          border: '1px solid #E4DED4',
+          color: '#C9A227',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -52,7 +52,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 
       <h4
         className="font-serif"
-        style={{ fontSize: '1.25rem', fontWeight: 600, color: '#F8FAFC', marginBottom: '6px' }}
+        style={{ fontSize: '1.25rem', fontWeight: 600, color: '#171717', marginBottom: '6px' }}
       >
         {title}
       </h4>
@@ -60,7 +60,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       <p
         style={{
           fontSize: '0.88rem',
-          color: '#94A3B8',
+          color: '#6F6A62',
           maxWidth: '420px',
           lineHeight: 1.5,
           marginBottom: action ? '20px' : '0',

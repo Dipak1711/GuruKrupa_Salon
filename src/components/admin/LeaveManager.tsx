@@ -81,12 +81,10 @@ export const LeaveManager: React.FC = () => {
 
     // Rule 3: Overlapping approved leave validation for same employee
     const overlapping = employeeLeaves.find((l) => {
-      // Exclude current editing record if editing
       if (editingLeave && l.id === editingLeave.id) return false;
       if (l.employee_id !== selectedEmpId) return false;
       if (l.status !== 'approved') return false;
 
-      // Check date range overlap: (startA <= endB) AND (endA >= startB)
       const startA = new Date(startDate);
       const endA = new Date(endDate);
       const startB = new Date(l.start_date);
@@ -104,11 +102,9 @@ export const LeaveManager: React.FC = () => {
     }
 
     if (editingLeave) {
-      // Update leave record status/dates
       updateEmployeeLeaveStatus(editingLeave.id, 'approved');
       success('Leave Updated', `Leave updated for ${emp.name}.`);
     } else {
-      // Add new leave record
       addEmployeeLeave({
         employee_id: selectedEmpId,
         leave_type: leaveType,
@@ -149,13 +145,13 @@ export const LeaveManager: React.FC = () => {
         }}
       >
         <div>
-          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Availability & Roster Schedule
           </span>
-          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
             Employee Leave Management ({employeeLeaves.length})
           </h2>
-          <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
+          <p style={{ fontSize: '0.92rem', color: '#6F6A62', marginTop: '4px' }}>
             Employees on approved leave will automatically be blocked from customer booking selection during their leave dates.
           </p>
         </div>
@@ -175,6 +171,9 @@ export const LeaveManager: React.FC = () => {
           gap: '14px',
           alignItems: 'center',
           flexWrap: 'wrap',
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #E4DED4',
+          borderRadius: '16px',
         }}
       >
         {/* Search */}
@@ -187,7 +186,7 @@ export const LeaveManager: React.FC = () => {
             placeholder="Search reason or stylist name..."
             style={{ paddingLeft: '40px' }}
           />
-          <Search size={16} color="#94A3B8" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
+          <Search size={16} color="#6F6A62" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
         </div>
 
         {/* Employee Filter */}
@@ -222,17 +221,17 @@ export const LeaveManager: React.FC = () => {
       </div>
 
       {/* Leaves History Audit Table */}
-      <div className="glass-card table-responsive-wrapper" style={{ padding: '24px' }}>
+      <div className="glass-card table-responsive-wrapper" style={{ padding: '24px', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
         {filteredLeaves.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '36px', color: '#94A3B8' }}>
-            <CalendarX size={32} color="#D4AF37" style={{ marginBottom: '10px' }} />
-            <h4 style={{ color: '#F8FAFC', fontSize: '1.1rem', marginBottom: '4px' }}>No Leave Records Found</h4>
+          <div style={{ textAlign: 'center', padding: '36px', color: '#6F6A62' }}>
+            <CalendarX size={32} color="#C9A227" style={{ marginBottom: '10px' }} />
+            <h4 style={{ color: '#171717', fontSize: '1.1rem', marginBottom: '4px' }}>No Leave Records Found</h4>
             <p style={{ fontSize: '0.86rem' }}>Try clearing filters or search query.</p>
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#94A3B8', fontSize: '0.78rem', textTransform: 'uppercase' }}>
+              <tr style={{ borderBottom: '1px solid #E4DED4', color: '#6F6A62', fontSize: '0.78rem', textTransform: 'uppercase' }}>
                 <th style={{ padding: '12px 14px' }}>Stylist</th>
                 <th style={{ padding: '12px 14px' }}>Leave Type</th>
                 <th style={{ padding: '12px 14px' }}>Date Span</th>
@@ -245,7 +244,7 @@ export const LeaveManager: React.FC = () => {
               {filteredLeaves.map((l) => {
                 const emp = employees.find((e) => e.id === l.employee_id);
                 return (
-                  <tr key={l.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.88rem' }}>
+                  <tr key={l.id} style={{ borderBottom: '1px solid #E4DED4', fontSize: '0.88rem' }}>
                     <td style={{ padding: '14px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         {emp && (
@@ -256,8 +255,8 @@ export const LeaveManager: React.FC = () => {
                           />
                         )}
                         <div>
-                          <div style={{ color: '#F8FAFC', fontWeight: 600 }}>{l.employee_name || emp?.name}</div>
-                          <div style={{ fontSize: '0.76rem', color: '#94A3B8' }}>{emp?.role_title}</div>
+                          <div style={{ color: '#171717', fontWeight: 600 }}>{l.employee_name || emp?.name}</div>
+                          <div style={{ fontSize: '0.76rem', color: '#6F6A62' }}>{emp?.role_title}</div>
                         </div>
                       </div>
                     </td>
@@ -270,12 +269,12 @@ export const LeaveManager: React.FC = () => {
                       />
                     </td>
 
-                    <td style={{ padding: '14px', color: '#F3E5AB', fontWeight: 500 }}>
+                    <td style={{ padding: '14px', color: '#C9A227', fontWeight: 600 }}>
                       {formatDate(l.start_date)}
                       {l.start_date !== l.end_date && ` → ${formatDate(l.end_date)}`}
                     </td>
 
-                    <td style={{ padding: '14px', color: '#CBD5E1', maxWidth: '240px' }}>
+                    <td style={{ padding: '14px', color: '#171717', maxWidth: '240px' }}>
                       {l.reason}
                     </td>
 
@@ -288,16 +287,16 @@ export const LeaveManager: React.FC = () => {
                           borderRadius: '9999px',
                           backgroundColor:
                             l.status === 'approved'
-                              ? 'rgba(16, 185, 129, 0.12)'
+                              ? 'rgba(22, 132, 91, 0.12)'
                               : l.status === 'cancelled'
-                              ? 'rgba(244, 63, 94, 0.12)'
-                              : 'rgba(245, 158, 11, 0.12)',
+                              ? 'rgba(201, 74, 74, 0.12)'
+                              : 'rgba(183, 121, 31, 0.12)',
                           color:
                             l.status === 'approved'
-                              ? '#10B981'
+                              ? '#16845B'
                               : l.status === 'cancelled'
-                              ? '#FB7185'
-                              : '#F59E0B',
+                              ? '#C94A4A'
+                              : '#B7791F',
                           textTransform: 'uppercase',
                         }}
                       >
@@ -313,9 +312,9 @@ export const LeaveManager: React.FC = () => {
                             style={{
                               padding: '6px 12px',
                               borderRadius: '8px',
-                              backgroundColor: 'rgba(244, 63, 94, 0.1)',
-                              border: '1px solid rgba(244, 63, 94, 0.3)',
-                              color: '#FB7185',
+                              backgroundColor: 'rgba(201, 74, 74, 0.1)',
+                              border: '1px solid rgba(201, 74, 74, 0.3)',
+                              color: '#C94A4A',
                               fontSize: '0.78rem',
                               fontWeight: 600,
                               cursor: 'pointer',
@@ -330,7 +329,7 @@ export const LeaveManager: React.FC = () => {
                           style={{
                             background: 'transparent',
                             border: 'none',
-                            color: '#64748B',
+                            color: '#6F6A62',
                             cursor: 'pointer',
                             padding: '6px',
                           }}
@@ -354,8 +353,8 @@ export const LeaveManager: React.FC = () => {
         maxWidth="md"
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <CalendarX size={20} color="#F43F5E" />
-            <span className="font-serif" style={{ fontSize: '1.35rem', color: '#F8FAFC' }}>
+            <CalendarX size={20} color="#C94A4A" />
+            <span className="font-serif" style={{ fontSize: '1.35rem', color: '#171717' }}>
               {editingLeave ? 'Edit Leave Record' : 'Schedule Staff Leave'}
             </span>
           </div>
@@ -364,7 +363,7 @@ export const LeaveManager: React.FC = () => {
       >
         <form onSubmit={handleSaveLeave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
               Select Stylist *
             </label>
             <select
@@ -382,7 +381,7 @@ export const LeaveManager: React.FC = () => {
           </div>
 
           <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
               Leave Duration Type *
             </label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -392,9 +391,9 @@ export const LeaveManager: React.FC = () => {
                 style={{
                   padding: '10px',
                   borderRadius: '10px',
-                  border: leaveType === 'full_day' ? '1.5px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
-                  backgroundColor: leaveType === 'full_day' ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                  color: leaveType === 'full_day' ? '#F3E5AB' : '#94A3B8',
+                  border: leaveType === 'full_day' ? '1.5px solid #C9A227' : '1px solid #E4DED4',
+                  backgroundColor: leaveType === 'full_day' ? 'rgba(201, 162, 39, 0.15)' : '#F1EDE6',
+                  color: leaveType === 'full_day' ? '#9A7B1C' : '#6F6A62',
                   fontWeight: 600,
                   cursor: 'pointer',
                 }}
@@ -407,9 +406,9 @@ export const LeaveManager: React.FC = () => {
                 style={{
                   padding: '10px',
                   borderRadius: '10px',
-                  border: leaveType === 'half_day' ? '1.5px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
-                  backgroundColor: leaveType === 'half_day' ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                  color: leaveType === 'half_day' ? '#F3E5AB' : '#94A3B8',
+                  border: leaveType === 'half_day' ? '1.5px solid #C9A227' : '1px solid #E4DED4',
+                  backgroundColor: leaveType === 'half_day' ? 'rgba(201, 162, 39, 0.15)' : '#F1EDE6',
+                  color: leaveType === 'half_day' ? '#9A7B1C' : '#6F6A62',
                   fontWeight: 600,
                   cursor: 'pointer',
                 }}
@@ -421,7 +420,7 @@ export const LeaveManager: React.FC = () => {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
                 Start Date *
               </label>
               <input
@@ -433,7 +432,7 @@ export const LeaveManager: React.FC = () => {
               />
             </div>
             <div>
-              <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
                 End Date *
               </label>
               <input
@@ -447,7 +446,7 @@ export const LeaveManager: React.FC = () => {
           </div>
 
           <div>
-            <label style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.82rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
               Reason for Leave *
             </label>
             <textarea
@@ -460,8 +459,8 @@ export const LeaveManager: React.FC = () => {
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '16px' }}>
-            <button type="button" onClick={() => setIsAddModalOpen(false)} className="btn-dark" style={{ padding: '10px 18px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E4DED4', paddingTop: '16px' }}>
+            <button type="button" onClick={() => setIsAddModalOpen(false)} className="btn-gold-outline" style={{ padding: '10px 18px' }}>
               Cancel
             </button>
             <button type="submit" className="btn-gold" style={{ padding: '10px 22px', minHeight: '44px' }}>

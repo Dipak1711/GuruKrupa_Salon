@@ -80,9 +80,9 @@ export const Modal: React.FC<ModalProps> = ({
             style={{
               position: 'fixed',
               inset: 0,
-              backgroundColor: 'rgba(5, 7, 10, 0.88)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
+              backgroundColor: 'rgba(23, 23, 23, 0.4)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
             }}
           />
 
@@ -100,10 +100,10 @@ export const Modal: React.FC<ModalProps> = ({
               maxWidth: getMaxWidthValue(),
               maxHeight: '90vh',
               overflowY: 'auto',
-              background: 'linear-gradient(145deg, rgba(20, 24, 34, 0.98) 0%, rgba(12, 15, 21, 0.98) 100%)',
-              border: '1px solid rgba(212, 175, 55, 0.35)',
+              background: '#FFFFFF',
+              border: '1px solid #E4DED4',
               borderRadius: '24px',
-              boxShadow: '0 25px 60px -10px rgba(0, 0, 0, 0.8), 0 0 35px rgba(212, 175, 55, 0.15)',
+              boxShadow: '0 20px 50px rgba(23, 23, 23, 0.12)',
               zIndex: 1000,
               display: 'flex',
               flexDirection: 'column',
@@ -115,7 +115,7 @@ export const Modal: React.FC<ModalProps> = ({
                 className="salon-modal-header"
                 style={{
                   padding: '22px 24px 16px 24px',
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderBottom: '1px solid #E4DED4',
                   display: 'flex',
                   alignItems: 'flex-start',
                   justifyContent: 'space-between',
@@ -129,7 +129,7 @@ export const Modal: React.FC<ModalProps> = ({
                       style={{
                         fontSize: '1.35rem',
                         fontWeight: 600,
-                        color: '#F8FAFC',
+                        color: '#171717',
                       }}
                     >
                       {title}
@@ -141,7 +141,7 @@ export const Modal: React.FC<ModalProps> = ({
                     <p
                       style={{
                         fontSize: '0.84rem',
-                        color: '#94A3B8',
+                        color: '#6F6A62',
                         marginTop: '4px',
                       }}
                     >
@@ -154,9 +154,9 @@ export const Modal: React.FC<ModalProps> = ({
                   <button
                     onClick={onClose}
                     style={{
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      color: '#94A3B8',
+                      background: '#F1EDE6',
+                      border: '1px solid #E4DED4',
+                      color: '#6F6A62',
                       width: '38px',
                       height: '38px',
                       borderRadius: '50%',
@@ -168,14 +168,14 @@ export const Modal: React.FC<ModalProps> = ({
                       flexShrink: 0,
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#FFFFFF';
-                      e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.5)';
-                      e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.15)';
+                      e.currentTarget.style.color = '#171717';
+                      e.currentTarget.style.borderColor = '#C9A227';
+                      e.currentTarget.style.backgroundColor = 'rgba(201, 162, 39, 0.12)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.color = '#94A3B8';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                      e.currentTarget.style.color = '#6F6A62';
+                      e.currentTarget.style.borderColor = '#E4DED4';
+                      e.currentTarget.style.backgroundColor = '#F1EDE6';
                     }}
                   >
                     <X size={18} />

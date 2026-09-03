@@ -101,15 +101,13 @@ export const ServiceManager: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleSaveService = (e: React.FormEvent) => {
+  const handleSaveService = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const cleanImages = imageUrls.filter((url) => url.trim().length > 0);
-    const cleanBenefits = benefits.filter((b) => b.trim().length > 0);
+    const cleanImages = imageUrls.filter((url) => url.trim() !== '');
+    const cleanBenefits = benefits.filter((b) => b.trim() !== '');
 
-    if (cleanImages.length === 0) {
-      cleanImages.push('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1000&q=80');
-    }
+    let savedServiceId = editingService?.id;
 
     if (editingService) {
       updateService(editingService.id, {
@@ -119,57 +117,80 @@ export const ServiceManager: React.FC = () => {
         duration_mins: Number(durationMins),
         short_description: shortDesc,
         description,
-        images: cleanImages,
+        images: cleanImages.length > 0 ? cleanImages : [editingService.images[0]],
         benefits: cleanBenefits,
       });
+      success('Service Updated', `"${name}" catalog details and pricing saved.`);
+    } else {
+      await addService({
+        name,
+        category_id: categoryId,
+        price: Number(price),
+        duration_mins: Number(durationMins),
+        short_description: shortDesc,
+        description,
+        images: cleanImages.length > 0 ? cleanImages : ['https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1000&q=80'],
+        benefits: cleanBenefits,
+        is_active: true,
+      });
+      success('Service Created', `New service "${name}" added to salon menu.`);
+    }
 
+    // Sync assigned employees
+    if (savedServiceId) {
       employees.forEach((emp) => {
         const isAssigned = assignedEmpIds.includes(emp.id);
-        const hasService = emp.assigned_service_ids.includes(editingService.id);
+        const hasService = emp.assigned_service_ids.includes(savedServiceId!);
 
         if (isAssigned && !hasService) {
           updateEmployee(emp.id, {
-            assigned_service_ids: [...emp.assigned_service_ids, editingService.id],
+            assigned_service_ids: [...emp.assigned_service_ids, savedServiceId!],
           });
         } else if (!isAssigned && hasService) {
           updateEmployee(emp.id, {
-            assigned_service_ids: emp.assigned_service_ids.filter((id) => id !== editingService.id),
+            assigned_service_ids: emp.assigned_service_ids.filter((id) => id !== savedServiceId!),
           });
         }
       });
-
-      success('Service Updated', `"${name}" price updated to ${formatPrice(price)}. Customer discovery updated live.`);
-    } else {
-      const newServiceId = `a${Date.now()}`;
-      addService({
-        category_id: categoryId,
-        name,
-        short_description: shortDesc,
-        description,
-        price: Number(price),
-        duration_mins: Number(durationMins),
-        benefits: cleanBenefits,
-        images: cleanImages,
-        is_active: true,
-      });
-
-      employees.forEach((emp) => {
-        if (assignedEmpIds.includes(emp.id)) {
-          updateEmployee(emp.id, {
-            assigned_service_ids: [...emp.assigned_service_ids, newServiceId],
-          });
-        }
-      });
-
-      success('Service Created', `New service "${name}" published at ${formatPrice(price)}.`);
     }
 
     setIsModalOpen(false);
   };
 
-  const handleToggleActive = (serviceId: string, currentName: string) => {
-    toggleServiceActive(serviceId);
-    info('Service Status Changed', `Status updated for "${currentName}".`);
+  const handleToggleActive = (srvId: string, srvName: string) => {
+    toggleServiceActive(srvId);
+    info('Service Status Updated', `Visibility changed for "${srvName}".`);
+  };
+
+  // Image Url helpers
+  const handleAddImageUrlField = () => setImageUrls([...imageUrls, '']);
+  const handleImageUrlChange = (idx: number, val: string) => {
+    const updated = [...imageUrls];
+    updated[idx] = val;
+    setImageUrls(updated);
+  };
+  const handleRemoveImageUrlField = (idx: number) => {
+    if (imageUrls.length > 1) setImageUrls(imageUrls.filter((_, i) => i !== idx));
+  };
+
+  // Benefit helpers
+  const handleAddBenefitField = () => setBenefits([...benefits, '']);
+  const handleBenefitChange = (idx: number, val: string) => {
+    const updated = [...benefits];
+    updated[idx] = val;
+    setBenefits(updated);
+  };
+  const handleRemoveBenefitField = (idx: number) => {
+    if (benefits.length > 1) setBenefits(benefits.filter((_, i) => i !== idx));
+  };
+
+  // Employee Checkbox handler
+  const handleEmpCheckboxChange = (empId: string) => {
+    if (assignedEmpIds.includes(empId)) {
+      setAssignedEmpIds(assignedEmpIds.filter((id) => id !== empId));
+    } else {
+      setAssignedEmpIds([...assignedEmpIds, empId]);
+    }
   };
 
   return (
@@ -185,13 +206,13 @@ export const ServiceManager: React.FC = () => {
         }}
       >
         <div>
-          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Dynamic Catalog Control
           </span>
-          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
             Service Management ({filteredServices.length} of {services.length})
           </h2>
-          <p style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '4px' }}>
+          <p style={{ fontSize: '0.92rem', color: '#6F6A62', marginTop: '4px' }}>
             Add, update prices, adjust durations, configure multi-image sliders, and archive/restore services dynamically.
           </p>
         </div>
@@ -211,6 +232,9 @@ export const ServiceManager: React.FC = () => {
           gap: '14px',
           alignItems: 'center',
           flexWrap: 'wrap',
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #E4DED4',
+          borderRadius: '16px',
         }}
       >
         {/* Search */}
@@ -223,7 +247,7 @@ export const ServiceManager: React.FC = () => {
             placeholder="Search service name or description..."
             style={{ paddingLeft: '40px' }}
           />
-          <Search size={16} color="#94A3B8" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
+          <Search size={16} color="#6F6A62" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
         </div>
 
         {/* Category Filter */}
@@ -263,11 +287,13 @@ export const ServiceManager: React.FC = () => {
           style={{
             padding: '48px',
             textAlign: 'center',
-            color: '#94A3B8',
+            color: '#6F6A62',
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #E4DED4',
           }}
         >
-          <Scissors size={36} color="#D4AF37" style={{ marginBottom: '12px' }} />
-          <h3 style={{ fontSize: '1.2rem', color: '#F8FAFC', marginBottom: '4px' }}>No Services Found</h3>
+          <Scissors size={36} color="#C9A227" style={{ marginBottom: '12px' }} />
+          <h3 style={{ fontSize: '1.2rem', color: '#171717', marginBottom: '4px' }}>No Services Found</h3>
           <p style={{ fontSize: '0.88rem' }}>Try clearing your search query or changing filters.</p>
         </div>
       ) : (
@@ -293,7 +319,9 @@ export const ServiceManager: React.FC = () => {
                   justifyContent: 'space-between',
                   gap: '16px',
                   opacity: srv.is_active ? 1 : 0.6,
-                  border: srv.is_active ? '1px solid rgba(212, 175, 55, 0.25)' : '1px dashed rgba(244, 63, 94, 0.35)',
+                  backgroundColor: '#FFFFFF',
+                  border: srv.is_active ? '1px solid #E4DED4' : '1px dashed #C94A4A',
+                  borderRadius: '18px',
                 }}
               >
                 {/* Top Image & Info */}
@@ -301,7 +329,7 @@ export const ServiceManager: React.FC = () => {
                   <img
                     src={srv.images && srv.images[0] ? srv.images[0] : 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=300&q=80'}
                     alt={srv.name}
-                    style={{ width: '84px', height: '84px', borderRadius: '12px', objectFit: 'cover', border: '1px solid rgba(212, 175, 55, 0.3)', flexShrink: 0 }}
+                    style={{ width: '84px', height: '84px', borderRadius: '12px', objectFit: 'cover', border: '1px solid #E4DED4', flexShrink: 0 }}
                   />
 
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -309,8 +337,8 @@ export const ServiceManager: React.FC = () => {
                       <span
                         style={{
                           fontSize: '0.72rem',
-                          backgroundColor: 'rgba(212, 175, 55, 0.12)',
-                          color: '#F3E5AB',
+                          backgroundColor: 'rgba(201, 162, 39, 0.12)',
+                          color: '#9A7B1C',
                           padding: '2px 8px',
                           borderRadius: '9999px',
                           fontWeight: 600,
@@ -319,77 +347,74 @@ export const ServiceManager: React.FC = () => {
                         {category?.name || 'General'}
                       </span>
                       {!srv.is_active && (
-                        <span style={{ fontSize: '0.7rem', color: '#FB7185', fontWeight: 600, backgroundColor: 'rgba(244, 63, 94, 0.12)', padding: '2px 8px', borderRadius: '6px' }}>
+                        <span style={{ fontSize: '0.7rem', color: '#C94A4A', backgroundColor: 'rgba(201, 74, 74, 0.12)', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
                           Archived
                         </span>
                       )}
                     </div>
 
-                    <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#F8FAFC', fontWeight: 600, marginBottom: '4px' }}>
+                    <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#171717', fontWeight: 600, marginBottom: '4px' }}>
                       {srv.name}
                     </h3>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.82rem', color: '#94A3B8', flexWrap: 'wrap' }}>
-                      <span style={{ color: '#F3E5AB', fontWeight: 700, fontSize: '1.05rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.82rem' }}>
+                      <span style={{ fontWeight: 700, color: '#C9A227', fontSize: '1.05rem' }}>
                         {formatPrice(srv.price)}
                       </span>
-                      <span>•</span>
-                      <span>{srv.duration_mins} mins</span>
-                      <span>•</span>
-                      <span>{srv.images ? srv.images.length : 1} Images</span>
+                      <span style={{ color: '#6F6A62', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                        <Clock size={13} color="#C9A227" />
+                        {srv.duration_mins}m
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                <p style={{ fontSize: '0.84rem', color: '#CBD5E1', lineHeight: 1.4, margin: 0 }}>
-                  {srv.short_description || srv.description}
+                {/* Description & Benefits */}
+                <p style={{ fontSize: '0.84rem', color: '#6F6A62', lineHeight: 1.45, margin: 0 }}>
+                  {srv.description || srv.short_description}
                 </p>
 
-                {/* Actions Bar */}
+                {/* Footer Metadata & Actions */}
                 <div
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-                    paddingTop: '14px',
-                    flexWrap: 'wrap',
-                    gap: '10px',
+                    borderTop: '1px solid #E4DED4',
+                    paddingTop: '12px',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: '#94A3B8' }}>
-                    <Users size={14} color="#D4AF37" />
-                    <span>{assignedCount} Stylists Assigned</span>
-                  </div>
+                  <span style={{ fontSize: '0.76rem', color: '#6F6A62' }}>
+                    Qualified Staff: <strong>{assignedCount} Stylists</strong>
+                  </span>
 
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                  <div style={{ display: 'flex', gap: '6px' }}>
                     <button
                       onClick={() => handleToggleActive(srv.id, srv.name)}
-                      title={srv.is_active ? 'Archive Service' : 'Restore Service'}
                       style={{
-                        padding: '7px 12px',
-                        minHeight: '44px',
-                        borderRadius: '10px',
-                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        color: srv.is_active ? '#94A3B8' : '#10B981',
+                        padding: '6px 10px',
+                        borderRadius: '8px',
+                        backgroundColor: '#F1EDE6',
+                        border: '1px solid #E4DED4',
+                        color: srv.is_active ? '#6F6A62' : '#16845B',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '0.8rem',
+                        gap: '4px',
+                        fontSize: '0.78rem',
+                        fontWeight: 600,
                       }}
                     >
-                      {srv.is_active ? <EyeOff size={15} /> : <Eye size={15} />}
+                      {srv.is_active ? <EyeOff size={13} /> : <Eye size={13} />}
                       <span>{srv.is_active ? 'Archive' : 'Restore'}</span>
                     </button>
 
                     <button
                       onClick={() => handleOpenEditModal(srv)}
-                      className="btn-gold-outline"
-                      style={{ padding: '7px 14px', fontSize: '0.82rem', minHeight: '44px' }}
+                      className="btn-gold"
+                      style={{ padding: '6px 12px', fontSize: '0.78rem' }}
                     >
-                      <Edit2 size={14} />
+                      <Edit2 size={13} />
                       <span>Edit Service</span>
                     </button>
                   </div>
@@ -404,37 +429,36 @@ export const ServiceManager: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        maxWidth="2xl"
+        maxWidth="xl"
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Scissors size={20} color="#D4AF37" />
-            <span className="font-serif" style={{ fontSize: '1.4rem', color: '#F8FAFC' }}>
+            <Scissors size={20} color="#C9A227" />
+            <span className="font-serif" style={{ fontSize: '1.4rem', color: '#171717' }}>
               {editingService ? `Edit Service: ${editingService.name}` : 'Add New Salon Service'}
             </span>
           </div>
         }
-        subtitle="Changes reflect dynamically across customer booking catalog in real time."
+        subtitle="Manage dynamic catalog pricing, durations, image gallery, and qualified craftsmen."
       >
-        <form onSubmit={handleSaveService} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Service Name & Category */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+        <form onSubmit={handleSaveService} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ fontSize: '0.84rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-                Service Name *
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+                Service Title *
               </label>
               <input
                 type="text"
                 className="salon-input"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Royal Signature Haircut"
+                placeholder="e.g. Royal Gold Scissor Cut & Spa"
                 required
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '0.84rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-                Category *
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+                Category Taxonomy *
               </label>
               <select
                 className="salon-select"
@@ -451,16 +475,14 @@ export const ServiceManager: React.FC = () => {
             </div>
           </div>
 
-          {/* Price & Duration */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
             <div>
-              <label style={{ fontSize: '0.84rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-                Price in INR (₹) *
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+                Service Price (INR ₹) *
               </label>
               <input
                 type="number"
                 min="0"
-                step="any"
                 className="salon-input"
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
@@ -469,7 +491,7 @@ export const ServiceManager: React.FC = () => {
             </div>
 
             <div>
-              <label style={{ fontSize: '0.84rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
                 Duration (Minutes) *
               </label>
               <input
@@ -484,77 +506,82 @@ export const ServiceManager: React.FC = () => {
             </div>
           </div>
 
-          {/* Short Description */}
           <div>
-            <label style={{ fontSize: '0.84rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-              Short Card Description *
+            <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              Short Summary Description *
             </label>
             <input
               type="text"
               className="salon-input"
               value={shortDesc}
               onChange={(e) => setShortDesc(e.target.value)}
-              placeholder="e.g. Precision scissor & clipper cut tailored to face architecture."
+              placeholder="Brief 1-line hook for discovery cards"
               required
             />
           </div>
 
-          {/* Detailed Description */}
           <div>
-            <label style={{ fontSize: '0.84rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
-              Full Experience Description *
+            <label style={{ fontSize: '0.84rem', color: '#6F6A62', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              Comprehensive Experience Details *
             </label>
             <textarea
               className="salon-input"
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Detailed step-by-step description for the service detail modal..."
+              placeholder="Full service breakdown, consultation steps, product details..."
               required
             />
           </div>
 
-          {/* Multiple Image URLs Manager */}
+          {/* Multi-Image URL Gallery Manager */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <label style={{ fontSize: '0.84rem', color: '#F8FAFC', fontWeight: 600 }}>
-                Showcase Images ({imageUrls.length})
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', fontWeight: 600 }}>
+                Service Photography Gallery URLs (Slider Preview)
               </label>
               <button
                 type="button"
-                onClick={() => setImageUrls([...imageUrls, ''])}
+                onClick={handleAddImageUrlField}
                 style={{
-                  background: 'transparent',
+                  background: 'none',
                   border: 'none',
-                  color: '#D4AF37',
+                  color: '#C9A227',
                   fontSize: '0.8rem',
                   fontWeight: 600,
                   cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
                 }}
               >
-                + Add Image URL
+                <Plus size={14} />
+                <span>Add Image URL</span>
               </button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {imageUrls.map((url, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                   <input
                     type="url"
                     className="salon-input"
                     value={url}
-                    onChange={(e) => {
-                      const updated = [...imageUrls];
-                      updated[idx] = e.target.value;
-                      setImageUrls(updated);
-                    }}
+                    onChange={(e) => handleImageUrlChange(idx, e.target.value)}
                     placeholder="https://images.unsplash.com/..."
+                    required={idx === 0}
                   />
                   {imageUrls.length > 1 && (
                     <button
                       type="button"
-                      onClick={() => setImageUrls(imageUrls.filter((_, i) => i !== idx))}
-                      style={{ background: 'transparent', border: 'none', color: '#FB7185', cursor: 'pointer' }}
+                      onClick={() => handleRemoveImageUrlField(idx)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#C94A4A',
+                        cursor: 'pointer',
+                        padding: '6px',
+                      }}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -564,47 +591,53 @@ export const ServiceManager: React.FC = () => {
             </div>
           </div>
 
-          {/* Benefits List */}
+          {/* Inclusions & Key Benefits Checklist */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <label style={{ fontSize: '0.84rem', color: '#F8FAFC', fontWeight: 600 }}>
-                Inclusions & Key Benefits ({benefits.length})
+              <label style={{ fontSize: '0.84rem', color: '#6F6A62', fontWeight: 600 }}>
+                What's Included & Key Benefits
               </label>
               <button
                 type="button"
-                onClick={() => setBenefits([...benefits, ''])}
+                onClick={handleAddBenefitField}
                 style={{
-                  background: 'transparent',
+                  background: 'none',
                   border: 'none',
-                  color: '#D4AF37',
+                  color: '#C9A227',
                   fontSize: '0.8rem',
                   fontWeight: 600,
                   cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
                 }}
               >
-                + Add Benefit Point
+                <Plus size={14} />
+                <span>Add Benefit</span>
               </button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {benefits.map((b, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                   <input
                     type="text"
                     className="salon-input"
                     value={b}
-                    onChange={(e) => {
-                      const updated = [...benefits];
-                      updated[idx] = e.target.value;
-                      setBenefits(updated);
-                    }}
-                    placeholder="e.g. Organic argan oil steam rinse"
+                    onChange={(e) => handleBenefitChange(idx, e.target.value)}
+                    placeholder="e.g. Free Scalp Massage & Hot Towel Treatment"
                   />
                   {benefits.length > 1 && (
                     <button
                       type="button"
-                      onClick={() => setBenefits(benefits.filter((_, i) => i !== idx))}
-                      style={{ background: 'transparent', border: 'none', color: '#FB7185', cursor: 'pointer' }}
+                      onClick={() => handleRemoveBenefitField(idx)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#C94A4A',
+                        cursor: 'pointer',
+                        padding: '6px',
+                      }}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -614,72 +647,69 @@ export const ServiceManager: React.FC = () => {
             </div>
           </div>
 
-          {/* Assign Stylists Matrix */}
+          {/* Assign Skill to Craftsmen */}
           <div>
-            <label style={{ fontSize: '0.84rem', color: '#F8FAFC', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
-              Assign Capable Master Stylists
+            <label style={{ fontSize: '0.84rem', color: '#171717', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
+              Qualified Stylists Assigned to this Service ({assignedEmpIds.length} Selected)
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
-              {employees
-                .filter((e) => e.is_active)
-                .map((emp) => {
-                  const isChecked = assignedEmpIds.includes(emp.id);
-                  return (
-                    <label
-                      key={emp.id}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        padding: '10px 12px',
-                        borderRadius: '10px',
-                        backgroundColor: isChecked ? 'rgba(212, 175, 55, 0.12)' : 'rgba(255, 255, 255, 0.03)',
-                        border: isChecked ? '1px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.08)',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setAssignedEmpIds([...assignedEmpIds, emp.id]);
-                          } else {
-                            setAssignedEmpIds(assignedEmpIds.filter((id) => id !== emp.id));
-                          }
-                        }}
-                      />
-                      <img
-                        src={emp.avatar_url}
-                        alt={emp.name}
-                        style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
-                      />
-                      <span style={{ fontSize: '0.84rem', color: isChecked ? '#F3E5AB' : '#CBD5E1', fontWeight: 500 }}>
-                        {emp.name}
-                      </span>
-                    </label>
-                  );
-                })}
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '8px',
+                maxHeight: '160px',
+                overflowY: 'auto',
+                backgroundColor: '#F1EDE6',
+                padding: '12px',
+                borderRadius: '12px',
+                border: '1px solid #E4DED4',
+              }}
+            >
+              {employees.map((emp) => {
+                const isChecked = assignedEmpIds.includes(emp.id);
+                return (
+                  <label
+                    key={emp.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      fontSize: '0.82rem',
+                      color: isChecked ? '#171717' : '#6F6A62',
+                      cursor: 'pointer',
+                      fontWeight: isChecked ? 600 : 400,
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => handleEmpCheckboxChange(emp.id)}
+                      style={{ accentColor: '#C9A227' }}
+                    />
+                    <span>{emp.name} ({emp.role_title})</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 
-          {/* Modal Actions */}
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-              paddingTop: '18px',
+              borderTop: '1px solid #E4DED4',
+              paddingTop: '16px',
             }}
           >
-            <button type="button" onClick={() => setIsModalOpen(false)} className="btn-dark" style={{ padding: '10px 20px' }}>
+            <button type="button" onClick={() => setIsModalOpen(false)} className="btn-gold-outline" style={{ padding: '10px 18px' }}>
               Cancel
             </button>
 
-            <button type="submit" className="btn-gold" style={{ padding: '11px 26px', minHeight: '44px' }}>
+            <button type="submit" className="btn-gold" style={{ padding: '10px 24px' }}>
               <CheckCircle2 size={16} />
-              <span>{editingService ? 'Save Changes' : 'Create & Publish Service'}</span>
+              <span>{editingService ? 'Save Service Catalog' : 'Publish Service'}</span>
             </button>
           </div>
         </form>

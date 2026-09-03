@@ -63,13 +63,13 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = () => {
         }}
       >
         <div>
-          <span style={{ fontSize: '0.82rem', color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Master Stylist Workspace
           </span>
-          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#F8FAFC', fontWeight: 700 }}>
+          <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
             Welcome, {currentEmployee.name}
           </h2>
-          <p style={{ fontSize: '0.9rem', color: '#94A3B8', marginTop: '2px' }}>
+          <p style={{ fontSize: '0.9rem', color: '#6F6A62', marginTop: '2px' }}>
             {currentEmployee.role_title} • {currentEmployee.specialization}
           </p>
         </div>
@@ -118,12 +118,12 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = () => {
 
       {/* Recent Completed Work & Revenue Feed */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        <h3 className="font-serif" style={{ fontSize: '1.4rem', color: '#F8FAFC', fontWeight: 600 }}>
+        <h3 className="font-serif" style={{ fontSize: '1.4rem', color: '#171717', fontWeight: 600 }}>
           Recent Completed Services & Revenue
         </h3>
 
         {stylistRecords.length === 0 ? (
-          <div className="glass-card" style={{ padding: '32px', textAlign: 'center', color: '#94A3B8' }}>
+          <div className="glass-card" style={{ padding: '32px', textAlign: 'center', color: '#6F6A62', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
             No recent completed service records found. Use "Add Walk-in Service" to record client billing.
           </div>
         ) : (
@@ -132,8 +132,8 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = () => {
               <div
                 key={rec.id}
                 style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E4DED4',
                   borderRadius: '14px',
                   padding: '16px 20px',
                   display: 'flex',
@@ -145,14 +145,14 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = () => {
               >
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '0.96rem', fontWeight: 600, color: '#F8FAFC' }}>
+                    <span style={{ fontSize: '0.96rem', fontWeight: 600, color: '#171717' }}>
                       {rec.items.map((i) => i.service_name).join(' + ')}
                     </span>
                     <span
                       style={{
                         fontSize: '0.7rem',
-                        backgroundColor: 'rgba(212, 175, 55, 0.15)',
-                        color: '#D4AF37',
+                        backgroundColor: 'rgba(201, 162, 39, 0.15)',
+                        color: '#9A7B1C',
                         padding: '2px 6px',
                         borderRadius: '6px',
                         fontWeight: 600,
@@ -161,17 +161,17 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = () => {
                       Walk-in Billing
                     </span>
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#94A3B8' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#6F6A62' }}>
                     Client: {rec.customer_name} • Paid via {rec.payment.payment_method} • {formatDateTime(rec.completed_at)}
                   </div>
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#10B981' }}>
+                  <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#16845B' }}>
                     +{formatPrice(rec.total_amount)}
                   </div>
                   {rec.discount > 0 && (
-                    <span style={{ fontSize: '0.74rem', color: '#94A3B8' }}>
+                    <span style={{ fontSize: '0.74rem', color: '#6F6A62' }}>
                       Discount: {formatPrice(rec.discount)}
                     </span>
                   )}
