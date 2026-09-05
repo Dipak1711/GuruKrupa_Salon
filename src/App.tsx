@@ -154,7 +154,7 @@ const SalonApp: React.FC = () => {
       />
 
       {/* Main Layout Container */}
-      <div style={{ display: 'flex', flex: 1, position: 'relative' }}>
+      <div style={{ display: 'flex', flex: 1, position: 'relative', paddingTop: '70px' }}>
         {/* Role-Specific Sidebar */}
         <Sidebar
           activeView={activeView}
@@ -162,6 +162,9 @@ const SalonApp: React.FC = () => {
           isOpenMobile={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
         />
+
+        {/* Desktop Spacer to preserve layout width for fixed sidebar */}
+        <div className="desktop-sidebar-spacer" />
 
         {/* Dynamic Content Viewport */}
         <main

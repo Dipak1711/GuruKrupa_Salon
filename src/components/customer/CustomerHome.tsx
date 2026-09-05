@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useSalonData } from '../../context/SalonDataContext';
+import { useAuth } from '../../context/AuthContext';
 import { Service, Employee, Branch } from '../../types';
 import { ServiceCard } from './ServiceCard';
 import { ServiceDetailModal } from './ServiceDetailModal';
 import { formatPrice } from '../../utils/currency';
-import { formatDate } from '../../utils/dates';
 import {
   Scissors,
   Sparkles,
@@ -18,13 +18,17 @@ import {
   Tag,
   Image as ImageIcon,
   CheckCircle2,
-  Layers,
   Copy,
   Check,
+  Building2,
+  Search,
+  Bell,
+  SlidersHorizontal,
+  Leaf,
+  Compass,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '../../context/ToastContext';
-
 import { EmptyState } from '../common/EmptyState';
 
 interface CustomerHomeProps {
@@ -32,7 +36,8 @@ interface CustomerHomeProps {
 }
 
 export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) => {
-  const { categories, services, employees, offers, gallery, reviews, isLoading } = useSalonData();
+  const { categories, services, employees, offers, gallery, reviews, branches, isLoading } = useSalonData();
+  const { currentUser } = useAuth();
   const { success } = useToast();
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -70,266 +75,519 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
     onNavigateToView('booking');
   };
 
+  const curatedFeaturedService = activeServices.length > 0 ? activeServices[0] : null;
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
-      {/* 1. HERO SECTION */}
-      <div
-        className="glass-card hero-card"
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          padding: '52px 36px',
-          background: 'linear-gradient(135deg, #FFFFFF 0%, #F1EDE6 100%)',
-          border: '1px solid #E4DED4',
-          borderRadius: '28px',
-          boxShadow: '0 8px 30px rgba(23, 23, 23, 0.04)',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            top: '-50px',
-            right: '-50px',
-            width: '320px',
-            height: '320px',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(201, 162, 39, 0.08)',
-            filter: 'blur(50px)',
-            pointerEvents: 'none',
-          }}
-        />
-
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: '680px' }}>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              backgroundColor: 'rgba(201, 162, 39, 0.12)',
-              border: '1px solid rgba(201, 162, 39, 0.3)',
-              borderRadius: '9999px',
-              padding: '6px 14px',
-              fontSize: '0.82rem',
-              fontWeight: 600,
-              color: '#9A7B1C',
-              marginBottom: '18px',
-            }}
-          >
-            <Sparkles size={14} color="#C9A227" />
-            <span>The Royal Standard in Grooming & Styling</span>
-          </div>
-
-          <h1
-            className="font-serif"
-            style={{
-              fontSize: 'clamp(2.1rem, 4vw, 3.2rem)',
-              fontWeight: 700,
-              lineHeight: 1.15,
-              color: '#171717',
-              marginBottom: '16px',
-            }}
-          >
-            Bespoke Mastery for the <span className="gold-gradient-text">Modern Connoisseur</span>
-          </h1>
-
-          <p
-            style={{
-              fontSize: '1rem',
-              color: '#6F6A62',
-              lineHeight: 1.6,
-              marginBottom: '28px',
-            }}
-          >
-            Welcome to GuruKrupa SALON. Select your desired service, explore detailed multi-image showcases, and connect directly with master craftsmen.
-          </p>
-
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => {
-                const srvSection = document.getElementById('services-section');
-                srvSection?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="btn-gold"
-              style={{ padding: '13px 26px' }}
-            >
-              <Scissors size={18} />
-              <span>Explore Services</span>
-              <ArrowRight size={16} />
-            </button>
-
-            <button
-              onClick={() => onNavigateToView('offers')}
-              className="btn-gold-outline"
-              style={{ padding: '13px 22px' }}
-            >
-              <Sparkles size={16} color="#C9A227" />
-              <span>View Privileges & Offers</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. SERVICE CATEGORIES SECTION */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div>
-          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
-            Taxonomy & Disciplines
-          </span>
-          <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
-            Service Categories
-          </h2>
-        </div>
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: '14px',
-          }}
-        >
-          {categories.map((cat) => {
-            const catCount = activeServices.filter((s) => s.category_id === cat.id).length;
-            const isSelected = selectedCategory === cat.id;
-            return (
-              <motion.button
-                key={cat.id}
-                whileHover={{ y: -3 }}
-                onClick={() => {
-                  setSelectedCategory(cat.id);
-                  const srvSection = document.getElementById('services-section');
-                  srvSection?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="glass-card"
-                style={{
-                  padding: '18px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  border: isSelected ? '1.5px solid #C9A227' : '1px solid #E4DED4',
-                  backgroundColor: isSelected ? 'rgba(201, 162, 39, 0.1)' : '#FFFFFF',
-                  minHeight: '110px',
-                }}
-              >
-                <div
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '10px',
-                    backgroundColor: '#F1EDE6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#C9A227',
-                    marginBottom: '10px',
-                  }}
-                >
-                  <Layers size={18} />
-                </div>
-
-                <h4 style={{ fontSize: '0.96rem', color: '#171717', fontWeight: 600, marginBottom: '2px' }}>
-                  {cat.name}
-                </h4>
-                <span style={{ fontSize: '0.76rem', color: '#6F6A62' }}>{catCount} Services</span>
-              </motion.button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 3. DYNAMIC SERVICES CATALOG SECTION */}
-      <div id="services-section" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '36px', maxWidth: '1240px', margin: '0 auto' }}>
+      {/* ------------------------------------------------------------------------- */}
+      {/* MOBILE-ONLY GREETING & SEARCH (< 768px) (MATCHING MOBILE SCREENSHOT)       */}
+      {/* ------------------------------------------------------------------------- */}
+      <div className="mobile-only-header-greeting" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
-              Curated Menu
-            </span>
-            <h2 className="font-serif" style={{ fontSize: '2.2rem', color: '#171717', fontWeight: 700 }}>
-              Dynamic Services ({filteredServices.length})
-            </h2>
-            <p style={{ fontSize: '0.9rem', color: '#6F6A62', marginTop: '2px' }}>
-              Prices and descriptions are served live from our database.
+            <h1 className="font-serif" style={{ fontSize: '1.65rem', color: '#171717', fontWeight: 700, lineHeight: 1.15 }}>
+              Good morning, {currentUser ? currentUser.name.split(' ')[0] : 'James'}
+            </h1>
+            <p style={{ fontSize: '0.86rem', color: '#6F6A62', marginTop: '2px' }}>
+              Ready for your bespoke grooming session?
             </p>
           </div>
 
-          <div style={{ width: '100%', maxWidth: '280px' }}>
-            <input
-              type="text"
-              className="salon-input"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search Haircut, Shave, Facial..."
+          <button
+            style={{
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              backgroundColor: '#F1EDE6',
+              border: '1px solid #E4DED4',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#8C6D18',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            <Bell size={18} />
+          </button>
+        </div>
+
+        {/* Mobile Hero Card (Matching Mobile Reference Screenshot) */}
+        <div
+          style={{
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #E4DED4',
+            borderRadius: '24px',
+            overflow: 'hidden',
+            boxShadow: '0 8px 24px rgba(23, 23, 23, 0.04)',
+          }}
+        >
+          <div style={{ position: 'relative', height: '240px' }}>
+            <img
+              src="/luxury_salon_hero.jpg"
+              alt="Refined Grooming"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0,0,0,0) 65%)',
+              }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                top: '14px',
+                left: '14px',
+                backgroundColor: 'rgba(255, 255, 255, 0.94)',
+                border: '1px solid #E4DED4',
+                padding: '4px 12px',
+                borderRadius: '9999px',
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: '#171717',
+                letterSpacing: '0.06em',
+              }}
+            >
+              BESPOKE EXPERIENCE
+            </div>
+
+            <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px' }}>
+              <h2
+                className="font-serif"
+                style={{
+                  fontSize: '1.8rem',
+                  fontWeight: 700,
+                  color: '#FFFFFF',
+                  lineHeight: 1.15,
+                  margin: 0,
+                  textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+                }}
+              >
+                Refined Grooming. <br />
+                <span style={{ fontStyle: 'italic', fontWeight: 400, color: '#E7D18A' }}>Made Personal.</span>
+              </h2>
+            </div>
+          </div>
+
+          <div style={{ padding: '20px 18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <p style={{ fontSize: '0.9rem', color: '#6F6A62', lineHeight: 1.55, margin: 0 }}>
+              Experience master barber craftsmanship in our quiet sanctuary spaces. Unhurried hospitality tailored to your individual rhythm.
+            </p>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => {
+                  const srvSection = document.getElementById('featured-services-section');
+                  srvSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="btn-gold"
+                style={{
+                  flex: 1.2,
+                  padding: '12px 16px',
+                  borderRadius: '9999px',
+                  backgroundColor: '#D4AF37',
+                  color: '#171717',
+                  fontWeight: 700,
+                  fontSize: '0.86rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                }}
+              >
+                <span>Explore Services</span>
+                <ArrowRight size={15} />
+              </button>
+
+              <button
+                onClick={() => onNavigateToView('booking')}
+                style={{
+                  flex: 1,
+                  padding: '12px 14px',
+                  borderRadius: '9999px',
+                  backgroundColor: '#F1EDE6',
+                  border: 'none',
+                  color: '#171717',
+                  fontWeight: 600,
+                  fontSize: '0.84rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  cursor: 'pointer',
+                }}
+              >
+                <MapPin size={14} color="#8C6D18" />
+                <span>Find a Branch</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------------------- */}
+      {/* 1. DESKTOP HERO SECTION (MATCHING EXACT DESKTOP SCREENSHOT 1)              */}
+      {/* ------------------------------------------------------------------------- */}
+      <div
+        className="glass-card hero-card desktop-only"
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: '28px',
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #E4DED4',
+          boxShadow: '0 12px 40px rgba(23, 23, 23, 0.04)',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '24px',
+          padding: '36px',
+        }}
+      >
+        {/* Left Column: Brand Statement, CTAs & Curated Treatment Card */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            zIndex: 2,
+          }}
+        >
+          <div>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                backgroundColor: 'rgba(201, 162, 39, 0.12)',
+                border: '1px solid rgba(201, 162, 39, 0.3)',
+                borderRadius: '9999px',
+                padding: '5px 14px',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                color: '#8C6D18',
+                marginBottom: '20px',
+                width: 'fit-content',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+              }}
+            >
+              <Sparkles size={13} color="#8C6D18" />
+              <span>GURUKRUPA LUXURY GROOMING • EST. 2024</span>
+            </div>
+
+            <h1
+              className="font-serif"
+              style={{
+                fontSize: 'clamp(2.4rem, 4.2vw, 3.6rem)',
+                fontWeight: 700,
+                lineHeight: 1.1,
+                color: '#171717',
+                marginBottom: '18px',
+                letterSpacing: '-0.01em',
+              }}
+            >
+              Refined Grooming. <br />
+              <span style={{ color: '#8C6D18', fontStyle: 'italic', fontWeight: 400 }}>Made Personal.</span>
+            </h1>
+
+            <p
+              style={{
+                fontSize: '0.96rem',
+                color: '#6F6A62',
+                lineHeight: 1.6,
+                marginBottom: '32px',
+                maxWidth: '490px',
+              }}
+            >
+              Experience uncompromising master barbering for the modern gentleman. Bespoke styling, hot-towel straight razor treatments, and quiet private sanctuaries crafted for restorative focus.
+            </p>
+
+            <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '32px' }}>
+              <button
+                onClick={() => {
+                  const srvSection = document.getElementById('featured-services-section');
+                  srvSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                style={{
+                  padding: '13px 26px',
+                  fontSize: '0.92rem',
+                  minHeight: '48px',
+                  borderRadius: '9999px',
+                  backgroundColor: '#8C6D18',
+                  color: '#FFFFFF',
+                  fontWeight: 600,
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '0 4px 14px rgba(140, 109, 24, 0.25)',
+                }}
+              >
+                <span>Explore Services</span>
+                <ArrowRight size={16} />
+              </button>
+
+              <button
+                onClick={() => onNavigateToView('booking')}
+                style={{
+                  padding: '13px 24px',
+                  fontSize: '0.92rem',
+                  minHeight: '48px',
+                  borderRadius: '9999px',
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E4DED4',
+                  color: '#171717',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <Compass size={18} color="#8C6D18" />
+                <span>Find a Branch</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Today's Curated Treatment Card (Desktop Reference Screenshot Match) */}
+          {curatedFeaturedService && (
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #E4DED4',
+                borderRadius: '16px',
+                padding: '14px 18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '16px',
+                boxShadow: '0 4px 14px rgba(23, 23, 23, 0.03)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div
+                  style={{
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(201, 162, 39, 0.14)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#8C6D18',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Leaf size={20} />
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#9A7B1C', letterSpacing: '0.08em', display: 'block' }}>
+                    TODAY'S CURATED TREATMENT
+                  </span>
+                  <h4 style={{ fontSize: '0.94rem', color: '#171717', fontWeight: 700, margin: '2px 0' }}>
+                    {curatedFeaturedService.name}
+                  </h4>
+                  <span style={{ fontSize: '0.78rem', color: '#6F6A62' }}>
+                    {formatPrice(curatedFeaturedService.price)} • {curatedFeaturedService.duration_mins} Mins bespoke care
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => handleViewDetails(curatedFeaturedService)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#8C6D18',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <span>VIEW</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Hero Salon Sanctuary Photography (Stitch Desktop Match) */}
+        <div
+          style={{
+            position: 'relative',
+            minHeight: '380px',
+            borderRadius: '24px',
+            overflow: 'hidden',
+          }}
+        >
+          <img
+            src="/luxury_salon_hero.jpg"
+            alt="GuruKrupa Flagship Sanctuary"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+
+          {/* Top-Right Badge: ★ FLAGSHIP SANCTUARIES */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '18px',
+              right: '18px',
+              backgroundColor: 'rgba(255, 255, 255, 0.92)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid #E4DED4',
+              borderRadius: '9999px',
+              padding: '6px 14px',
+              fontSize: '0.74rem',
+              fontWeight: 700,
+              color: '#171717',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+            }}
+          >
+            <Star size={13} color="#8C6D18" fill="#8C6D18" />
+            <span>FLAGSHIP SANCTUARIES</span>
+          </div>
+
+          {/* Bottom Overlay Card: Architectural Serenity */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '18px',
+              left: '18px',
+              right: '18px',
+              backgroundColor: 'rgba(255, 255, 255, 0.88)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid #E4DED4',
+              borderRadius: '16px',
+              padding: '16px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              boxShadow: '0 6px 20px rgba(0,0,0,0.06)',
+            }}
+          >
+            <div>
+              <div style={{ fontSize: '0.94rem', fontWeight: 700, color: '#171717' }}>Architectural Serenity</div>
+              <div style={{ fontSize: '0.76rem', color: '#6F6A62', marginTop: '2px' }}>Warm walnut, ambient acoustics & single-origin refreshments</div>
+            </div>
+
+            <span
+              style={{
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                color: '#73560E',
+                backgroundColor: '#E6D7AD',
+                padding: '4px 10px',
+                borderRadius: '8px',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              PURE COMFORT
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------------------- */}
+      {/* CURATED OFFERINGS CATEGORY BAR                                            */}
+      {/* ------------------------------------------------------------------------- */}
+      <div id="featured-services-section" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+        {/* Clean Category Pills Header & Horizontal Row */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.78rem', color: '#6F6A62', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
+              CURATED OFFERINGS
+            </span>
+            <span style={{ fontSize: '0.78rem', color: '#8C6D18', fontWeight: 700 }}>
+              • {activeServices.length} Rituals
+            </span>
           </div>
         </div>
 
-        {/* Filter Pills (Smooth Mobile Horizontal Scroll) */}
-        <div className="hide-scrollbar" style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '6px', WebkitOverflowScrolling: 'touch' }}>
+        {/* Horizontal Category Scroll Pills */}
+        <div className="hide-scrollbar" style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '4px', WebkitOverflowScrolling: 'touch' }}>
           <button
             onClick={() => setSelectedCategory('all')}
             style={{
-              padding: '10px 20px',
+              padding: '10px 24px',
               borderRadius: '9999px',
-              border: selectedCategory === 'all' ? '1px solid #C9A227' : '1px solid #E4DED4',
-              backgroundColor: selectedCategory === 'all' ? 'rgba(201, 162, 39, 0.14)' : '#FFFFFF',
-              color: selectedCategory === 'all' ? '#171717' : '#6F6A62',
+              border: selectedCategory === 'all' ? '1px solid #8C6D18' : '1px solid #E4DED4',
+              backgroundColor: selectedCategory === 'all' ? '#8C6D18' : '#FFFFFF',
+              color: selectedCategory === 'all' ? '#FFFFFF' : '#171717',
               fontSize: '0.86rem',
               fontWeight: 600,
               cursor: 'pointer',
               whiteSpace: 'nowrap',
               flexShrink: 0,
               minHeight: '44px',
+              boxShadow: selectedCategory === 'all' ? '0 4px 14px rgba(140, 109, 24, 0.25)' : 'none',
             }}
           >
             All Services ({activeServices.length})
           </button>
 
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              style={{
-                padding: '10px 20px',
-                borderRadius: '9999px',
-                border: selectedCategory === cat.id ? '1px solid #C9A227' : '1px solid #E4DED4',
-                backgroundColor: selectedCategory === cat.id ? 'rgba(201, 162, 39, 0.14)' : '#FFFFFF',
-                color: selectedCategory === cat.id ? '#171717' : '#6F6A62',
-                fontSize: '0.86rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                flexShrink: 0,
-                minHeight: '44px',
-              }}
-            >
-              {cat.name}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isSelected = selectedCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                style={{
+                  padding: '10px 24px',
+                  borderRadius: '9999px',
+                  border: isSelected ? '1px solid #8C6D18' : '1px solid #E4DED4',
+                  backgroundColor: isSelected ? '#8C6D18' : '#FFFFFF',
+                  color: isSelected ? '#FFFFFF' : '#171717',
+                  fontSize: '0.86rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  minHeight: '44px',
+                  boxShadow: isSelected ? '0 4px 14px rgba(140, 109, 24, 0.25)' : 'none',
+                }}
+              >
+                {cat.name}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Responsive Grid for Services */}
+        {/* Responsive Grid for Service Cards */}
         {isLoading ? (
           <div style={{ padding: '48px', textAlign: 'center', color: '#6F6A62' }}>
-            <Sparkles size={24} color="#C9A227" style={{ marginBottom: '12px', animation: 'spin 2s linear infinite' }} />
-            <p>Loading live services from Supabase...</p>
+            <Sparkles size={24} color="#8C6D18" style={{ marginBottom: '12px' }} />
+            <p>Loading live services...</p>
           </div>
         ) : filteredServices.length === 0 ? (
           <EmptyState
             icon={<Scissors size={28} />}
-            title="No Services Available"
-            description={
-              searchQuery || selectedCategory !== 'all'
-                ? 'No salon services match your current filter criteria.'
-                : 'No active services are registered in the Supabase database yet.'
-            }
+            title="No Services Match Your Filter"
+            description="Try clearing your search term or selecting another service category."
           />
         ) : (
           <div
             className="service-card-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))',
               gap: '24px',
             }}
           >
@@ -345,25 +603,97 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
         )}
       </div>
 
-      {/* 4. OFFERS PREVIEW SECTION */}
+      {/* ------------------------------------------------------------------------- */}
+      {/* FEATURED MASTER STYLISTS                                                  */}
+      {/* ------------------------------------------------------------------------- */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div>
+          <span style={{ fontSize: '0.82rem', color: '#8C6D18', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+            Resident Craftsmen
+          </span>
+          <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
+            Master Stylists
+          </h2>
+          <p style={{ fontSize: '0.9rem', color: '#6F6A62', marginTop: '2px' }}>
+            Select your preferred specialist to view experience and initiate phone reservation.
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
+          {employees
+            .filter((e) => e.is_active)
+            .map((emp) => (
+              <div
+                key={emp.id}
+                className="glass-card"
+                style={{
+                  padding: '24px 20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E4DED4',
+                  borderRadius: '18px',
+                }}
+              >
+                <img
+                  src={emp.avatar_url}
+                  alt={emp.name}
+                  style={{
+                    width: '88px',
+                    height: '88px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '2px solid #C9A227',
+                    marginBottom: '14px',
+                    boxShadow: '0 4px 14px rgba(201, 162, 39, 0.2)',
+                  }}
+                />
+                <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#171717', fontWeight: 600 }}>
+                  {emp.name}
+                </h3>
+                <span style={{ fontSize: '0.82rem', color: '#8C6D18', fontWeight: 600, marginBottom: '6px' }}>
+                  {emp.role_title}
+                </span>
+                <span style={{ fontSize: '0.78rem', color: '#6F6A62', marginBottom: '16px' }}>
+                  {emp.experience_years} Yrs Experience • ★ {emp.rating} ({emp.reviews_count})
+                </span>
+
+                <button
+                  onClick={() => onNavigateToView('booking')}
+                  className="btn-gold-outline"
+                  style={{ width: '100%', padding: '10px 14px', fontSize: '0.84rem' }}
+                >
+                  <Scissors size={14} color="#8C6D18" />
+                  <span>Choose Artist at Branch</span>
+                </button>
+              </div>
+            ))}
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------------------- */}
+      {/* EXCLUSIVE PRIVILEGES & OFFERS PREVIEW                                     */}
+      {/* ------------------------------------------------------------------------- */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
-              Privileges
+            <span style={{ fontSize: '0.82rem', color: '#8C6D18', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+              Privilege Codes
             </span>
             <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
-              Exclusive Salon Offers
+              Exclusive Offers & Savings
             </h2>
           </div>
 
           <button onClick={() => onNavigateToView('offers')} className="btn-gold-outline" style={{ padding: '8px 16px', fontSize: '0.82rem' }}>
-            <span>View All Offers</span>
+            <span>View All Privileges</span>
             <ArrowRight size={14} />
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '18px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
           {offers.filter((o) => o.is_active).slice(0, 2).map((offer) => (
             <div
               key={offer.id}
@@ -376,16 +706,17 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
                 flexWrap: 'wrap',
                 backgroundColor: '#FFFFFF',
                 border: '1px solid #E4DED4',
+                borderRadius: '18px',
               }}
             >
               <img
                 src={offer.banner_image}
                 alt={offer.title}
-                style={{ width: '80px', height: '80px', borderRadius: '12px', objectFit: 'cover', flexShrink: 0 }}
+                style={{ width: '88px', height: '88px', borderRadius: '14px', objectFit: 'cover', flexShrink: 0 }}
               />
               <div style={{ flex: 1, minWidth: '180px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9A7B1C', backgroundColor: 'rgba(201, 162, 39, 0.15)', padding: '2px 8px', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9A7B1C', backgroundColor: 'rgba(201, 162, 39, 0.15)', padding: '3px 9px', borderRadius: '6px' }}>
                     {offer.code}
                   </span>
                   <span style={{ fontSize: '0.75rem', color: '#16845B', fontWeight: 600 }}>
@@ -403,7 +734,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
               <button
                 onClick={() => handleCopyCode(offer.code)}
                 className="btn-gold-outline"
-                style={{ padding: '8px 12px', fontSize: '0.8rem' }}
+                style={{ padding: '8px 14px', fontSize: '0.82rem' }}
               >
                 {copiedCode === offer.code ? <Check size={14} color="#16845B" /> : <Copy size={14} />}
                 <span>{copiedCode === offer.code ? 'Copied' : 'Copy Code'}</span>
@@ -413,123 +744,20 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
         </div>
       </div>
 
-      {/* 5. FEATURED EMPLOYEES / STYLISTS SECTION */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div>
-          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
-            Master Craftsmen
-          </span>
-          <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
-            Featured Master Stylists
-          </h2>
-          <p style={{ fontSize: '0.9rem', color: '#6F6A62', marginTop: '2px' }}>
-            Directly selectable stylists for your booking request with direct phone call links.
-          </p>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '18px' }}>
-          {employees
-            .filter((e) => e.is_active)
-            .map((emp) => (
-              <div
-                key={emp.id}
-                className="glass-card"
-                style={{
-                  padding: '20px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  backgroundColor: '#FFFFFF',
-                  border: '1px solid #E4DED4',
-                }}
-              >
-                <img
-                  src={emp.avatar_url}
-                  alt={emp.name}
-                  style={{
-                    width: '80px',
-                    height: '80px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: '2px solid #C9A227',
-                    marginBottom: '12px',
-                  }}
-                />
-                <h3 className="font-serif" style={{ fontSize: '1.2rem', color: '#171717', fontWeight: 600 }}>
-                  {emp.name}
-                </h3>
-                <span style={{ fontSize: '0.82rem', color: '#C9A227', fontWeight: 600, marginBottom: '6px' }}>
-                  {emp.role_title}
-                </span>
-                <span style={{ fontSize: '0.78rem', color: '#6F6A62', marginBottom: '14px' }}>
-                  {emp.experience_years} Yrs Exp • ★ {emp.rating} ({emp.reviews_count})
-                </span>
-
-                <button
-                  onClick={() => onNavigateToView('booking')}
-                  className="btn-gold-outline"
-                  style={{ width: '100%', padding: '9px 12px', fontSize: '0.82rem' }}
-                >
-                  <Scissors size={14} color="#C9A227" />
-                  <span>Book at Branch</span>
-                </button>
-              </div>
-            ))}
-        </div>
-      </div>
-
-      {/* 6. GALLERY PREVIEW SECTION */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-          <div>
-            <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
-              Showcase Portfolio
-            </span>
-            <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
-              Transformations & Styles
-            </h2>
-          </div>
-
-          <button onClick={() => onNavigateToView('gallery')} className="btn-gold-outline" style={{ padding: '8px 16px', fontSize: '0.82rem' }}>
-            <span>Explore Full Gallery</span>
-            <ArrowRight size={14} />
-          </button>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '18px' }}>
-          {gallery.slice(0, 3).map((item, idx) => (
-            <div key={item.id || idx} className="glass-card" style={{ overflow: 'hidden', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
-              <div style={{ position: 'relative', height: '220px' }}>
-                <img src={item.image_url} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                <div style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: 'rgba(255, 255, 255, 0.9)', color: '#171717', padding: '3px 8px', borderRadius: '6px', fontSize: '0.74rem', fontWeight: 600, border: '1px solid #E4DED4' }}>
-                  {item.category}
-                </div>
-              </div>
-              <div style={{ padding: '16px' }}>
-                <h4 className="font-serif" style={{ fontSize: '1.1rem', color: '#171717', fontWeight: 600, marginBottom: '4px' }}>
-                  {item.title}
-                </h4>
-                <p style={{ fontSize: '0.82rem', color: '#6F6A62', lineHeight: 1.4 }}>
-                  {item.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 7. REVIEWS SECTION */}
+      {/* ------------------------------------------------------------------------- */}
+      {/* CLIENT TESTIMONIALS & CONCIERGE INFORMATION                                */}
+      {/* ------------------------------------------------------------------------- */}
       <div
         className="glass-card"
         style={{
           padding: '36px 28px',
           background: 'linear-gradient(135deg, #FFFFFF 0%, #F1EDE6 100%)',
           border: '1px solid #E4DED4',
+          borderRadius: '24px',
         }}
       >
         <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 24px auto' }}>
-          <span style={{ fontSize: '0.82rem', color: '#C9A227', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.82rem', color: '#8C6D18', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
             Client Endorsements
           </span>
           <h2 className="font-serif" style={{ fontSize: '2rem', color: '#171717', fontWeight: 700 }}>
@@ -564,54 +792,10 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({ onNavigateToView }) 
 
               <div style={{ borderTop: '1px solid #E4DED4', paddingTop: '12px', marginTop: '14px' }}>
                 <h4 style={{ fontSize: '0.92rem', color: '#171717', fontWeight: 600 }}>{rev.customer_name}</h4>
-                <span style={{ fontSize: '0.78rem', color: '#C9A227', fontWeight: 600 }}>{rev.service_name}</span>
+                <span style={{ fontSize: '0.78rem', color: '#8C6D18', fontWeight: 600 }}>{rev.service_name}</span>
               </div>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* 8. CONTACT & STUDIO INFO SECTION */}
-      <div className="glass-card" style={{ padding: '28px', backgroundColor: '#FFFFFF', border: '1px solid #E4DED4' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#C9A227', marginBottom: '8px' }}>
-              <Phone size={18} />
-              <h4 style={{ fontSize: '1rem', color: '#171717', fontWeight: 600 }}>Direct VIP Phone Desk</h4>
-            </div>
-            <a
-              href="tel:+919823012345"
-              style={{ fontSize: '1.25rem', fontWeight: 700, color: '#9A7B1C', textDecoration: 'none', display: 'block', marginBottom: '4px' }}
-            >
-              +91 98230 12345
-            </a>
-            <p style={{ fontSize: '0.82rem', color: '#6F6A62' }}>
-              Instant call desk for consultations & special arrangements
-            </p>
-          </div>
-
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#C9A227', marginBottom: '8px' }}>
-              <Clock size={18} />
-              <h4 style={{ fontSize: '1rem', color: '#171717', fontWeight: 600 }}>Studio Hours</h4>
-            </div>
-            <p style={{ fontSize: '0.96rem', color: '#171717', fontWeight: 600, marginBottom: '2px' }}>
-              Monday – Sunday: 09:00 AM – 09:30 PM
-            </p>
-            <p style={{ fontSize: '0.82rem', color: '#16845B', fontWeight: 600 }}>
-              Open 7 days a week • Valet parking available
-            </p>
-          </div>
-
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#C9A227', marginBottom: '8px' }}>
-              <MapPin size={18} />
-              <h4 style={{ fontSize: '1rem', color: '#171717', fontWeight: 600 }}>Studio Address</h4>
-            </div>
-            <p style={{ fontSize: '0.88rem', color: '#6F6A62', lineHeight: 1.4 }}>
-              Linking Road, Bandra West, Mumbai, Maharashtra 400050
-            </p>
-          </div>
         </div>
       </div>
 

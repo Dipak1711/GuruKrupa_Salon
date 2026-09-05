@@ -42,13 +42,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const { currentRole, logout, activeEmployeeId, setActiveEmployeeId } = useAuth();
   const { employees, appointments } = useSalonData();
 
-  // Calculate pending appointments badge count
-  const customerPendingCount = appointments.filter((a) => a.status === 'pending').length;
-  const employeePendingCount = appointments.filter(
-    (a) => a.employee_id === activeEmployeeId && a.status === 'pending'
-  ).length;
-  const adminPendingCount = appointments.filter((a) => a.status === 'pending').length;
-
   const handleNavClick = (viewKey: string) => {
     setActiveView(viewKey);
     if (onCloseMobile) {
@@ -60,11 +53,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     if (currentRole === 'customer') {
       return (
         <>
-          <div style={{ padding: '0 16px 8px 16px' }}>
-            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#6F6A62', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-              Customer Experience
-            </span>
-          </div>
+
 
           <NavItem
             icon={<Home size={18} />}
@@ -106,14 +95,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
     if (currentRole === 'employee') {
       return (
         <>
-          <div style={{ padding: '0 16px 8px 16px' }}>
+          <div style={{ padding: '0 12px 8px 12px' }}>
             <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#6F6A62', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
               Stylist Portal
             </span>
           </div>
 
           {/* Stylist Selector */}
-          <div style={{ padding: '0 12px 14px 12px' }}>
+          <div style={{ padding: '0 8px 14px 8px' }}>
             <div
               style={{
                 backgroundColor: '#F1EDE6',
@@ -186,7 +175,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     // Admin Role Sidebar
     return (
       <>
-        <div style={{ padding: '0 16px 8px 16px' }}>
+        <div style={{ padding: '0 12px 8px 12px' }}>
           <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#6F6A62', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
             Admin Command Center
           </span>
@@ -282,19 +271,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
           display: 'flex',
           flexDirection: 'column',
           height: 'calc(100vh - 70px)',
-          position: 'sticky',
+          position: 'fixed',
           top: '70px',
-          overflowY: 'auto',
-          padding: '20px 12px',
+          left: 0,
+          overflow: 'hidden',
           zIndex: 95,
           boxShadow: '2px 0 12px rgba(23, 23, 23, 0.02)',
         }}
       >
-        {/* Mobile Header Close Button */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 12px 14px 12px', marginBottom: '8px', borderBottom: '1px solid #E4DED4' }}>
+        {/* Fixed Top Header ("Menu") */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '16px 16px 12px 16px',
+            borderBottom: '1px solid #E4DED4',
+            flexShrink: 0,
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Scissors size={18} color="#C9A227" />
-            <span className="font-serif" style={{ fontSize: '1.1rem', color: '#171717', fontWeight: 600 }}>
+            <span
+              className="font-serif"
+              style={{ fontSize: '1.1rem', color: '#171717', fontWeight: 600 }}
+            >
               Menu
             </span>
           </div>
@@ -315,16 +316,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
+        {/* Dedicated Scrollable Navigation List */}
+        <div
+          className="sidebar-scrollable-content"
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: '16px 12px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
           {renderNavItems()}
         </div>
 
-        {/* Logout button */}
+        {/* Fixed Bottom Logout Area */}
         <div
           style={{
             borderTop: '1px solid #E4DED4',
-            paddingTop: '16px',
-            marginTop: '16px',
+            padding: '14px 16px 18px 16px',
+            flexShrink: 0,
+            backgroundColor: '#FFFFFF',
           }}
         >
           <button

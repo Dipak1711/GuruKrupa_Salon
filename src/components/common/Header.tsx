@@ -1,11 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useSalonData } from '../../context/SalonDataContext';
-import { Phone, Scissors, Shield, User, Volume2, RotateCcw, Menu } from 'lucide-react';
-import { playLuxuryChime } from '../../utils/sound';
-import { useToast } from '../../context/ToastContext';
-
-import { ChevronDown, Building2 } from 'lucide-react';
+import { Shield, User, Menu, Building2, UserCheck } from 'lucide-react';
 
 interface HeaderProps {
   onToggleSidebar?: () => void;
@@ -16,113 +12,130 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, onOpenBranchSheet, setActiveView }) => {
   const { currentRole, currentUser, setRole } = useAuth();
-  const { resetToDemoData, branches, activeBranchId, setActiveBranchId } = useSalonData();
-  const { info } = useToast();
-
-  const activeBranch = branches.find((b) => b.id === activeBranchId) || branches[0];
-
-  const handleResetData = () => {
-    if (window.confirm('Reset all salon data, appointments, and financial records to default demo state?')) {
-      resetToDemoData();
-      info('Reset Complete', 'Salon demo state restored to default.');
-    }
-  };
+  const { branches } = useSalonData();
 
   return (
     <header
       style={{
-        position: 'sticky',
+        position: 'fixed',
         top: 0,
-        zIndex: 90,
-        background: 'rgba(255, 255, 255, 0.94)',
+        left: 0,
+        right: 0,
+        width: '100%',
+        zIndex: 1000,
+        backgroundColor: 'rgba(255, 255, 255, 0.96)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         borderBottom: '1px solid #E4DED4',
-        padding: '0 16px',
+        padding: '0 24px',
         height: '70px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        boxShadow: '0 2px 12px rgba(23, 23, 23, 0.03)',
+        boxShadow: '0 2px 10px rgba(23, 23, 23, 0.03)',
       }}
     >
       {/* --------------------------------------------------------- */}
       {/* MOBILE-ONLY COMPACT HEADER (< 768px)                       */}
       {/* --------------------------------------------------------- */}
       <div className="mobile-only-header" style={{ width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button
-            onClick={onToggleSidebar}
-            className="btn-gold-outline"
-            style={{
-              padding: '6px',
-              borderRadius: '8px',
-              minHeight: '36px',
-              minWidth: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            aria-label="Toggle Menu"
-          >
-            <Menu size={20} color="#C9A227" />
-          </button>
-
-          <div
-            onClick={() => setActiveView('home')}
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #D4B038 0%, #C9A227 50%, #A8831A 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <Scissors size={16} color="#FFFFFF" strokeWidth={2.4} />
-          </div>
-        </div>
-
-        {/* Tappable Branch Pill */}
-        <div
-          onClick={onOpenBranchSheet}
+        {/* Left: Hamburger Menu Icon */}
+        <button
+          onClick={onToggleSidebar}
           style={{
+            padding: '6px',
+            borderRadius: '8px',
+            minHeight: '36px',
+            minWidth: '36px',
             display: 'flex',
             alignItems: 'center',
-            gap: '5px',
-            backgroundColor: '#F1EDE6',
+            justifyContent: 'center',
+            backgroundColor: '#FFFFFF',
             border: '1px solid #E4DED4',
-            borderRadius: '999px',
-            padding: '4px 10px',
+            color: '#C9A227',
+            cursor: 'pointer',
+          }}
+          aria-label="Toggle Navigation Menu"
+        >
+          <Menu size={20} color="#C9A227" />
+        </button>
+
+        {/* Center: GuruKrupa SALON Brand */}
+        <div
+          onClick={() => setActiveView('home')}
+          style={{
+            display: 'flex',
+            alignItems: 'baseline',
+            gap: '4px',
             cursor: 'pointer',
           }}
         >
-          <Building2 size={13} color="#C9A227" />
-          <span style={{ fontSize: '0.74rem', color: '#171717', fontWeight: 600, maxWidth: '130px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {activeBranch ? activeBranch.name.split('-')[1] || activeBranch.name : 'Branch'}
+          <span
+            className="font-serif"
+            style={{
+              fontSize: '1.15rem',
+              fontWeight: 700,
+              color: '#171717',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            GuruKrupa
           </span>
-          <ChevronDown size={13} color="#C9A227" />
+          <span
+            style={{
+              color: '#C9A227',
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              letterSpacing: '0.12em',
+              fontFamily: 'var(--font-sans)',
+              textTransform: 'uppercase',
+            }}
+          >
+            SALON
+          </span>
         </div>
 
-        {/* User Profile Avatar */}
-        <div
-          onClick={() => setActiveView('profile')}
-          style={{
-            width: '34px',
-            height: '34px',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            border: '1.5px solid #C9A227',
-            cursor: 'pointer',
-          }}
-        >
-          <img
-            src={currentUser.avatar_url}
-            alt={currentUser.name}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
+        {/* Right Section: Branch Icon + Profile */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Mobile Tappable Branch Icon Only */}
+          <button
+            onClick={onOpenBranchSheet}
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: '#F1EDE6',
+              border: '1px solid #E4DED4',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: '#C9A227',
+            }}
+            title="Select Branch"
+            aria-label="Select Branch"
+          >
+            <Building2 size={16} color="#C9A227" />
+          </button>
+
+          {/* User Profile Avatar */}
+          <div
+            onClick={() => setActiveView('profile')}
+            style={{
+              width: '34px',
+              height: '34px',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '1.5px solid #C9A227',
+              cursor: 'pointer',
+            }}
+          >
+            <img
+              src={currentUser.avatar_url}
+              alt={currentUser.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </div>
         </div>
       </div>
 
@@ -130,295 +143,181 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, onOpenBranchShe
       {/* DESKTOP-ONLY HEADER (>= 768px)                             */}
       {/* --------------------------------------------------------- */}
       <div className="desktop-only-header" style={{ width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-        {/* Brand & Mobile Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
-            onClick={onToggleSidebar}
-            className="btn-gold-outline"
+        {/* Left Section: Pure Brand Title (No Hamburger, No Scissors) */}
+        <div
+          onClick={() => setActiveView('home')}
+          style={{
+            display: 'flex',
+            alignItems: 'baseline',
+            gap: '6px',
+            cursor: 'pointer',
+            textDecoration: 'none',
+          }}
+        >
+          <span
+            className="font-serif"
             style={{
-              padding: '8px',
-              borderRadius: '10px',
-              minHeight: '40px',
-              minWidth: '40px',
+              fontSize: '1.35rem',
+              fontWeight: 700,
+              letterSpacing: '0.01em',
+              color: '#171717',
+              lineHeight: 1,
             }}
-            id="mobile-sidebar-toggle"
-            aria-label="Toggle Navigation Menu"
           >
-            <Menu size={22} color="#C9A227" />
-          </button>
+            GuruKrupa
+          </span>
+          <span
+            style={{
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              color: '#C9A227',
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              fontFamily: 'var(--font-sans)',
+            }}
+          >
+            SALON
+          </span>
+        </div>
 
-          <div
-            onClick={() => setActiveView('home')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              cursor: 'pointer',
-              textDecoration: 'none',
-            }}
-          >
-            <div
+        {/* Right Section: Branch Icon + Role Controls + User Profile */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* Desktop Tappable Branch Icon Only (No permanent branch name text) */}
+          {branches.length > 0 && (
+            <button
+              onClick={onOpenBranchSheet}
               style={{
                 width: '38px',
                 height: '38px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #D4B038 0%, #C9A227 50%, #A8831A 100%)',
+                borderRadius: '50%',
+                backgroundColor: '#F1EDE6',
+                border: '1px solid #E4DED4',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 14px rgba(201, 162, 39, 0.25)',
-                flexShrink: 0,
+                cursor: 'pointer',
+                color: '#C9A227',
+                transition: 'all 0.2s ease',
+              }}
+              title="Select Branch Studio"
+              aria-label="Select Branch Studio"
+            >
+              <Building2 size={17} color="#C9A227" />
+            </button>
+          )}
+
+          {/* Role Switcher Pill (Customer / Stylist / Admin) */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              backgroundColor: '#F7F4EF',
+              padding: '3px',
+              borderRadius: '12px',
+              border: '1px solid #E4DED4',
+            }}
+          >
+            <button
+              onClick={() => setRole('customer')}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '9px',
+                border: 'none',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                backgroundColor: currentRole === 'customer' ? '#C9A227' : 'transparent',
+                color: currentRole === 'customer' ? '#171717' : '#6F6A62',
+                transition: 'all 0.2s ease',
               }}
             >
-              <Scissors size={20} color="#FFFFFF" strokeWidth={2.4} />
-            </div>
+              <User size={13} />
+              <span>Customer</span>
+            </button>
 
-            <div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                <span
-                  className="font-serif"
-                  style={{
-                    fontSize: '1.25rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.01em',
-                    color: '#171717',
-                    lineHeight: 1.1,
-                  }}
-                >
-                  GuruKrupa
-                </span>
-                <span
-                  style={{
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    color: '#C9A227',
-                    letterSpacing: '0.15em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  SALON
-                </span>
-              </div>
-              <span
-                style={{
-                  fontSize: '0.68rem',
-                  color: '#6F6A62',
-                  letterSpacing: '0.02em',
-                  display: 'block',
-                }}
-              >
-                {activeBranch ? activeBranch.name : 'Multi-Branch Salon'}
+            <button
+              onClick={() => setRole('employee')}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '9px',
+                border: 'none',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                backgroundColor: currentRole === 'employee' ? '#C9A227' : 'transparent',
+                color: currentRole === 'employee' ? '#171717' : '#6F6A62',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <UserCheck size={13} />
+              <span>Stylist</span>
+            </button>
+
+            <button
+              onClick={() => setRole('admin')}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '9px',
+                border: 'none',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                backgroundColor: currentRole === 'admin' ? '#C9A227' : 'transparent',
+                color: currentRole === 'admin' ? '#171717' : '#6F6A62',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <Shield size={13} />
+              <span>Admin</span>
+            </button>
+          </div>
+
+          {/* User Profile Control */}
+          <div
+            onClick={() => setActiveView('profile')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '4px 12px 4px 4px',
+              borderRadius: '999px',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #E4DED4',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <img
+              src={currentUser.avatar_url}
+              alt={currentUser.name}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '1.5px solid #C9A227',
+              }}
+            />
+            <div style={{ textAlign: 'left', lineHeight: 1.15 }}>
+              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: '#171717', display: 'block' }}>
+                {currentUser.name.split(' ')[0]}
+              </span>
+              <span style={{ fontSize: '0.68rem', color: '#9A7B1C', textTransform: 'capitalize', fontWeight: 600 }}>
+                {currentRole}
               </span>
             </div>
           </div>
         </div>
-
-      {/* Center / Right controls */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        {/* Multi-Branch Selector Dropdown (For Admin / Stylist View Demo) */}
-        {branches.length > 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '0.74rem', color: '#C9A227', textTransform: 'uppercase', fontWeight: 600 }}>
-              Branch:
-            </span>
-            <select
-              className="salon-select"
-              value={activeBranchId}
-              onChange={(e) => setActiveBranchId(e.target.value)}
-              style={{
-                padding: '5px 10px',
-                fontSize: '0.8rem',
-                height: '38px',
-                backgroundColor: '#F1EDE6',
-                border: '1px solid #E4DED4',
-                color: '#171717',
-                borderRadius: '8px',
-                fontWeight: 500,
-              }}
-            >
-              {branches.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.code} ({b.name.split('-')[1] || b.name})
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        {/* Salon Direct Hotline */}
-        <a
-          href="tel:+919823012345"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '7px 12px',
-            backgroundColor: 'rgba(201, 162, 39, 0.1)',
-            border: '1px solid rgba(201, 162, 39, 0.3)',
-            borderRadius: '9999px',
-            color: '#9A7B1C',
-            fontSize: '0.8rem',
-            fontWeight: 600,
-            textDecoration: 'none',
-            minHeight: '38px',
-          }}
-          title="Direct VIP Phone Desk"
-        >
-          <Phone size={14} color="#C9A227" />
-          <span className="header-hotline-text">VIP Desk: +91 98230 12345</span>
-        </a>
-
-        {/* Demo Data Reset Button */}
-        <button
-          onClick={handleResetData}
-          title="Reset to initial seed data"
-          className="header-reset-btn"
-          style={{
-            background: '#F1EDE6',
-            border: '1px solid #E4DED4',
-            color: '#6F6A62',
-            padding: '7px 10px',
-            borderRadius: '10px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '0.78rem',
-            minHeight: '38px',
-          }}
-        >
-          <RotateCcw size={14} />
-          <span>Reset Demo</span>
-        </button>
-
-        {/* Sound Test / Play chime */}
-        <button
-          onClick={() => playLuxuryChime('success')}
-          title="Play luxury audio chime"
-          style={{
-            background: '#F1EDE6',
-            border: '1px solid #E4DED4',
-            color: '#6F6A62',
-            width: '38px',
-            height: '38px',
-            borderRadius: '10px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            flexShrink: 0,
-          }}
-        >
-          <Volume2 size={16} />
-        </button>
-
-        {/* Role Pill Switcher */}
-        <div
-          className="header-role-pill"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: '#F1EDE6',
-            padding: '3px',
-            borderRadius: '12px',
-            border: '1px solid #E4DED4',
-          }}
-        >
-          <button
-            onClick={() => setRole('customer')}
-            style={{
-              padding: '5px 10px',
-              borderRadius: '8px',
-              border: 'none',
-              fontSize: '0.76rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              backgroundColor: currentRole === 'customer' ? '#C9A227' : 'transparent',
-              color: currentRole === 'customer' ? '#171717' : '#6F6A62',
-            }}
-          >
-            <User size={12} />
-            <span>Customer</span>
-          </button>
-
-          <button
-            onClick={() => setRole('employee')}
-            style={{
-              padding: '5px 10px',
-              borderRadius: '8px',
-              border: 'none',
-              fontSize: '0.76rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              backgroundColor: currentRole === 'employee' ? '#C9A227' : 'transparent',
-              color: currentRole === 'employee' ? '#171717' : '#6F6A62',
-            }}
-          >
-            <Scissors size={12} />
-            <span>Stylist</span>
-          </button>
-
-          <button
-            onClick={() => setRole('admin')}
-            style={{
-              padding: '5px 10px',
-              borderRadius: '8px',
-              border: 'none',
-              fontSize: '0.76rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              backgroundColor: currentRole === 'admin' ? '#C9A227' : 'transparent',
-              color: currentRole === 'admin' ? '#171717' : '#6F6A62',
-            }}
-          >
-            <Shield size={12} />
-            <span>Admin</span>
-          </button>
-        </div>
-
-        {/* User avatar indicator */}
-        <div
-          className="header-user-avatar"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '3px 8px',
-            borderRadius: '10px',
-            backgroundColor: '#F1EDE6',
-            border: '1px solid #E4DED4',
-          }}
-        >
-          <img
-            src={currentUser.avatar_url}
-            alt={currentUser.name}
-            style={{
-              width: '30px',
-              height: '30px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: '1.5px solid #C9A227',
-            }}
-          />
-          <div style={{ textAlign: 'left', lineHeight: 1.1 }}>
-            <span style={{ fontSize: '0.78rem', fontWeight: 600, color: '#171717', display: 'block' }}>
-              {currentUser.name.split(' ')[0]}
-            </span>
-            <span style={{ fontSize: '0.68rem', color: '#C9A227', textTransform: 'capitalize', fontWeight: 600 }}>
-              {currentRole}
-            </span>
-          </div>
-        </div>
       </div>
-    </div>
-  </header>
-);
+    </header>
+  );
 };
