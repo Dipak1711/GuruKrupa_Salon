@@ -7,35 +7,20 @@ export interface LogoProps {
   className?: string;
 }
 
-export const BeardedMaleIcon: React.FC<{ size?: number; color?: string; ringColor?: string }> = ({
-  size = 38,
-}) => (
-  <div
+export const BeardedMaleIcon: React.FC<{ size?: number }> = ({ size = 38 }) => (
+  <img
+    src="/gurukrupa_head_icon.jpg"
+    alt="GuruKrupa Gentleman Head Logo"
     style={{
       width: `${size}px`,
-      height: `${size}px`,
-      borderRadius: '50%',
-      overflow: 'hidden',
-      border: '1.5px solid #C9A227',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#FFFFFF',
+      height: 'auto',
+      maxHeight: `${size * 1.15}px`,
+      objectFit: 'contain',
+      display: 'block',
       flexShrink: 0,
-      boxShadow: '0 2px 6px rgba(23, 23, 23, 0.08)',
+      mixBlendMode: 'multiply',
     }}
-  >
-    <img
-      src="/gurukrupa_logo_icon.jpg"
-      alt="GuruKrupa Gentleman Logo"
-      style={{
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-        display: 'block',
-      }}
-    />
-  </div>
+  />
 );
 
 export const Logo: React.FC<LogoProps> = ({
@@ -45,9 +30,9 @@ export const Logo: React.FC<LogoProps> = ({
   className = '',
 }) => {
   const iconSizeMap = {
-    sm: 28,
-    md: 36,
-    lg: 44,
+    sm: 30,
+    md: 38,
+    lg: 48,
   };
 
   const currentIconSize = variant === 'mobile' ? 28 : iconSizeMap[size];
@@ -78,7 +63,20 @@ export const Logo: React.FC<LogoProps> = ({
         }}
       >
         <BeardedMaleIcon size={28} />
-        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.05 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', lineHeight: 1 }}>
+          <span
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontStyle: 'italic',
+              fontSize: '0.72rem',
+              color: '#C9A227',
+              fontWeight: 500,
+              marginBottom: '-2px',
+              marginLeft: '2px',
+            }}
+          >
+            Studio
+          </span>
           <span
             className="font-serif"
             style={{
@@ -86,21 +84,24 @@ export const Logo: React.FC<LogoProps> = ({
               fontWeight: 800,
               color: '#171717',
               letterSpacing: '0.04em',
+              lineHeight: 1,
             }}
           >
             GURUKRUPA
           </span>
           <span
             style={{
-              fontSize: '0.54rem',
+              fontSize: '0.48rem',
               fontWeight: 700,
-              color: '#C9A227',
-              letterSpacing: '0.16em',
+              color: '#171717',
+              letterSpacing: '0.22em',
               textTransform: 'uppercase',
               fontFamily: 'var(--font-sans)',
+              marginTop: '2px',
+              opacity: 0.85,
             }}
           >
-            MEN'S SALON
+            BARBER STUDIO
           </span>
         </div>
       </div>
@@ -121,84 +122,62 @@ export const Logo: React.FC<LogoProps> = ({
         }}
       >
         <BeardedMaleIcon size={currentIconSize} />
-        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.05 }}>
-          <span
-            className="font-serif"
-            style={{
-              fontSize: size === 'lg' ? '1.4rem' : size === 'sm' ? '1.05rem' : '1.25rem',
-              fontWeight: 800,
-              color: '#171717',
-              letterSpacing: '0.04em',
-            }}
-          >
-            GURUKRUPA
-          </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <div style={{ height: '1px', width: '10px', backgroundColor: '#C9A227' }} />
-            <span
-              style={{
-                fontSize: size === 'lg' ? '0.64rem' : '0.56rem',
-                fontWeight: 700,
-                color: '#C9A227',
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-                fontFamily: 'var(--font-sans)',
-              }}
-            >
-              MEN'S SALON
-            </span>
-            <div style={{ height: '1px', width: '10px', backgroundColor: '#C9A227' }} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (variant === 'sidebar') {
-    return (
-      <div
-        onClick={onClick}
-        className={`salon-logo ${className}`}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '10px',
-          cursor: onClick ? 'pointer' : 'default',
-          textDecoration: 'none',
-        }}
-      >
-        <BeardedMaleIcon size={32} />
-        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.05 }}>
-          <span
-            className="font-serif"
-            style={{
-              fontSize: '1.15rem',
-              fontWeight: 800,
-              color: '#171717',
-              letterSpacing: '0.04em',
-            }}
-          >
-            GURUKRUPA
-          </span>
+        <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', lineHeight: 1 }}>
           <span
             style={{
-              fontSize: '0.56rem',
-              fontWeight: 700,
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontStyle: 'italic',
+              fontSize: size === 'lg' ? '0.9rem' : '0.78rem',
               color: '#C9A227',
-              letterSpacing: '0.18em',
+              fontWeight: 500,
+              marginBottom: '-2px',
+              marginLeft: '2px',
+            }}
+          >
+            Studio
+          </span>
+          <span
+            className="font-serif"
+            style={{
+              fontSize: size === 'lg' ? '1.45rem' : size === 'sm' ? '1.05rem' : '1.25rem',
+              fontWeight: 800,
+              color: '#171717',
+              letterSpacing: '0.04em',
+              lineHeight: 1,
+            }}
+          >
+            GURUKRUPA
+          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '3px 0 2px 0', opacity: 0.85 }}>
+            <div style={{ height: '1px', flex: 1, backgroundColor: '#C9A227' }} />
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#C9A227" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="6" cy="6" r="3" />
+              <circle cx="6" cy="18" r="3" />
+              <line x1="20" y1="4" x2="8.12" y2="15.88" />
+              <line x1="14.47" y1="14.48" x2="20" y2="20" />
+              <line x1="8.12" y1="8.12" x2="12" y2="12" />
+            </svg>
+            <div style={{ height: '1px', flex: 1, backgroundColor: '#C9A227' }} />
+          </div>
+          <span
+            style={{
+              fontSize: size === 'lg' ? '0.58rem' : '0.52rem',
+              fontWeight: 700,
+              color: '#171717',
+              letterSpacing: '0.24em',
               textTransform: 'uppercase',
               fontFamily: 'var(--font-sans)',
-              marginTop: '1px',
+              lineHeight: 1,
             }}
           >
-            MEN'S SALON
+            BARBER STUDIO
           </span>
         </div>
       </div>
     );
   }
 
-  // Full Variant (Default)
+  // Full & Sidebar Variants
   return (
     <div
       onClick={onClick}
@@ -212,12 +191,27 @@ export const Logo: React.FC<LogoProps> = ({
       }}
     >
       <BeardedMaleIcon size={currentIconSize} />
-      <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', lineHeight: 1 }}>
+        {/* Top Gold Cursive: Studio */}
+        <span
+          style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontStyle: 'italic',
+            fontSize: size === 'lg' ? '1rem' : size === 'sm' ? '0.78rem' : '0.88rem',
+            color: '#C9A227',
+            fontWeight: 500,
+            marginBottom: '-3px',
+            marginLeft: '2px',
+          }}
+        >
+          Studio
+        </span>
+
         {/* Top Wordmark: GURUKRUPA */}
         <span
           className="font-serif"
           style={{
-            fontSize: size === 'lg' ? '1.5rem' : size === 'sm' ? '1.15rem' : '1.35rem',
+            fontSize: size === 'lg' ? '1.6rem' : size === 'sm' ? '1.15rem' : '1.38rem',
             fontWeight: 800,
             color: '#171717',
             letterSpacing: '0.04em',
@@ -227,24 +221,33 @@ export const Logo: React.FC<LogoProps> = ({
           GURUKRUPA
         </span>
 
-        {/* Gold Accent Line: ── MEN'S SALON ── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '3px 0 2px 0', opacity: 0.9 }}>
-          <div style={{ height: '1px', flex: 1, backgroundColor: '#C9A227' }} />
-          <span
-            style={{
-              fontSize: size === 'lg' ? '0.68rem' : size === 'sm' ? '0.54rem' : '0.62rem',
-              fontWeight: 700,
-              color: '#C9A227',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              fontFamily: 'var(--font-sans)',
-              lineHeight: 1,
-            }}
-          >
-            MEN'S SALON
-          </span>
-          <div style={{ height: '1px', flex: 1, backgroundColor: '#C9A227' }} />
+        {/* Gold Scissors Line Accent */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: '4px 0 3px 0', width: '100%' }}>
+          <div style={{ height: '1px', flex: 1, backgroundColor: '#C9A227', opacity: 0.85 }} />
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#C9A227" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="6" cy="6" r="3" />
+            <circle cx="6" cy="18" r="3" />
+            <line x1="20" y1="4" x2="8.12" y2="15.88" />
+            <line x1="14.47" y1="14.48" x2="20" y2="20" />
+            <line x1="8.12" y1="8.12" x2="12" y2="12" />
+          </svg>
+          <div style={{ height: '1px', flex: 1, backgroundColor: '#C9A227', opacity: 0.85 }} />
         </div>
+
+        {/* Subtext: BARBER STUDIO */}
+        <span
+          style={{
+            fontSize: size === 'lg' ? '0.62rem' : size === 'sm' ? '0.48rem' : '0.56rem',
+            fontWeight: 700,
+            color: '#171717',
+            letterSpacing: '0.28em',
+            textTransform: 'uppercase',
+            fontFamily: 'var(--font-sans)',
+            lineHeight: 1,
+          }}
+        >
+          BARBER STUDIO
+        </span>
       </div>
     </div>
   );
