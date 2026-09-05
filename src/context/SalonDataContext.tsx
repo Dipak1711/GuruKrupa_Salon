@@ -443,7 +443,12 @@ export const SalonDataProvider: React.FC<{ children: ReactNode }> = ({ children 
       setAppointments(formattedAppointments);
       setServiceRecords(formattedRecords);
     } catch (err: any) {
-      console.error('Supabase fetch error:', err);
+      console.error('[SUPABASE FETCH ERROR]', {
+        message: err?.message || 'Unknown Supabase Error',
+        code: err?.code || 'N/A',
+        details: err?.details || 'N/A',
+        hint: err?.hint || 'N/A',
+      });
       setError(err?.message || 'Failed to load live data from Supabase.');
     } finally {
       setIsLoading(false);
