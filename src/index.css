@@ -401,19 +401,27 @@ h1, h2, h3, .font-serif {
     border-radius: 20px !important;
   }
 
+  .salon-modal-overlay-wrapper {
+    padding: 12px 12px calc(80px + env(safe-area-inset-bottom, 0px)) 12px !important;
+    align-items: flex-start !important;
+  }
+
   .salon-modal-container {
-    max-height: 92vh !important;
-    margin: 8px !important;
+    max-height: calc(100dvh - 84px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
+    margin: 0 auto !important;
     padding: 0 !important;
     border-radius: 20px !important;
   }
 
   .salon-modal-header {
     padding: 16px 18px 12px 18px !important;
+    flex-shrink: 0 !important;
   }
 
   .salon-modal-body {
-    padding: 16px 18px !important;
+    padding: 16px 18px calc(24px + env(safe-area-inset-bottom, 0px)) 16px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   .employee-card-row {

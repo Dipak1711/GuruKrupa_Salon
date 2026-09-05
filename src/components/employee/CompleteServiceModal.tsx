@@ -227,8 +227,8 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
         maxWidth="xl"
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <CheckCircle2 size={20} color="#10B981" />
-            <span className="font-serif" style={{ fontSize: '1.4rem', color: '#F8FAFC' }}>
+            <CheckCircle2 size={20} color="#16845B" />
+            <span className="font-serif" style={{ fontSize: '1.35rem', color: '#171717', fontWeight: 700 }}>
               {appointment ? `Complete Service: ${appointment.customer_name}` : 'Record Walk-in Client Service'}
             </span>
           </div>
@@ -243,10 +243,10 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
           {/* Multi-Service Selector Section */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-              <label style={{ fontSize: '0.84rem', color: '#F8FAFC', fontWeight: 600 }}>
+              <label style={{ fontSize: '0.86rem', color: '#171717', fontWeight: 600 }}>
                 Services Performed ({selectedServices.length})
               </label>
-              <span style={{ fontSize: '0.78rem', color: '#D4AF37' }}>
+              <span style={{ fontSize: '0.78rem', color: '#9A7B1C', fontWeight: 500 }}>
                 *Auto-calculated from service price database
               </span>
             </div>
@@ -262,6 +262,13 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                   }
                 }}
                 defaultValue=""
+                style={{
+                  minHeight: '48px',
+                  fontSize: '0.92rem',
+                  color: '#171717',
+                  backgroundColor: '#FFFFFF',
+                  borderColor: '#E4DED4',
+                }}
               >
                 <option value="" disabled>
                   + Add Performed Service (Haircut, Beard, Shave, Spa...)
@@ -282,10 +289,10 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                 style={{
                   padding: '16px',
                   textAlign: 'center',
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px dashed rgba(255, 255, 255, 0.1)',
+                  backgroundColor: '#FAF8F5',
+                  border: '1px dashed #D8C27D',
                   borderRadius: '12px',
-                  color: '#94A3B8',
+                  color: '#6F6A62',
                   fontSize: '0.86rem',
                 }}
               >
@@ -300,23 +307,23 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '10px 14px',
-                      backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                      border: '1px solid rgba(255, 255, 255, 0.08)',
-                      borderRadius: '10px',
+                      padding: '12px 14px',
+                      backgroundColor: '#FAF8F5',
+                      border: '1px solid #E4DED4',
+                      borderRadius: '12px',
                     }}
                   >
                     <div>
-                      <span style={{ fontSize: '0.9rem', color: '#F8FAFC', fontWeight: 500 }}>
+                      <span style={{ fontSize: '0.92rem', color: '#171717', fontWeight: 600 }}>
                         {srv.name}
                       </span>
-                      <span style={{ fontSize: '0.78rem', color: '#94A3B8', marginLeft: '10px' }}>
+                      <span style={{ fontSize: '0.78rem', color: '#6F6A62', marginLeft: '8px' }}>
                         ({srv.duration_mins} mins)
                       </span>
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                      <span style={{ fontSize: '0.96rem', fontWeight: 600, color: '#F3E5AB' }}>
+                      <span style={{ fontSize: '0.96rem', fontWeight: 700, color: '#9A7B1C' }}>
                         {formatPrice(srv.price)}
                       </span>
                       <button
@@ -325,13 +332,15 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                         style={{
                           background: 'transparent',
                           border: 'none',
-                          color: '#FB7185',
+                          color: '#C94A4A',
                           cursor: 'pointer',
                           display: 'flex',
-                          padding: '4px',
+                          padding: '6px',
+                          borderRadius: '6px',
                         }}
+                        title="Remove service"
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={17} />
                       </button>
                     </div>
                   </div>
@@ -343,22 +352,23 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
           {/* Financial Auto-Calculation Box */}
           <div
             style={{
-              backgroundColor: 'rgba(212, 175, 55, 0.06)',
-              border: '1px solid rgba(212, 175, 55, 0.25)',
-              borderRadius: '14px',
-              padding: '16px 20px',
+              backgroundColor: '#FAF8F5',
+              border: '1px solid #E4DED4',
+              borderRadius: '16px',
+              padding: '18px 20px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '10px',
+              gap: '12px',
+              boxShadow: '0 2px 8px rgba(23, 23, 23, 0.03)',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#CBD5E1' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#6F6A62' }}>
               <span>Subtotal ({selectedServices.length} items):</span>
-              <span style={{ fontWeight: 600 }}>{formatPrice(subtotal)}</span>
+              <span style={{ fontWeight: 600, color: '#171717' }}>{formatPrice(subtotal)}</span>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.9rem', color: '#CBD5E1' }}>Privilege Discount (₹):</span>
+              <span style={{ fontSize: '0.9rem', color: '#6F6A62', fontWeight: 600 }}>Privilege Discount (₹):</span>
               <input
                 type="number"
                 min="0"
@@ -366,14 +376,17 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                 value={discount}
                 onChange={(e) => setDiscount(Number(e.target.value) || 0)}
                 style={{
-                  width: '100px',
+                  width: '110px',
                   textAlign: 'right',
-                  backgroundColor: 'rgba(12, 15, 21, 0.9)',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  color: '#F8FAFC',
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E4DED4',
+                  color: '#171717',
+                  fontWeight: 700,
                   borderRadius: '8px',
-                  padding: '6px 10px',
-                  fontSize: '0.9rem',
+                  padding: '8px 12px',
+                  fontSize: '0.95rem',
+                  minHeight: '40px',
+                  outline: 'none',
                 }}
               />
             </div>
@@ -383,15 +396,15 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                borderTop: '1px solid rgba(212, 175, 55, 0.2)',
-                paddingTop: '10px',
-                marginTop: '4px',
+                borderTop: '1px solid #E4DED4',
+                paddingTop: '12px',
+                marginTop: '2px',
               }}
             >
-              <span style={{ fontSize: '1.05rem', fontWeight: 700, color: '#F8FAFC' }}>
-                Final Net Total:
+              <span style={{ fontSize: '1.05rem', fontWeight: 700, color: '#171717' }}>
+                Total:
               </span>
-              <span style={{ fontSize: '1.45rem', fontWeight: 800, color: '#F3E5AB' }}>
+              <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#9A7B1C' }}>
                 {formatPrice(finalTotal)}
               </span>
             </div>
@@ -399,7 +412,7 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
 
           {/* Payment Method Selector */}
           <div>
-            <label style={{ fontSize: '0.84rem', color: '#F8FAFC', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
+            <label style={{ fontSize: '0.86rem', color: '#171717', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
               Payment Method
             </label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
@@ -411,25 +424,27 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                     key={method}
                     onClick={() => handleSelectPaymentMethod(method)}
                     style={{
-                      padding: '12px 8px',
+                      padding: '12px 6px',
+                      minHeight: '52px',
                       borderRadius: '12px',
-                      border: isSelected ? '1.5px solid #D4AF37' : '1px solid rgba(255, 255, 255, 0.1)',
-                      backgroundColor: isSelected ? 'rgba(212, 175, 55, 0.16)' : 'rgba(255, 255, 255, 0.03)',
-                      color: isSelected ? '#F3E5AB' : '#94A3B8',
+                      border: isSelected ? '2px solid #C9A227' : '1px solid #E4DED4',
+                      backgroundColor: isSelected ? '#FAF6E8' : '#FFFFFF',
+                      color: isSelected ? '#9A7B1C' : '#171717',
                       fontSize: '0.86rem',
-                      fontWeight: 600,
+                      fontWeight: isSelected ? 700 : 600,
                       cursor: 'pointer',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
-                      gap: '6px',
+                      justifyContent: 'center',
+                      gap: '4px',
                       transition: 'all 0.2s',
                     }}
                   >
-                    {method === 'UPI' && <QrCode size={18} />}
-                    {method === 'Cash' && <Banknote size={18} />}
-                    {method === 'Card' && <CreditCard size={18} />}
-                    {method === 'Other' && <DollarSign size={18} />}
+                    {method === 'UPI' && <QrCode size={18} color={isSelected ? '#C9A227' : '#6F6A62'} />}
+                    {method === 'Cash' && <Banknote size={18} color={isSelected ? '#C9A227' : '#6F6A62'} />}
+                    {method === 'Card' && <CreditCard size={18} color={isSelected ? '#C9A227' : '#6F6A62'} />}
+                    {method === 'Other' && <DollarSign size={18} color={isSelected ? '#C9A227' : '#6F6A62'} />}
                     <span>{method}</span>
                   </button>
                 );
@@ -441,31 +456,32 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
           {paymentMethod === 'UPI' && (
             <div
               style={{
-                backgroundColor: 'rgba(212, 175, 55, 0.08)',
-                border: '1px solid rgba(212, 175, 55, 0.3)',
-                borderRadius: '14px',
+                backgroundColor: '#FAF6E8',
+                border: '1px solid #D8C27D',
+                borderRadius: '16px',
                 padding: '16px',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '12px',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div>
-                  <span style={{ fontSize: '0.9rem', color: '#F3E5AB', fontWeight: 600, display: 'block' }}>
+                  <span style={{ fontSize: '0.92rem', color: '#171717', fontWeight: 700, display: 'block' }}>
                     Free Direct UPI Payment (Owner Account)
                   </span>
-                  <span style={{ fontSize: '0.78rem', color: '#94A3B8' }}>
-                    UPI ID: {UPI_CONFIG.upiId} | Payee: {UPI_CONFIG.payeeName}
+                  <span style={{ fontSize: '0.8rem', color: '#6F6A62', marginTop: '2px', display: 'block' }}>
+                    UPI ID: <strong>{UPI_CONFIG.upiId}</strong> | Payee: <strong>{UPI_CONFIG.payeeName}</strong>
                   </span>
                 </div>
+
                 <button
                   type="button"
                   onClick={() => setShowQrModal(true)}
                   className="btn-gold"
-                  style={{ padding: '8px 16px', fontSize: '0.84rem' }}
+                  style={{ padding: '12px 18px', fontSize: '0.9rem', width: '100%', minHeight: '48px', justifyContent: 'center' }}
                 >
-                  <QrCode size={16} />
+                  <QrCode size={18} />
                   <span>Generate UPI QR</span>
                 </button>
               </div>
@@ -476,42 +492,42 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  padding: '10px 14px',
-                  borderRadius: '10px',
+                  padding: '12px 14px',
+                  borderRadius: '12px',
                   backgroundColor:
                     paymentStatus === 'completed'
-                      ? 'rgba(16, 185, 129, 0.12)'
+                      ? 'rgba(22, 132, 91, 0.12)'
                       : paymentStatus === 'cancelled'
-                      ? 'rgba(244, 63, 94, 0.12)'
-                      : 'rgba(245, 158, 11, 0.12)',
+                      ? 'rgba(201, 74, 74, 0.12)'
+                      : 'rgba(183, 121, 31, 0.12)',
                   border:
                     paymentStatus === 'completed'
-                      ? '1px solid rgba(16, 185, 129, 0.3)'
+                      ? '1px solid rgba(22, 132, 91, 0.3)'
                       : paymentStatus === 'cancelled'
-                      ? '1px solid rgba(244, 63, 94, 0.3)'
-                      : '1px solid rgba(245, 158, 11, 0.3)',
+                      ? '1px solid rgba(201, 74, 74, 0.3)'
+                      : '1px solid rgba(183, 121, 31, 0.3)',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {paymentStatus === 'completed' && <CheckCircle2 size={18} color="#10B981" />}
-                  {paymentStatus === 'pending' && <Clock size={18} color="#F59E0B" />}
-                  {paymentStatus === 'cancelled' && <XCircle size={18} color="#F43F5E" />}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  {paymentStatus === 'completed' && <CheckCircle2 size={20} color="#16845B" />}
+                  {paymentStatus === 'pending' && <Clock size={20} color="#B7791F" />}
+                  {paymentStatus === 'cancelled' && <XCircle size={20} color="#C94A4A" />}
                   <div>
                     <span
                       style={{
-                        fontSize: '0.86rem',
+                        fontSize: '0.88rem',
                         fontWeight: 700,
                         color:
                           paymentStatus === 'completed'
-                            ? '#10B981'
+                            ? '#16845B'
                             : paymentStatus === 'cancelled'
-                            ? '#F43F5E'
-                            : '#F59E0B',
+                            ? '#C94A4A'
+                            : '#B7791F',
                       }}
                     >
                       Payment Status: {paymentStatus.toUpperCase()}
                     </span>
-                    <span style={{ display: 'block', fontSize: '0.76rem', color: '#94A3B8' }}>
+                    <span style={{ display: 'block', fontSize: '0.78rem', color: '#6F6A62', marginTop: '1px' }}>
                       {paymentStatus === 'completed'
                         ? 'Payment verified in owner UPI bank app.'
                         : paymentStatus === 'cancelled'
@@ -525,13 +541,15 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                   type="button"
                   onClick={() => setShowQrModal(true)}
                   style={{
-                    background: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.15)',
-                    color: '#F8FAFC',
-                    padding: '4px 10px',
-                    borderRadius: '6px',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #E4DED4',
+                    color: '#171717',
+                    padding: '6px 12px',
+                    borderRadius: '8px',
                     fontSize: '0.78rem',
+                    fontWeight: 600,
                     cursor: 'pointer',
+                    flexShrink: 0,
                   }}
                 >
                   Verify / Change
@@ -545,47 +563,63 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '10px',
-              borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+              gap: '12px',
+              borderTop: '1px solid #E4DED4',
               paddingTop: '18px',
+              marginTop: '4px',
             }}
           >
             {paymentMethod === 'UPI' && paymentStatus !== 'completed' && (
               <div
                 style={{
-                  fontSize: '0.78rem',
-                  color: '#F59E0B',
+                  fontSize: '0.8rem',
+                  color: '#B7791F',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
-                  backgroundColor: 'rgba(245, 158, 11, 0.08)',
-                  padding: '8px 12px',
-                  borderRadius: '8px',
+                  gap: '8px',
+                  backgroundColor: 'rgba(183, 121, 31, 0.1)',
+                  border: '1px solid rgba(183, 121, 31, 0.25)',
+                  padding: '10px 14px',
+                  borderRadius: '10px',
                 }}
               >
-                <AlertTriangle size={14} />
+                <AlertTriangle size={16} style={{ flexShrink: 0 }} />
                 <span>Complete Walk-in is disabled until payment status is COMPLETED.</span>
               </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <button type="button" onClick={onClose} className="btn-dark" style={{ padding: '10px 18px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <button
+                type="button"
+                onClick={onClose}
+                className="btn-dark"
+                style={{ minHeight: '48px', width: '100%', fontSize: '0.92rem' }}
+              >
                 Cancel
               </button>
 
               <button
                 type="submit"
                 disabled={!isFormValidToComplete}
-                className="btn-gold"
+                className={isFormValidToComplete ? 'btn-gold' : ''}
                 style={{
-                  padding: '12px 24px',
-                  fontSize: '0.94rem',
-                  minHeight: '44px',
-                  opacity: isFormValidToComplete ? 1 : 0.4,
+                  minHeight: '48px',
+                  width: '100%',
+                  fontSize: '0.92rem',
+                  fontWeight: 700,
+                  borderRadius: '12px',
+                  border: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  backgroundColor: isFormValidToComplete ? undefined : '#E4DED4',
+                  color: isFormValidToComplete ? '#171717' : '#8C857B',
+                  opacity: isFormValidToComplete ? 1 : 0.65,
                   cursor: isFormValidToComplete ? 'pointer' : 'not-allowed',
                 }}
               >
-                <CheckCircle2 size={17} />
+                <CheckCircle2 size={18} />
                 <span>{isSubmitting ? 'Recording...' : `Complete Walk-in (${formatPrice(finalTotal)})`}</span>
               </button>
             </div>
@@ -600,8 +634,8 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
         maxWidth="md"
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <QrCode size={20} color="#D4AF37" />
-            <span className="font-serif" style={{ fontSize: '1.3rem', color: '#F8FAFC' }}>
+            <QrCode size={20} color="#C9A227" />
+            <span className="font-serif" style={{ fontSize: '1.35rem', color: '#171717', fontWeight: 700 }}>
               SCAN & PAY
             </span>
           </div>
@@ -609,10 +643,10 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
       >
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', textAlign: 'center' }}>
           <div>
-            <span style={{ fontSize: '0.86rem', color: '#94A3B8', display: 'block' }}>
+            <span style={{ fontSize: '0.88rem', color: '#6F6A62', display: 'block', fontWeight: 500 }}>
               {UPI_CONFIG.payeeName}
             </span>
-            <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#F3E5AB', marginTop: '2px' }}>
+            <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#9A7B1C', marginTop: '2px' }}>
               {formatPrice(finalTotal)}
             </div>
           </div>
@@ -622,20 +656,22 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
             style={{
               padding: '16px',
               backgroundColor: '#FFFFFF',
-              borderRadius: '16px',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
-              border: '3px solid #D4AF37',
+              borderRadius: '18px',
+              boxShadow: '0 8px 24px rgba(23, 23, 23, 0.08)',
+              border: '2px solid #C9A227',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              width: 'min(82vw, 240px)',
+              margin: '0 auto',
             }}
           >
             <img
               src={qrImageUrl}
               alt="GuruKrupa Salon UPI Payment QR Code"
-              style={{ width: '220px', height: '220px', display: 'block' }}
+              style={{ width: '100%', height: 'auto', aspectRatio: '1 / 1', display: 'block' }}
             />
-            <span style={{ fontSize: '0.78rem', color: '#0F172A', fontWeight: 700, marginTop: '8px' }}>
+            <span style={{ fontSize: '0.78rem', color: '#171717', fontWeight: 700, marginTop: '10px' }}>
               Scan with GPay, PhonePe, Paytm, BHIM or any UPI App
             </span>
           </div>
@@ -647,16 +683,16 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
               alignItems: 'center',
               justifyContent: 'center',
               gap: '10px',
-              backgroundColor: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              padding: '8px 16px',
+              backgroundColor: '#F1EDE6',
+              border: '1px solid #E4DED4',
+              padding: '10px 16px',
               borderRadius: '10px',
               width: '100%',
               maxWidth: '320px',
             }}
           >
-            <span style={{ fontSize: '0.88rem', color: '#CBD5E1' }}>
-              UPI ID: <strong style={{ color: '#F8FAFC' }}>{UPI_CONFIG.upiId}</strong>
+            <span style={{ fontSize: '0.88rem', color: '#6F6A62' }}>
+              UPI ID: <strong style={{ color: '#171717' }}>{UPI_CONFIG.upiId}</strong>
             </span>
             <button
               type="button"
@@ -664,16 +700,16 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: '#D4AF37',
+                color: '#9A7B1C',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
-                fontSize: '0.8rem',
-                fontWeight: 600,
+                fontSize: '0.82rem',
+                fontWeight: 700,
               }}
             >
-              <Copy size={14} />
+              <Copy size={15} />
               <span>Copy</span>
             </button>
           </div>
@@ -682,26 +718,32 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
           <div
             style={{
               width: '100%',
-              padding: '12px',
-              borderRadius: '10px',
+              padding: '12px 14px',
+              borderRadius: '12px',
               backgroundColor:
                 paymentStatus === 'completed'
-                  ? 'rgba(16, 185, 129, 0.12)'
+                  ? 'rgba(22, 132, 91, 0.12)'
                   : paymentStatus === 'cancelled'
-                  ? 'rgba(244, 63, 94, 0.12)'
-                  : 'rgba(245, 158, 11, 0.12)',
+                  ? 'rgba(201, 74, 74, 0.12)'
+                  : 'rgba(183, 121, 31, 0.12)',
               border:
                 paymentStatus === 'completed'
-                  ? '1px solid rgba(16, 185, 129, 0.3)'
+                  ? '1px solid rgba(22, 132, 91, 0.3)'
                   : paymentStatus === 'cancelled'
-                  ? '1px solid rgba(244, 63, 94, 0.3)'
-                  : '1px solid rgba(245, 158, 11, 0.3)',
+                  ? '1px solid rgba(201, 74, 74, 0.3)'
+                  : '1px solid rgba(183, 121, 31, 0.3)',
             }}
           >
-            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: paymentStatus === 'completed' ? '#10B981' : paymentStatus === 'cancelled' ? '#F43F5E' : '#F59E0B' }}>
+            <div
+              style={{
+                fontSize: '0.88rem',
+                fontWeight: 700,
+                color: paymentStatus === 'completed' ? '#16845B' : paymentStatus === 'cancelled' ? '#C94A4A' : '#B7791F',
+              }}
+            >
               STATUS: {paymentStatus.toUpperCase()}
             </div>
-            <div style={{ fontSize: '0.76rem', color: '#94A3B8', marginTop: '2px' }}>
+            <div style={{ fontSize: '0.78rem', color: '#6F6A62', marginTop: '2px' }}>
               {paymentStatus === 'completed'
                 ? 'Payment verified in owner bank/UPI app.'
                 : paymentStatus === 'cancelled'
@@ -719,7 +761,7 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                 setShowConfirmModal(true);
               }}
               className="btn-gold"
-              style={{ width: '100%', padding: '12px', fontSize: '0.92rem', justifyContent: 'center' }}
+              style={{ width: '100%', minHeight: '48px', fontSize: '0.94rem', justifyContent: 'center' }}
             >
               <ShieldCheck size={18} />
               <span>Payment Received</span>
@@ -733,7 +775,7 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                   setShowQrModal(false);
                 }}
                 className="btn-dark"
-                style={{ padding: '10px', fontSize: '0.84rem', justifyContent: 'center' }}
+                style={{ padding: '12px', minHeight: '44px', fontSize: '0.84rem', justifyContent: 'center' }}
               >
                 <Clock size={16} />
                 <span>Payment Not Received</span>
@@ -746,10 +788,11 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                   setShowCancelConfirmModal(true);
                 }}
                 style={{
-                  backgroundColor: 'rgba(244, 63, 94, 0.12)',
-                  border: '1px solid rgba(244, 63, 94, 0.3)',
-                  color: '#FB7185',
-                  padding: '10px',
+                  backgroundColor: 'rgba(201, 74, 74, 0.1)',
+                  border: '1px solid rgba(201, 74, 74, 0.3)',
+                  color: '#C94A4A',
+                  padding: '12px',
+                  minHeight: '44px',
                   borderRadius: '10px',
                   fontSize: '0.84rem',
                   cursor: 'pointer',
@@ -775,22 +818,22 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
         maxWidth="sm"
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <ShieldCheck size={20} color="#10B981" />
-            <span className="font-serif" style={{ fontSize: '1.3rem', color: '#F8FAFC' }}>
+            <ShieldCheck size={20} color="#16845B" />
+            <span className="font-serif" style={{ fontSize: '1.3rem', color: '#171717', fontWeight: 700 }}>
               Confirm Payment
             </span>
           </div>
         }
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <p style={{ fontSize: '0.88rem', color: '#94A3B8', margin: 0 }}>
+          <p style={{ fontSize: '0.88rem', color: '#6F6A62', margin: 0 }}>
             Have you checked the owner's UPI/bank account and confirmed that the exact amount has been received?
           </p>
 
           <div
             style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
+              backgroundColor: '#FAF8F5',
+              border: '1px solid #E4DED4',
               borderRadius: '12px',
               padding: '14px',
               display: 'flex',
@@ -800,25 +843,25 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#94A3B8' }}>Expected Amount:</span>
-              <strong style={{ color: '#F3E5AB', fontSize: '1rem' }}>{formatPrice(finalTotal)}</strong>
+              <span style={{ color: '#6F6A62' }}>Expected Amount:</span>
+              <strong style={{ color: '#9A7B1C', fontSize: '1rem' }}>{formatPrice(finalTotal)}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#94A3B8' }}>Payment Method:</span>
-              <strong style={{ color: '#F8FAFC' }}>UPI</strong>
+              <span style={{ color: '#6F6A62' }}>Payment Method:</span>
+              <strong style={{ color: '#171717' }}>UPI</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#94A3B8' }}>UPI Account:</span>
-              <strong style={{ color: '#F8FAFC' }}>{UPI_CONFIG.upiId}</strong>
+              <span style={{ color: '#6F6A62' }}>UPI Account:</span>
+              <strong style={{ color: '#171717' }}>{UPI_CONFIG.upiId}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#94A3B8' }}>Internal Ref:</span>
-              <span style={{ color: '#CBD5E1', fontSize: '0.78rem', fontFamily: 'monospace' }}>{internalTxnRef}</span>
+              <span style={{ color: '#6F6A62' }}>Internal Ref:</span>
+              <span style={{ color: '#171717', fontSize: '0.78rem', fontFamily: 'monospace' }}>{internalTxnRef}</span>
             </div>
           </div>
 
           <div>
-            <label style={{ fontSize: '0.8rem', color: '#94A3B8', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.8rem', color: '#171717', fontWeight: 600, display: 'block', marginBottom: '6px' }}>
               Actual UPI Reference / Bank UTR (Optional)
             </label>
             <input
@@ -832,12 +875,12 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
 
           <div
             style={{
-              backgroundColor: 'rgba(245, 158, 11, 0.1)',
-              border: '1px solid rgba(245, 158, 11, 0.3)',
+              backgroundColor: 'rgba(183, 121, 31, 0.1)',
+              border: '1px solid rgba(183, 121, 31, 0.3)',
               borderRadius: '10px',
               padding: '12px',
               fontSize: '0.82rem',
-              color: '#F59E0B',
+              color: '#B7791F',
               display: 'flex',
               gap: '10px',
               alignItems: 'flex-start',
@@ -857,7 +900,7 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                 setShowQrModal(true);
               }}
               className="btn-dark"
-              style={{ padding: '10px 16px' }}
+              style={{ padding: '10px 16px', minHeight: '44px' }}
             >
               Cancel
             </button>
@@ -869,7 +912,7 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                 success('Payment Verified', `Marked UPI payment of ${formatPrice(finalTotal)} as COMPLETED.`);
               }}
               className="btn-gold"
-              style={{ padding: '10px 18px' }}
+              style={{ padding: '10px 18px', minHeight: '44px' }}
             >
               <CheckCircle2 size={16} />
               <span>Yes, Payment Received</span>
@@ -885,15 +928,15 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
         maxWidth="sm"
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <XCircle size={20} color="#F43F5E" />
-            <span className="font-serif" style={{ fontSize: '1.3rem', color: '#F8FAFC' }}>
+            <XCircle size={20} color="#C94A4A" />
+            <span className="font-serif" style={{ fontSize: '1.3rem', color: '#171717', fontWeight: 700 }}>
               Confirm Payment Cancellation
             </span>
           </div>
         }
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <p style={{ fontSize: '0.88rem', color: '#94A3B8', margin: 0 }}>
+          <p style={{ fontSize: '0.88rem', color: '#6F6A62', margin: 0 }}>
             Are you sure the payment was not completed?
           </p>
 
@@ -905,7 +948,7 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                 setShowQrModal(true);
               }}
               className="btn-dark"
-              style={{ padding: '10px 16px' }}
+              style={{ padding: '10px 16px', minHeight: '44px' }}
             >
               No
             </button>
@@ -917,7 +960,7 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                 info('Payment Cancelled', 'Marked UPI payment status as CANCELLED.');
               }}
               style={{
-                backgroundColor: '#F43F5E',
+                backgroundColor: '#C94A4A',
                 color: '#FFFFFF',
                 border: 'none',
                 padding: '10px 18px',
@@ -928,6 +971,7 @@ export const CompleteServiceModal: React.FC<CompleteServiceModalProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
+                minHeight: '44px',
               }}
             >
               <XCircle size={16} />

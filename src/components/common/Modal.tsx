@@ -60,10 +60,11 @@ export const Modal: React.FC<ModalProps> = ({
     <AnimatePresence>
       {isOpen && (
         <div
+          className="salon-modal-overlay-wrapper"
           style={{
             position: 'fixed',
             inset: 0,
-            zIndex: 999,
+            zIndex: 1100,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -83,6 +84,7 @@ export const Modal: React.FC<ModalProps> = ({
               backgroundColor: 'rgba(23, 23, 23, 0.4)',
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)',
+              zIndex: 1100,
             }}
           />
 
@@ -98,13 +100,13 @@ export const Modal: React.FC<ModalProps> = ({
               position: 'relative',
               width: '100%',
               maxWidth: getMaxWidthValue(),
-              maxHeight: '90vh',
+              maxHeight: '88vh',
               overflowY: 'auto',
               background: '#FFFFFF',
               border: '1px solid #E4DED4',
               borderRadius: '24px',
               boxShadow: '0 20px 50px rgba(23, 23, 23, 0.12)',
-              zIndex: 1000,
+              zIndex: 1105,
               display: 'flex',
               flexDirection: 'column',
             }}
