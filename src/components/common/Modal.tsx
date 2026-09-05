@@ -28,13 +28,29 @@ export const Modal: React.FC<ModalProps> = ({
       }
     };
     if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        const savedScrollY = Math.abs(parseInt(document.body.style.top || '0', 10));
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        window.scrollTo(0, savedScrollY);
+        window.removeEventListener('keydown', handleKeyDown);
+      };
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-      window.removeEventListener('keydown', handleKeyDown);
-    };
   }, [isOpen, onClose]);
 
   const getMaxWidthValue = () => {
@@ -42,7 +58,7 @@ export const Modal: React.FC<ModalProps> = ({
       case 'sm':
         return '420px';
       case 'md':
-        return '540px';
+        return '520px';
       case 'lg':
         return '680px';
       case 'xl':
@@ -68,7 +84,7 @@ export const Modal: React.FC<ModalProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '12px',
+            padding: '16px 12px',
           }}
         >
           {/* Backdrop */}
@@ -76,62 +92,66 @@ export const Modal: React.FC<ModalProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.2 }}
             onClick={onClose}
             style={{
               position: 'fixed',
               inset: 0,
-              backgroundColor: 'rgba(23, 23, 23, 0.4)',
+              backgroundColor: 'rgba(23, 23, 23, 0.45)',
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)',
               zIndex: 1100,
             }}
           />
 
-          {/* Modal Content */}
+          {/* Modal Shell Container */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            initial={{ opacity: 0, scale: 0.96, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 15 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+            exit={{ opacity: 0, scale: 0.96, y: 10 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 350 }}
             onClick={(e) => e.stopPropagation()}
             className="salon-modal-container"
             style={{
               position: 'relative',
-              width: '100%',
+              width: 'calc(100% - 24px)',
               maxWidth: getMaxWidthValue(),
-              maxHeight: '88vh',
-              overflowY: 'auto',
+              maxHeight: 'calc(100dvh - 32px)',
               background: '#FFFFFF',
               border: '1px solid #E4DED4',
               borderRadius: '24px',
-              boxShadow: '0 20px 50px rgba(23, 23, 23, 0.12)',
+              boxShadow: '0 20px 50px rgba(23, 23, 23, 0.16)',
               zIndex: 1105,
               display: 'flex',
               flexDirection: 'column',
+              overflow: 'hidden',
             }}
           >
-            {/* Header */}
+            {/* Fixed Header */}
             {(title || showCloseButton) && (
               <div
                 className="salon-modal-header"
                 style={{
-                  padding: '22px 24px 16px 24px',
+                  padding: '16px 20px',
                   borderBottom: '1px solid #E4DED4',
                   display: 'flex',
-                  alignItems: 'flex-start',
+                  alignItems: 'center',
                   justifyContent: 'space-between',
-                  gap: '16px',
+                  gap: '12px',
+                  flexShrink: 0,
+                  backgroundColor: '#FFFFFF',
                 }}
               >
-                <div>
+                <div style={{ minWidth: 0, flex: 1 }}>
                   {typeof title === 'string' ? (
                     <h3
                       className="font-serif"
                       style={{
-                        fontSize: '1.35rem',
-                        fontWeight: 600,
+                        fontSize: '1.25rem',
+                        fontWeight: 700,
                         color: '#171717',
+                        lineHeight: 1.2,
+                        margin: 0,
                       }}
                     >
                       {title}
@@ -142,9 +162,10 @@ export const Modal: React.FC<ModalProps> = ({
                   {subtitle && (
                     <p
                       style={{
-                        fontSize: '0.84rem',
+                        fontSize: '0.8rem',
                         color: '#6F6A62',
-                        marginTop: '4px',
+                        marginTop: '2px',
+                        marginBottom: 0,
                       }}
                     >
                       {subtitle}
@@ -159,8 +180,8 @@ export const Modal: React.FC<ModalProps> = ({
                       background: '#F1EDE6',
                       border: '1px solid #E4DED4',
                       color: '#6F6A62',
-                      width: '38px',
-                      height: '38px',
+                      width: '36px',
+                      height: '36px',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
@@ -169,16 +190,7 @@ export const Modal: React.FC<ModalProps> = ({
                       transition: 'all 0.2s',
                       flexShrink: 0,
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = '#171717';
-                      e.currentTarget.style.borderColor = '#C9A227';
-                      e.currentTarget.style.backgroundColor = 'rgba(201, 162, 39, 0.12)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = '#6F6A62';
-                      e.currentTarget.style.borderColor = '#E4DED4';
-                      e.currentTarget.style.backgroundColor = '#F1EDE6';
-                    }}
+                    aria-label="Close dialog"
                   >
                     <X size={18} />
                   </button>
@@ -186,8 +198,18 @@ export const Modal: React.FC<ModalProps> = ({
               </div>
             )}
 
-            {/* Body */}
-            <div className="salon-modal-body" style={{ padding: '22px 24px', flex: 1 }}>{children}</div>
+            {/* Scrollable Body Content */}
+            <div
+              className="salon-modal-body"
+              style={{
+                padding: '20px',
+                flex: 1,
+                overflowY: 'auto',
+                WebkitOverflowScrolling: 'touch',
+              }}
+            >
+              {children}
+            </div>
           </motion.div>
         </div>
       )}
