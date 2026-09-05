@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useSalonData } from '../../context/SalonDataContext';
 import { Shield, User, Menu, Building2, UserCheck, Scissors, X } from 'lucide-react';
+import { Logo } from './Logo';
 
 interface HeaderProps {
   onToggleSidebar?: () => void;
@@ -61,40 +62,8 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, onOpenBranchShe
           <Menu size={20} color="#C9A227" />
         </button>
 
-        {/* Center: GuruKrupa SALON Brand */}
-        <div
-          onClick={() => setActiveView('home')}
-          style={{
-            display: 'flex',
-            alignItems: 'baseline',
-            gap: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          <span
-            className="font-serif"
-            style={{
-              fontSize: '1.15rem',
-              fontWeight: 700,
-              color: '#171717',
-              letterSpacing: '-0.01em',
-            }}
-          >
-            GuruKrupa
-          </span>
-          <span
-            style={{
-              color: '#C9A227',
-              fontSize: '0.7rem',
-              fontWeight: 700,
-              letterSpacing: '0.12em',
-              fontFamily: 'var(--font-sans)',
-              textTransform: 'uppercase',
-            }}
-          >
-            SALON
-          </span>
-        </div>
+        {/* Center: GuruKrupa MEN'S SALON Logo */}
+        <Logo variant="mobile" onClick={() => setActiveView('home')} />
 
         {/* Right Section: Branch Icon + Panel Icon + Profile */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -331,42 +300,8 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, onOpenBranchShe
       {/* DESKTOP-ONLY HEADER (>= 768px)                             */}
       {/* --------------------------------------------------------- */}
       <div className="desktop-only-header" style={{ width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-        {/* Left Section: Pure Brand Title (No Hamburger, No Scissors) */}
-        <div
-          onClick={() => setActiveView('home')}
-          style={{
-            display: 'flex',
-            alignItems: 'baseline',
-            gap: '6px',
-            cursor: 'pointer',
-            textDecoration: 'none',
-          }}
-        >
-          <span
-            className="font-serif"
-            style={{
-              fontSize: '1.35rem',
-              fontWeight: 700,
-              letterSpacing: '0.01em',
-              color: '#171717',
-              lineHeight: 1,
-            }}
-          >
-            GuruKrupa
-          </span>
-          <span
-            style={{
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              color: '#C9A227',
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              fontFamily: 'var(--font-sans)',
-            }}
-          >
-            SALON
-          </span>
-        </div>
+        {/* Left Section: Brand Logo */}
+        <Logo variant="compact" size="md" onClick={() => setActiveView('home')} />
 
         {/* Right Section: Branch Icon + Role Controls + User Profile */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -443,7 +378,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, onOpenBranchShe
                 transition: 'all 0.2s ease',
               }}
             >
-              <UserCheck size={13} />
+              <Scissors size={13} />
               <span>Stylist</span>
             </button>
 
