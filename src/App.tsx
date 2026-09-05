@@ -57,6 +57,30 @@ const SalonApp: React.FC = () => {
     }
   }, [currentRole]);
 
+  // Always scroll to top when activeView changes
+  useEffect(() => {
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      const mainEl = document.querySelector('main');
+      if (mainEl) {
+        mainEl.scrollTop = 0;
+      }
+    };
+
+    scrollToTop();
+    const raf1 = requestAnimationFrame(scrollToTop);
+    const raf2 = requestAnimationFrame(() => requestAnimationFrame(scrollToTop));
+    const timer = setTimeout(scrollToTop, 100);
+
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      clearTimeout(timer);
+    };
+  }, [activeView]);
+
   // Handle employee "Add Service" sidebar click
   const handleViewChange = (view: string) => {
     if (view === 'add-service') {
@@ -166,19 +190,128 @@ const SalonApp: React.FC = () => {
         {/* Desktop Spacer to preserve layout width for fixed sidebar */}
         <div className="desktop-sidebar-spacer" />
 
-        {/* Dynamic Content Viewport */}
-        <main
-          style={{
-            flex: 1,
-            padding: '32px 32px 64px 32px',
-            maxWidth: '1360px',
-            margin: '0 auto',
-            width: '100%',
-            overflowX: 'hidden',
-          }}
-        >
-          {renderActiveContent()}
-        </main>
+        {/* Main Content & Footer Column Wrapper (Starts after Sidebar) */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, width: '100%' }}>
+          {/* Dynamic Content Viewport */}
+          <main
+            style={{
+              flex: 1,
+              padding: '32px 32px 64px 32px',
+              maxWidth: '1360px',
+              margin: '0 auto',
+              width: '100%',
+              overflowX: 'hidden',
+              boxSizing: 'border-box',
+            }}
+          >
+            {renderActiveContent()}
+          </main>
+
+          {/* Luxury Salon Footer */}
+          <footer
+            style={{
+              borderTop: '1px solid #E4DED4',
+              backgroundColor: '#FFFFFF',
+              padding: '40px 32px 24px 32px',
+              color: '#6F6A62',
+              fontSize: '0.86rem',
+              width: '100%',
+              boxSizing: 'border-box',
+            }}
+          >
+            <div
+              style={{
+                maxWidth: '1360px',
+                margin: '0 auto',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                gap: '32px',
+                marginBottom: '32px',
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                  <div
+                    style={{
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '8px',
+                      backgroundColor: '#C9A227',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Scissors size={16} color="#FFFFFF" />
+                  </div>
+                  <span className="font-serif" style={{ fontSize: '1.2rem', color: '#171717', fontWeight: 700 }}>
+                    GuruKrupa SALON
+                  </span>
+                </div>
+                <p style={{ lineHeight: 1.5, color: '#6F6A62', fontSize: '0.82rem' }}>
+                  Premier luxury grooming, precision scissor craft, signature beard architecture, and restorative skin rejuvenation.
+                </p>
+              </div>
+
+              <div>
+                <h4 style={{ color: '#171717', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>VIP Hotline</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <a
+                    href="tel:+919823012345"
+                    style={{ color: '#9A7B1C', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}
+                  >
+                    <Phone size={14} color="#C9A227" />
+                    <span>+91 98230 12345 (Direct Call)</span>
+                  </a>
+                  <span style={{ fontSize: '0.8rem', color: '#8C857B' }}>
+                    Instant phone consultation available with master stylists
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <h4 style={{ color: '#171717', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>Operating Hours</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.82rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#171717' }}>
+                    <Clock size={14} color="#C9A227" />
+                    <span>Mon – Sun: 09:00 AM – 09:30 PM</span>
+                  </div>
+                  <span style={{ color: '#16845B', fontSize: '0.78rem', fontWeight: 600 }}>Open 7 Days • Valet Parking Available</span>
+                </div>
+              </div>
+
+              <div>
+                <h4 style={{ color: '#171717', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>Studio Location</h4>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '0.82rem', color: '#171717' }}>
+                  <MapPin size={15} color="#C9A227" style={{ marginTop: '2px', flexShrink: 0 }} />
+                  <span>Linking Road, Bandra West, Mumbai, Maharashtra 400050</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                maxWidth: '1360px',
+                margin: '0 auto',
+                borderTop: '1px solid #E4DED4',
+                paddingTop: '20px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '12px',
+                fontSize: '0.78rem',
+                color: '#8C857B',
+              }}
+            >
+              <span>© {new Date().getFullYear()} GuruKrupa SALON. All rights reserved.</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>Crafted for luxury salon operations</span>
+                <ShieldCheck size={14} color="#C9A227" />
+              </div>
+            </div>
+          </footer>
+        </div>
       </div>
 
       {/* Mobile Fixed Bottom Navigation Bar (< 768px) */}
@@ -205,109 +338,6 @@ const SalonApp: React.FC = () => {
           setActiveView('dashboard');
         }}
       />
-
-      {/* Luxury Salon Footer */}
-      <footer
-        style={{
-          borderTop: '1px solid #E4DED4',
-          backgroundColor: '#FFFFFF',
-          padding: '40px 32px 24px 32px',
-          color: '#6F6A62',
-          fontSize: '0.86rem',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '1360px',
-            margin: '0 auto',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: '32px',
-            marginBottom: '32px',
-          }}
-        >
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-              <div
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '8px',
-                  backgroundColor: '#C9A227',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Scissors size={16} color="#FFFFFF" />
-              </div>
-              <span className="font-serif" style={{ fontSize: '1.2rem', color: '#171717', fontWeight: 700 }}>
-                GuruKrupa SALON
-              </span>
-            </div>
-            <p style={{ lineHeight: 1.5, color: '#6F6A62', fontSize: '0.82rem' }}>
-              Premier luxury grooming, precision scissor craft, signature beard architecture, and restorative skin rejuvenation.
-            </p>
-          </div>
-
-          <div>
-            <h4 style={{ color: '#171717', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>VIP Hotline</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <a
-                href="tel:+919823012345"
-                style={{ color: '#9A7B1C', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}
-              >
-                <Phone size={14} color="#C9A227" />
-                <span>+91 98230 12345 (Direct Call)</span>
-              </a>
-              <span style={{ fontSize: '0.8rem', color: '#8C857B' }}>
-                Instant phone consultation available with master stylists
-              </span>
-            </div>
-          </div>
-
-          <div>
-            <h4 style={{ color: '#171717', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>Operating Hours</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.82rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#171717' }}>
-                <Clock size={14} color="#C9A227" />
-                <span>Mon – Sun: 09:00 AM – 09:30 PM</span>
-              </div>
-              <span style={{ color: '#16845B', fontSize: '0.78rem', fontWeight: 600 }}>Open 7 Days • Valet Parking Available</span>
-            </div>
-          </div>
-
-          <div>
-            <h4 style={{ color: '#171717', fontWeight: 600, marginBottom: '10px', fontSize: '0.9rem' }}>Studio Location</h4>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '0.82rem', color: '#171717' }}>
-              <MapPin size={15} color="#C9A227" style={{ marginTop: '2px', flexShrink: 0 }} />
-              <span>Linking Road, Bandra West, Mumbai, Maharashtra 400050</span>
-            </div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            maxWidth: '1360px',
-            margin: '0 auto',
-            borderTop: '1px solid #E4DED4',
-            paddingTop: '20px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '12px',
-            fontSize: '0.78rem',
-            color: '#8C857B',
-          }}
-        >
-          <span>© {new Date().getFullYear()} GuruKrupa SALON. All rights reserved.</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span>Crafted for luxury salon operations</span>
-            <ShieldCheck size={14} color="#C9A227" />
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

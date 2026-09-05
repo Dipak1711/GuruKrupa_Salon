@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSalonData } from '../../context/SalonDataContext';
 import { Branch, Employee } from '../../types';
 import { Phone, MapPin, ArrowLeft, Users, Star, Scissors } from 'lucide-react';
@@ -11,6 +11,28 @@ interface CustomerBookingViewProps {
 export const CustomerBookingView: React.FC<CustomerBookingViewProps> = () => {
   const { branches, employees, services } = useSalonData();
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
+
+  // Scroll to top on mount or when branch changes
+  useEffect(() => {
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      const mainEl = document.querySelector('main');
+      if (mainEl) mainEl.scrollTop = 0;
+    };
+
+    scrollToTop();
+    const raf1 = requestAnimationFrame(scrollToTop);
+    const raf2 = requestAnimationFrame(() => requestAnimationFrame(scrollToTop));
+    const timer = setTimeout(scrollToTop, 100);
+
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      clearTimeout(timer);
+    };
+  }, [selectedBranch]);
 
   // Filter active branches
   const activeBranches = branches.filter((b) => b.status === 'active' || !b.status);
